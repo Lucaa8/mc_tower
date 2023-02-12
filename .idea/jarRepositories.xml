@@ -7,6 +7,21 @@
       <option name="url" value="https://repo.maven.apache.org/maven2" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="dev-mc" />
+      <option name="name" value="dev-mc" />
+      <option name="url" value="http://skyblockv4.fr" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="dev-mc" />
+      <option name="name" value="dev-mc" />
+      <option name="url" value="https://www.skyblockv4.fr/nexus/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="dev-mc" />
+      <option name="name" value="dev-mc" />
+      <option name="url" value="https://www.skyblockv4.fr/nexus/dev-mc/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Maven Central repository" />
       <option name="url" value="https://repo1.maven.org/maven2" />
@@ -17,9 +32,24 @@
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="dev-mc" />
+      <option name="name" value="dev-mc" />
+      <option name="url" value="https://www.skyblockv4.fr/nexus/service/rest/repository/browse/dev-mc/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="papermc" />
       <option name="name" value="papermc" />
       <option name="url" value="https://repo.papermc.io/repository/maven-public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="dev-mc" />
+      <option name="name" value="dev-mc" />
+      <option name="url" value="https://skyblockv4.fr" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="dev-mc" />
+      <option name="name" value="dev-mc" />
+      <option name="url" value="https://www.skyblockv4.fr/nexus/repository/dev-mc/" />
     </remote-repository>
   </component>
 </project>
