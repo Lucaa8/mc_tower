@@ -1,6 +1,7 @@
 package ch.tower;
 
 import ch.tower.events.GlobalEvents;
+import ch.tower.managers.GameManager;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 

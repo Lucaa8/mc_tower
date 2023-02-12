@@ -1,4 +1,4 @@
-package ch.tower;
+package ch.tower.managers;
 
 public class GameManager {
 
