@@ -24,6 +24,8 @@ public class TeamsManager {
         RED(RED_SPAWN),
         SPECTATOR(SPEC_SPAWN);
 
+
+
         private final TeamAPI.Team team;
         private final Location spawn;
         PlayerTeam(Location spawn)
