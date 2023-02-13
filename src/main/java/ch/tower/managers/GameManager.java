@@ -1,5 +1,7 @@
 package ch.tower.managers;
 
+import org.bukkit.Bukkit;
+
 public class GameManager {
 
     enum GameState
@@ -12,6 +14,12 @@ public class GameManager {
     public GameManager()
     {
         this.state = GameState.WAIT;
+        //TeamsManager.registerTeams();
+    }
+
+    public void stop()
+    {
+        //TeamsManager.unregisterTeams();
     }
 
     public GameState getState()

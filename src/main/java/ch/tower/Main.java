@@ -22,7 +22,7 @@ public class Main extends JavaPlugin {
 
     public void onDisable()
     {
-        //maybe call game.stop() if something is needed before disabling
+        game.stop();
     }
 
     public static Main getInstance()
