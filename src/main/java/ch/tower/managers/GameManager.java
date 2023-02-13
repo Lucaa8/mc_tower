@@ -32,7 +32,7 @@ public class GameManager {
 
     public GameManager()
     {
-        this.state = GameState.WAIT;
+        this.setState(GameState.WAIT);
         //TeamsManager.registerTeams();
     }
 
