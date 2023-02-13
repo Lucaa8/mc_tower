@@ -5,6 +5,8 @@ import ch.tower.events.GameEvents;
 
 public class GameManager {
 
+    //public static final File SPAWN_FILE = new File(Main.getInstance().getDataFolder(), "spawns.json");
+
     enum GameState
     {
         WAIT, GAME, END;
@@ -15,12 +17,12 @@ public class GameManager {
     public GameManager()
     {
         this.state = GameState.WAIT;
-        //TeamsManager.registerTeams();
+        TeamsManager.registerTeams();
     }
 
     public void stop()
     {
-        //TeamsManager.unregisterTeams();
+        TeamsManager.unregisterTeams();
     }
 
     public GameState getState()
