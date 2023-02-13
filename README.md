@@ -1,2 +1,2 @@
 # mc_tower
-luca est moyennement agréable visuellement
+Thibault est moyennement agréable visuellement
