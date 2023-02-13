@@ -1,6 +1,7 @@
 package ch.tower.managers;
 
-import org.bukkit.Bukkit;
+import ch.tower.Main;
+import ch.tower.events.GameEvents;
 
 public class GameManager {
 
@@ -30,6 +31,11 @@ public class GameManager {
     public void setState(GameState state)
     {
         this.state = state;
+        //HandlerList.unregisterAll();
+        if(state == GameState.GAME)
+        {
+            Main.getInstance().getServer().getPluginManager().registerEvents(new GameEvents(), Main.getInstance());
+        }
         //maybe register WaitEvents if state == GameState.WAIT, etc...
     }
 
