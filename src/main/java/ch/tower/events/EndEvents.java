@@ -2,7 +2,7 @@ package ch.tower.events;
 
 import org.bukkit.event.Listener;
 
-public class EndEvents implements Listener
+public class EndEvents implements Listener, StateEvents
 {
     private static EndEvents instance = null;
     private EndEvents(){}
@@ -14,5 +14,17 @@ public class EndEvents implements Listener
             instance = new EndEvents();
         }
         return instance;
+    }
+
+    @Override
+    public void onStateBegin()
+    {
+
+    }
+
+    @Override
+    public void onStateLeave()
+    {
+
     }
 }
