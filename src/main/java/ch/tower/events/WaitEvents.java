@@ -1,5 +1,6 @@
 package ch.tower.events;
 
+import ch.tower.Main;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -12,7 +13,9 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class WaitEvents implements Listener, StateEvents
+import java.util.Collection;
+
+public class WaitEvents implements StateEvents
 {
     private static WaitEvents instance = null;
     private WaitEvents(){}
@@ -59,12 +62,6 @@ public class WaitEvents implements Listener, StateEvents
         e.setCancelled(true);
     }
 
-    @EventHandler
-    public void playerQuitGame(PlayerQuitEvent e)
-    {
-        e.getPlayer().getInventory().clear();
-    }
-
     @Override
     public void onStateBegin()
     {
@@ -74,6 +71,24 @@ public class WaitEvents implements Listener, StateEvents
     @Override
     public void onStateLeave()
     {
+        Collection<? extends Player> players = Main.getInstance().getServer().getOnlinePlayers();
+        for (Player player : players)
+        {
+            player.sendTitle("The game is about to begin", "In a few seconds", 1, 6, 1);
+        }
+        try
+        {
+            Main.getInstance().getServer().wait(8000);
+        }
+        catch (Exception e)
+        {
 
+        }
+
+        players = Main.getInstance().getServer().getOnlinePlayers();
+        for (Player player : players)
+        {
+            player.getInventory().clear();
+        }
     }
 }
