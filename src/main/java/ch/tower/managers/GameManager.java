@@ -3,6 +3,7 @@ package ch.tower.managers;
 import ch.tower.Main;
 import ch.tower.events.EndEvents;
 import ch.tower.events.GameEvents;
+import ch.tower.events.StateEvents;
 import ch.tower.events.WaitEvents;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -17,14 +18,14 @@ public class GameManager {
         GAME(GameEvents.getInstance()),//
         END(EndEvents.getInstance());
 
-        private Listener listener;
-        private GameState(Listener listener)
+        private StateEvents stateInstance;
+        private GameState(StateEvents stateInstance)
         {
-            this.listener = listener;
+            this.stateInstance = stateInstance;
         }
-        public Listener getListener()
+        public StateEvents getStateInstance()
         {
-            return listener;
+            return stateInstance;
         }
     }
 
@@ -48,11 +49,13 @@ public class GameManager {
 
     public void setState(GameState state)
     {
+        this.state.getStateInstance().onStateLeave();
         this.state = state;
         HandlerList.unregisterAll(EndEvents.getInstance());
         HandlerList.unregisterAll(GameEvents.getInstance());
         HandlerList.unregisterAll(WaitEvents.getInstance());
-        Main.getInstance().getServer().getPluginManager().registerEvents(this.state.getListener(), Main.getInstance());
+        this.state.getStateInstance().onStateBegin();
+        Main.getInstance().getServer().getPluginManager().registerEvents(this.state.getStateInstance(), Main.getInstance());
     }
 
 }
