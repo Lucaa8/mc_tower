@@ -2,10 +2,10 @@ package ch.tower.managers;
 
 import ch.tower.Main;
 import ch.tower.events.GameEvents;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public class GameManager {
-
-    //public static final File SPAWN_FILE = new File(Main.getInstance().getDataFolder(), "spawns.json");
 
     enum GameState
     {
@@ -14,15 +14,32 @@ public class GameManager {
 
     private GameState state;
 
+    private final WorldManager worldManager;
+
     public GameManager()
     {
-        this.state = GameState.WAIT;
-        TeamsManager.registerTeams();
+        worldManager = new WorldManager();
+        if(worldManager.load())
+        {
+            this.state = GameState.WAIT;
+            TeamsManager.registerTeams();
+        }
+        else
+        {
+            System.err.println("Something went wrong while loading the maps.");
+            Main.getInstance().getServer().getPluginManager().disablePlugin(Main.getInstance());
+        }
     }
 
     public void stop()
     {
+        //Needed to be sure no players are still in the loaded maps that the server needs to delete.
+        for(Player player : Bukkit.getOnlinePlayers())
+        {
+            player.kickPlayer("§cThe server will restart soon.");
+        }
         TeamsManager.unregisterTeams();
+        worldManager.unload();
     }
 
     public GameState getState()
@@ -30,6 +47,7 @@ public class GameManager {
         return state;
     }
 
+    // TODO: 14/02/2023 Maëlys
     public void setState(GameState state)
     {
         this.state = state;
