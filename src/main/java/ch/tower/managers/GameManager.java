@@ -12,7 +12,7 @@ import java.util.logging.Handler;
 
 public class GameManager {
 
-    enum GameState
+    public enum GameState
     {
         WAIT(WaitEvents.getInstance()),//
         GAME(GameEvents.getInstance()),//

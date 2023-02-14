@@ -1,5 +1,6 @@
 package ch.tower;
 
+import ch.tower.commands.ChangeStateCommand;
 import ch.tower.events.GlobalEvents;
 import ch.tower.managers.GameManager;
 import org.bukkit.plugin.PluginManager;
@@ -14,6 +15,9 @@ public class Main extends JavaPlugin {
 
     public void onEnable()
     {
+        //registering commands:
+        this.getCommand("changeState").setExecutor(new ChangeStateCommand());
+
         instance = this;
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new GlobalEvents(), this);
