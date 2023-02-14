@@ -1,5 +1,6 @@
 package ch.tower;
 
+import ch.tower.commands.ChangeStateCommand;
 import ch.tower.events.GlobalEvents;
 import ch.tower.managers.GameManager;
 import ch.tower.managers.ScoreboardManager;
@@ -20,6 +21,9 @@ public class Main extends JavaPlugin {
 
     public void onEnable()
     {
+        //registering commands:
+        this.getCommand("changeState").setExecutor(new ChangeStateCommand());
+
         instance = this;
         if(!getDataFolder().mkdirs() && !getDataFolder().exists())
         {

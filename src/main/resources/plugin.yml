@@ -5,3 +5,8 @@ depend:
   - SpigotApi
 main: ${mainClass}
 api-version: 1.19
+
+commands:
+  changeState:
+    description: Change ctate of the game
+    usage: /changeState
