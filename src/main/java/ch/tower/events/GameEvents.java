@@ -2,7 +2,7 @@ package ch.tower.events;
 
 import org.bukkit.event.Listener;
 
-public class GameEvents implements Listener, StateEvents
+public class GameEvents implements StateEvents
 {
     private static GameEvents instance = null;
     private GameEvents(){}
