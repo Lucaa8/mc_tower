@@ -1,5 +1,7 @@
 name: ${name}
 version: ${version}
 author: [Maelys, Luca, Thibault]
+depend:
+  - SpigotApi
 main: ${mainClass}
 api-version: 1.19
