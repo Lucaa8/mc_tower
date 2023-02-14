@@ -43,6 +43,11 @@ public class TeamsManager implements Listener {
             return this.team.spawn;
         }
 
+        public Location getLobbySpawn()
+        {
+            return this.team.lobbySpawn;
+        }
+
         public boolean containsPlayer(Player player)
         {
             if(player == null)
@@ -95,14 +100,14 @@ public class TeamsManager implements Listener {
     public static void registerTeams()
     {
         Main.getInstance().getServer().getPluginManager().registerEvents(listener, Main.getInstance());
-        //SpigotApi.getJSONApi().readerFromFile(GameManager.SPAWN_FILE).getJson("Game");
-        registerTeam("blue",      "Blue team",  "Blue | ",      TeamsPackets.TeamColor.BLUE, 1, new Location(Bukkit.getWorld("Tower"), 0, 0, 0));
-        registerTeam("red",       "Red team",   "Red | ",       TeamsPackets.TeamColor.RED,  2, new Location(Bukkit.getWorld("Tower"), 0, 0, 0));
-        registerTeam("spectator", "Spectators", "Spectator | ", TeamsPackets.TeamColor.GRAY, 3, new Location(Bukkit.getWorld("Tower"), 0, 0, 0));
+        registerTeam("blue",      "Blue team",  "Blue | ",      TeamsPackets.TeamColor.BLUE, 1);
+        registerTeam("red",       "Red team",   "Red | ",       TeamsPackets.TeamColor.RED,  2);
+        registerTeam("spectator", "Spectators", "Spectator | ", TeamsPackets.TeamColor.GRAY, 3);
     }
 
-    private static void registerTeam(String uniqueName, String displayName, String prefix, TeamsPackets.TeamColor color, int sortOrder, Location spawn)
+    private static void registerTeam(String uniqueName, String displayName, String prefix, TeamsPackets.TeamColor color, int sortOrder)
     {
+        String teamName = uniqueName.substring(0,1).toUpperCase() + uniqueName.substring(1).toLowerCase();
         _Team team = new _Team(uniqueName,
                          displayName,
                          sortOrder,
@@ -114,7 +119,8 @@ public class TeamsManager implements Listener {
                          false,
                          true,
                          new ArrayList<>(),
-                         spawn);
+                         WorldManager.readLocation("Game."+teamName),
+                         WorldManager.readLocation("Lobby."+teamName));
         teams.put(uniqueName, team);
     }
 
@@ -214,7 +220,9 @@ public class TeamsManager implements Listener {
 
         private final Location spawn;
 
-        private _Team(String uniqueName, String displayName, int sortOrder, String prefix, String suffix, TeamsPackets.TeamColor color, TeamsPackets.NameTagVisibility nameTagVisibility, TeamsPackets.TeamPush collisions, boolean friendlyFire, boolean seeInvisibleFriends, ArrayList<String> entries, Location spawn)
+        private final Location lobbySpawn;
+
+        private _Team(String uniqueName, String displayName, int sortOrder, String prefix, String suffix, TeamsPackets.TeamColor color, TeamsPackets.NameTagVisibility nameTagVisibility, TeamsPackets.TeamPush collisions, boolean friendlyFire, boolean seeInvisibleFriends, ArrayList<String> entries, Location spawn, Location lobbySpawn)
         {
             this.uniqueName = uniqueName;
             this.displayName = displayName;
@@ -228,6 +236,7 @@ public class TeamsManager implements Listener {
             this.seeInvisibleFriends = seeInvisibleFriends;
             this.entries = entries;
             this.spawn = spawn;
+            this.lobbySpawn = lobbySpawn;
         }
 
         public String getReelUniqueName()
@@ -304,6 +313,11 @@ public class TeamsManager implements Listener {
         public Location getSpawn()
         {
             return spawn;
+        }
+
+        public Location getLobbySpawn()
+        {
+            return lobbySpawn;
         }
 
         public void setPrefix(String prefix, boolean sendUpdate)
