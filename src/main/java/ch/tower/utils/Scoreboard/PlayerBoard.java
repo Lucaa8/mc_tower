@@ -106,7 +106,7 @@ public class PlayerBoard
                 {
                     SpigotPlayer.sendPacket(player, ScoreboardPackets.score(parentBoard, pLine.getText(), ScoreboardPackets.Action.REMOVE, 0));
                     pLine.setText(txt);
-                    SpigotPlayer.sendPacket(player, ScoreboardPackets.score(parentBoard, pLine.getText(), ScoreboardPackets.Action.CHANGE, playerLines.size()-pLine.getLine()));
+                    SpigotPlayer.sendPacket(player, ScoreboardPackets.score(parentBoard, pLine.getText(), ScoreboardPackets.Action.CHANGE, playerLines.size()-pLine.getLine()-1));
                 }
             }
         }
