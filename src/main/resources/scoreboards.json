@@ -1,0 +1,59 @@
+{
+  "WAIT": {
+    "Title": "§eTower §r- §7Waiting",
+    "Lines": [
+      "§0",
+      "§fPlayers: §a{PLAYER_COUNT}§f/§a{MAX_PLAYER_COUNT}",
+      "§1",
+      "§fYour team: {TEAM}",
+      "§2",
+      "§fGame starting in §e{TIMER}s",
+      "§3"
+    ]
+  },
+  "GAME": {
+    "Title": "§eTower §r- §7In game",
+    "Lines": [
+      "§0",
+      "§fYour team: {TEAM}",
+      "§fPoints: §c{POINTS_RED}§f - §9{POINTS_BLUE}",
+      "§fGoal: §a{MAX_POINTS} §fpoints",
+      "§1",
+      "§fYour kills: §a{KILLS}",
+      "§fYour deaths: §a{DEATHS}",
+      "§fYour money: §6{MONEY}",
+      "§2",
+      "§fGame ending in §e{TIMER}",
+      "§3"
+    ]
+  },
+  "END": {
+    "Title": "§eTower §r- §7Ended",
+    "Lines": [
+      "§0",
+      "§fWinner: {TEAM}",
+      "§fPoints: §c{POINTS_RED}§f - §9{POINTS_BLUE}",
+      "§1",
+      "§fYour kills: §a{KILLS}",
+      "§fYour deaths: §a{DEATHS}",
+      "§2",
+      "§fMost kills: §a{MVP_KILLS} §f(§e{MVP_KILLS_COUNT}§f)",
+      "§fMost deaths: §c{MVP_DEATHS} §f(§e{MVP_DEATHS_COUNT}§f)",
+      "§3",
+      "§fServer restarting in §e{TIMER}s",
+      "§4"
+    ]
+  },
+  "SPECTATOR": {
+    "Title": "§eTower",
+    "Lines": [
+      "§0",
+      "§fYour team: §7Spectator",
+      "§fPoints: §a{POINTS_RED}§f - §a{POINTS_BLUE}",
+      "§fGoal: §a{MAX_POINTS}",
+      "§1",
+      "§fGame ending in §e{TIMER}",
+      "§2"
+    ]
+  }
+}
