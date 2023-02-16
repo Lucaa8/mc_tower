@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class WorldManager {
 
-    private static final File SPAWN_FILE = new File(Main.getInstance().getDataFolder(), "spawns.json");
+    public static final File SPAWN_FILE = new File(Main.getInstance().getDataFolder(), "spawns.json");
 
     private World spawn;
     private World tower;

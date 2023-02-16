@@ -23,19 +23,26 @@ public class TeamsManager implements Listener {
 
     public enum PlayerTeam
     {
-        BLUE,
-        RED,
-        SPECTATOR;
+        BLUE("§9"),
+        RED("§c"),
+        SPECTATOR("§7");
 
         private final _Team team;
-        PlayerTeam()
+        private final String code;
+        PlayerTeam(String code)
         {
             this.team = teams.get(this.name().toLowerCase());
+            this.code = code;
         }
 
         public Team getInfo()
         {
             return new Team(this.team);
+        }
+
+        public String getColorCode()
+        {
+            return code;
         }
 
         public Location getSpawn()
@@ -70,6 +77,8 @@ public class TeamsManager implements Listener {
                 currentTeam.removePlayer(player);
             }
             team.addEntries(player.getName());
+            //TBD
+            //ScoreboardManager.BoardField.TEAM.update(player, code+name().charAt(0)+name().toLowerCase().substring(1));
             return true;
         }
 

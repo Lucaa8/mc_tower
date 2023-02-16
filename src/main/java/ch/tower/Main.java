@@ -2,6 +2,8 @@ package ch.tower;
 
 import ch.tower.events.GlobalEvents;
 import ch.tower.managers.GameManager;
+import ch.tower.managers.ScoreboardManager;
+import ch.tower.managers.WorldManager;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -19,14 +21,17 @@ public class Main extends JavaPlugin {
     public void onEnable()
     {
         instance = this;
-        if(getDataFolder().mkdirs())
+        if(!getDataFolder().mkdirs() && !getDataFolder().exists())
         {
-            System.out.println("Generating spawns.json file...");
-            try {
-                Files.copy(getClassLoader().getResource("spawns.json").openStream(), new File(getDataFolder(), "spawns.json").toPath());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            System.err.println("Cannot create Tower plugin folder...");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        if(!copyStreamToFile("spawns.json", WorldManager.SPAWN_FILE) || !copyStreamToFile("scoreboards.json", ScoreboardManager.SCOREBOARD_FILE))
+        {
+            System.err.println("Cannot generate all required resources...");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
         }
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new GlobalEvents(), this);
@@ -35,7 +40,9 @@ public class Main extends JavaPlugin {
 
     public void onDisable()
     {
-        game.stop();
+        //maybe null if onEnable failed and want to disable the plugin
+        if(game != null)
+            game.stop();
     }
 
     public static Main getInstance()
@@ -48,4 +55,19 @@ public class Main extends JavaPlugin {
         return game;
     }
 
+    private boolean copyStreamToFile(String resourceName, File resourceFile)
+    {
+        if(!resourceFile.exists())
+        {
+            System.out.println("Generating "+ resourceName +" file...");
+            try {
+                Files.copy(getClassLoader().getResource(resourceName).openStream(), resourceFile.toPath());
+            } catch (IOException e) {
+                System.err.println("Cannot generate " + resourceName + " file...");
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return true;
+    }
 }

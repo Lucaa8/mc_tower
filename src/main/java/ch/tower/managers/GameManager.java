@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 public class GameManager {
 
-    enum GameState
+    public enum GameState
     {
         WAIT, GAME, END;
     }
@@ -15,6 +15,7 @@ public class GameManager {
     private GameState state;
 
     private final WorldManager worldManager;
+    private final ScoreboardManager scoreboardManager;
 
     public GameManager()
     {
@@ -23,16 +24,23 @@ public class GameManager {
         {
             this.state = GameState.WAIT;
             TeamsManager.registerTeams();
+            scoreboardManager = new ScoreboardManager();
         }
         else
         {
+            //if not set to something, the final field crying ouin ouin
+            scoreboardManager = null;
             System.err.println("Something went wrong while loading the maps.");
             Main.getInstance().getServer().getPluginManager().disablePlugin(Main.getInstance());
         }
     }
 
+    //The order of operations here is important, do not move lines up and down or do not insert code between lines if you are not sure what you are doing.
     public void stop()
     {
+        //Needs to be done before we kick the players. That's because we need to tell the client to explicitly destroy the current active scoreboard before leaving the server.
+        //If not destroyed, it can cause errors on proxies like BungeeCord (Switching Spigot servers while Scoreboard are synchronized on the Bungee)
+        scoreboardManager.unregister();
         //Needed to be sure no players are still in the loaded maps that the server needs to delete.
         for(Player player : Bukkit.getOnlinePlayers())
         {
@@ -57,6 +65,11 @@ public class GameManager {
             Main.getInstance().getServer().getPluginManager().registerEvents(new GameEvents(), Main.getInstance());
         }
         //maybe register WaitEvents if state == GameState.WAIT, etc...
+    }
+
+    public ScoreboardManager getScoreboardManager()
+    {
+        return scoreboardManager;
     }
 
 }
