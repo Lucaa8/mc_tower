@@ -49,7 +49,7 @@ public class GameManager {
 
     public void setState(GameState state)
     {
-        this.state.getStateInstance().onStateLeave();
+        if(this.state != null) this.state.getStateInstance().onStateLeave();
         this.state = state;
         HandlerList.unregisterAll(EndEvents.getInstance());
         HandlerList.unregisterAll(GameEvents.getInstance());
