@@ -1,5 +1,7 @@
 package ch.tower.managers;
 
+import ch.luca008.SpigotApi.Api.JSONApi;
+import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
 import ch.tower.events.EndEvents;
 import ch.tower.events.GameEvents;
@@ -12,7 +14,11 @@ import org.bukkit.event.Listener;
 
 import java.util.logging.Handler;
 
+import java.io.File;
+
 public class GameManager {
+
+    public static final File CONFIG_FILE = new File(Main.getInstance().getDataFolder(), "config.json");
 
     public enum GameState
     {
@@ -36,12 +42,21 @@ public class GameManager {
     private final WorldManager worldManager;
     private final ScoreboardManager scoreboardManager;
 
+    private final JSONApi.JSONReader configInfos;
+
+    public enum ConfigField
+    {
+        MAX_PLAYERS, MIN_PLAYERS, TIMER_DURATION_WAIT, TIMER_DURATION_GAME, GOAL_POINTS;
+        public int get(){return Main.getInstance().getManager().configInfos.getInt(name());}
+    }
+
     public GameManager()
     {
         worldManager = new WorldManager();
         if(worldManager.load())
         {
             this.setState(GameState.WAIT);
+            configInfos = SpigotApi.getJSONApi().readerFromFile(CONFIG_FILE);
             TeamsManager.registerTeams();
             scoreboardManager = new ScoreboardManager();
         }
@@ -49,6 +64,7 @@ public class GameManager {
         {
             //if not set to something, the final field crying ouin ouin
             scoreboardManager = null;
+            configInfos = null;
             System.err.println("Something went wrong while loading the maps.");
             Main.getInstance().getServer().getPluginManager().disablePlugin(Main.getInstance());
         }
