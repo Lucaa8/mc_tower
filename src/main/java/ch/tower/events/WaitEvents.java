@@ -27,13 +27,19 @@ public class WaitEvents implements StateEvents
 {
     private static WaitEvents instance = null;
 
-    int countdown = 10;
-    private WaitEvents(){}
+    private final int nbPlayerToBegin = 1;
+    private int countdown = 10;
+    private final int countdownStart = 10;
+
+    private WaitEvents()
+    {
+    }
 
     BukkitTask countdownTask;
+
     public static synchronized WaitEvents getInstance()
     {
-        if(instance == null)
+        if (instance == null)
         {
             instance = new WaitEvents();
         }
@@ -43,19 +49,19 @@ public class WaitEvents implements StateEvents
     public void checkAndStartCountdown()
     {
 
-        if(Main.getInstance().getServer().getOnlinePlayers().size() == 1 && countdown == 10)//Main.getInstance().getServer().getMaxPlayers())
+        if (Main.getInstance().getServer().getOnlinePlayers().size() == this.nbPlayerToBegin && countdown == countdownStart)//Main.getInstance().getServer().getMaxPlayers())
         {
-            countdownTask = Bukkit.getScheduler().runTaskTimer(Main.getInstance(), this::displayCountdownThenStart, 1L,20L);
+            countdownTask = Bukkit.getScheduler().runTaskTimer(Main.getInstance(), this::displayCountdownThenStart, 1L, 20L);
             Bukkit.broadcast("Game is starting soon", Server.BROADCAST_CHANNEL_USERS);
         }
     }
 
     public void checkAndStopCountdown()
     {
-        if(Main.getInstance().getServer().getOnlinePlayers().size()-1 == 0 && countdownTask != null && !countdownTask.isCancelled())
+        if (Main.getInstance().getServer().getOnlinePlayers().size() - 1 < this.nbPlayerToBegin && countdownTask != null && !countdownTask.isCancelled())
         {
             countdownTask.cancel();
-            countdown = 10;
+            countdown = countdownStart;
             Bukkit.broadcast("Game start is cancelled, a player left.", Server.BROADCAST_CHANNEL_USERS);
         }
     }
@@ -63,15 +69,14 @@ public class WaitEvents implements StateEvents
     public void displayCountdownThenStart()
     {
         Collection<? extends Player> players = Main.getInstance().getServer().getOnlinePlayers();
-        if(countdown > 0)
+        if (countdown > 0)
         {
             for (Player player : players)
             {
                 player.sendTitle("The game will begin in " + countdown + " seconds", "If no-one leaves", 5, 10, 5);
                 countdown--;
             }
-        }
-        else
+        } else
         {
             countdownTask.cancel();
             Main.getInstance().getManager().setState(GameManager.GameState.GAME);
@@ -82,7 +87,7 @@ public class WaitEvents implements StateEvents
     public void disableDamageOnPlayers(EntityDamageEvent e)
     {
         e.setCancelled(true);
-        if(e.getEntity().getType() == EntityType.PLAYER)
+        if (e.getEntity().getType() == EntityType.PLAYER)
         {
             Player player = (Player) e.getEntity();
             player.setHealth(20);
@@ -92,7 +97,7 @@ public class WaitEvents implements StateEvents
     @EventHandler
     public void disableFoodLoss(FoodLevelChangeEvent e)
     {
-        if(e.getEntity().getType() == EntityType.PLAYER)
+        if (e.getEntity().getType() == EntityType.PLAYER)
         {
             e.setCancelled(true);
             Player player = (Player) e.getEntity();
@@ -116,6 +121,13 @@ public class WaitEvents implements StateEvents
     public void disableItemDrop(PlayerDropItemEvent e)
     {
         e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void disableExp(PlayerExpChangeEvent e)
+    {
+        e.setAmount(0);
+        e.getPlayer().setExp(0);
     }
 
     @EventHandler
@@ -164,7 +176,7 @@ public class WaitEvents implements StateEvents
 
         p.getInventory().addItem(bw);
         p.getInventory().addItem(rw);
-        e.setJoinMessage(p.getDisplayName() + " joined the game! (" + Main.getInstance().getServer().getOnlinePlayers().size() + "/" + Main.getInstance().getServer().getMaxPlayers() +" players)");
+        e.setJoinMessage(p.getDisplayName() + " joined the game! (" + Main.getInstance().getServer().getOnlinePlayers().size() + "/" + Main.getInstance().getServer().getMaxPlayers() +" players, " + this.nbPlayerToBegin + " needed to begin) ");
         checkAndStartCountdown();
     }
 
