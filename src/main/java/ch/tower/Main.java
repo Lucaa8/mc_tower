@@ -27,7 +27,9 @@ public class Main extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        if(!copyStreamToFile("spawns.json", WorldManager.SPAWN_FILE) || !copyStreamToFile("scoreboards.json", ScoreboardManager.SCOREBOARD_FILE))
+        if(!copyStreamToFile("spawns.json", WorldManager.SPAWN_FILE) ||
+           !copyStreamToFile("scoreboards.json", ScoreboardManager.SCOREBOARD_FILE) ||
+           !copyStreamToFile("config.json", GameManager.CONFIG_FILE))
         {
             System.err.println("Cannot generate all required resources...");
             getServer().getPluginManager().disablePlugin(this);
