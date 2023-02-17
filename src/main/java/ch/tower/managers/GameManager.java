@@ -83,6 +83,11 @@ public class GameManager {
         HandlerList.unregisterAll(WaitEvents.getInstance());
         this.state.getStateInstance().onStateBegin();
         Main.getInstance().getServer().getPluginManager().registerEvents(this.state.getStateInstance(), Main.getInstance());
+        HandlerList.unregisterAll(EndEvents.getInstance());
+        HandlerList.unregisterAll(GameEvents.getInstance());
+        HandlerList.unregisterAll(WaitEvents.getInstance());
+        this.state.getStateInstance().onStateBegin();
+        Main.getInstance().getServer().getPluginManager().registerEvents(this.state.getStateInstance(), Main.getInstance());
     }
 
     public ScoreboardManager getScoreboardManager()
