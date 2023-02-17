@@ -47,12 +47,17 @@ public class TeamsManager implements Listener {
 
         public Location getSpawn()
         {
-            return this.team.spawn;
-        }
-
-        public Location getLobbySpawn()
-        {
-            return this.team.lobbySpawn;
+            GameManager.GameState gs = Main.getInstance().getManager().getState();
+            if(gs == GameManager.GameState.WAIT)
+            {
+                return this.team.lobbySpawn;
+            }
+            else if(gs == GameManager.GameState.GAME)
+            {
+                return this.team.spawn;
+            }
+            //a random place just in case, but in other states than wait and game nobody can either die or join the server.
+            return new Location(Bukkit.getWorld("world"), 0.5, 100, 0);
         }
 
         public boolean containsPlayer(Player player)
