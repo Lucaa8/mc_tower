@@ -2,6 +2,7 @@ package ch.tower.events;
 
 import ch.luca008.SpigotApi.Api.TeamAPI;
 import ch.tower.Main;
+import ch.tower.managers.GameManager;
 import ch.tower.managers.TeamsManager;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -17,14 +18,19 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Collection;
 
 public class WaitEvents implements StateEvents
 {
     private static WaitEvents instance = null;
+
+    int countdown = 10;
     private WaitEvents(){}
 
+    BukkitTask countdownTask;
     public static synchronized WaitEvents getInstance()
     {
         if(instance == null)
@@ -33,6 +39,45 @@ public class WaitEvents implements StateEvents
         }
         return instance;
     }
+
+    public void checkAndStartCountdown()
+    {
+
+        if(Main.getInstance().getServer().getOnlinePlayers().size() == 1 && countdown == 10)//Main.getInstance().getServer().getMaxPlayers())
+        {
+            countdownTask = Bukkit.getScheduler().runTaskTimer(Main.getInstance(), this::displayCountdownThenStart, 1L,20L);
+            Bukkit.broadcast("Game is starting soon", Server.BROADCAST_CHANNEL_USERS);
+        }
+    }
+
+    public void checkAndStopCountdown()
+    {
+        if(Main.getInstance().getServer().getOnlinePlayers().size()-1 == 0 && countdownTask != null && !countdownTask.isCancelled())
+        {
+            countdownTask.cancel();
+            countdown = 10;
+            Bukkit.broadcast("Game start is cancelled, a player left.", Server.BROADCAST_CHANNEL_USERS);
+        }
+    }
+
+    public void displayCountdownThenStart()
+    {
+        Collection<? extends Player> players = Main.getInstance().getServer().getOnlinePlayers();
+        if(countdown > 0)
+        {
+            for (Player player : players)
+            {
+                player.sendTitle("The game will begin in " + countdown + " seconds", "If no-one leaves", 5, 10, 5);
+                countdown--;
+            }
+        }
+        else
+        {
+            countdownTask.cancel();
+            Main.getInstance().getManager().setState(GameManager.GameState.GAME);
+        }
+    }
+
     @EventHandler
     public void disableDamageOnPlayers(EntityDamageEvent e)
     {
@@ -119,7 +164,8 @@ public class WaitEvents implements StateEvents
 
         p.getInventory().addItem(bw);
         p.getInventory().addItem(rw);
-        Bukkit.broadcast(p.getDisplayName() + " joined the game! (" + Main.getInstance().getServer().getOnlinePlayers().size() + "/" + Main.getInstance().getServer().getMaxPlayers() +" players)", Server.BROADCAST_CHANNEL_USERS);
+        e.setJoinMessage(p.getDisplayName() + " joined the game! (" + Main.getInstance().getServer().getOnlinePlayers().size() + "/" + Main.getInstance().getServer().getMaxPlayers() +" players)");
+        checkAndStartCountdown();
     }
 
     @EventHandler
@@ -130,6 +176,9 @@ public class WaitEvents implements StateEvents
         {
             TeamsManager.getPlayerTeam(p).removePlayer(p);
         }
+        checkAndStopCountdown();
+        e.setQuitMessage(p.getDisplayName() + " left the game! (" + (Main.getInstance().getServer().getOnlinePlayers().size() - 1) + "/" + Main.getInstance().getServer().getMaxPlayers() +" players)");
+
     }
 
     @EventHandler
@@ -165,18 +214,6 @@ public class WaitEvents implements StateEvents
     public void onStateLeave()
     {
         Collection<? extends Player> players = Main.getInstance().getServer().getOnlinePlayers();
-        for (Player player : players)
-        {
-            player.sendTitle("The game is about to begin", "In a few seconds", 20 * 1, 20 * 6, 20 * 1);
-        }
-        try
-        {
-            Main.getInstance().getServer().wait(8000);
-        } catch (Exception e)
-        {
-            Bukkit.broadcast("Problem with waiting", Server.BROADCAST_CHANNEL_USERS);
-        }
-
         players = Main.getInstance().getServer().getOnlinePlayers();
         for (Player player : players)
         {
