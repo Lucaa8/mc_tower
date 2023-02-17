@@ -167,13 +167,12 @@ public class WaitEvents implements StateEvents
         Collection<? extends Player> players = Main.getInstance().getServer().getOnlinePlayers();
         for (Player player : players)
         {
-            player.sendTitle("The game is about to begin", "In a few seconds", 20*1, 20*6, 20*1);
+            player.sendTitle("The game is about to begin", "In a few seconds", 20 * 1, 20 * 6, 20 * 1);
         }
         try
         {
             Main.getInstance().getServer().wait(8000);
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
             Bukkit.broadcast("Problem with waiting", Server.BROADCAST_CHANNEL_USERS);
         }
