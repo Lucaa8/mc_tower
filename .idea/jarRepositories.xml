@@ -37,6 +37,11 @@
       <option name="url" value="https://www.skyblockv4.fr/nexus/service/rest/repository/browse/dev-mc/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="dev-mc" />
+      <option name="name" value="dev-mc" />
+      <option name="url" value="https://www.skyblockv4.fr/nexus/repository/dev-mc/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="papermc" />
       <option name="name" value="papermc" />
       <option name="url" value="https://repo.papermc.io/repository/maven-public/" />
@@ -45,11 +50,6 @@
       <option name="id" value="dev-mc" />
       <option name="name" value="dev-mc" />
       <option name="url" value="https://skyblockv4.fr" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="dev-mc" />
-      <option name="name" value="dev-mc" />
-      <option name="url" value="https://www.skyblockv4.fr/nexus/repository/dev-mc/" />
     </remote-repository>
   </component>
 </project>
