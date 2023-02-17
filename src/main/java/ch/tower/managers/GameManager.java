@@ -41,7 +41,7 @@ public class GameManager {
         worldManager = new WorldManager();
         if(worldManager.load())
         {
-            this.state = GameState.WAIT;
+            this.setState(GameState.WAIT);
             TeamsManager.registerTeams();
             scoreboardManager = new ScoreboardManager();
         }
