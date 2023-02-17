@@ -1,6 +1,8 @@
 package ch.tower.events;
 
 import ch.tower.Main;
+import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -65,7 +67,7 @@ public class WaitEvents implements StateEvents
     @Override
     public void onStateBegin()
     {
-
+        Bukkit.broadcast("Waiting for the beginning of the game", Server.BROADCAST_CHANNEL_USERS);
     }
 
     @Override
@@ -74,7 +76,7 @@ public class WaitEvents implements StateEvents
         Collection<? extends Player> players = Main.getInstance().getServer().getOnlinePlayers();
         for (Player player : players)
         {
-            player.sendTitle("The game is about to begin", "In a few seconds", 1, 6, 1);
+            player.sendTitle("The game is about to begin", "In a few seconds", 20*1, 20*6, 20*1);
         }
         try
         {
@@ -82,7 +84,7 @@ public class WaitEvents implements StateEvents
         }
         catch (Exception e)
         {
-
+            Bukkit.broadcast("Problem with waiting", Server.BROADCAST_CHANNEL_USERS);
         }
 
         players = Main.getInstance().getServer().getOnlinePlayers();

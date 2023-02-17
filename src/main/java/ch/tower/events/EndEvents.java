@@ -1,5 +1,7 @@
 package ch.tower.events;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.event.Listener;
 
 public class EndEvents implements StateEvents
@@ -19,7 +21,7 @@ public class EndEvents implements StateEvents
     @Override
     public void onStateBegin()
     {
-
+        Bukkit.broadcast("Game Over. GG!", Server.BROADCAST_CHANNEL_USERS);
     }
 
     @Override
