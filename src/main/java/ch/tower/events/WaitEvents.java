@@ -36,9 +36,9 @@ public class WaitEvents implements StateEvents
     @EventHandler
     public void disableDamageOnPlayers(EntityDamageEvent e)
     {
+        e.setCancelled(true);
         if(e.getEntity().getType() == EntityType.PLAYER)
         {
-            e.setCancelled(true);
             Player player = (Player) e.getEntity();
             player.setHealth(20);
         }
