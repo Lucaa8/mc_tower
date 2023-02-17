@@ -6,3 +6,5 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+# style used by intellij (added by Maëlys)
+/codeStyles/
