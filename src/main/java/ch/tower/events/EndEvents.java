@@ -4,16 +4,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.event.Listener;
 
-public class GameEvents implements StateEvents
+public class EndEvents implements StateEvents
 {
-    private static GameEvents instance = null;
-    private GameEvents(){}
+    private static EndEvents instance = null;
+    private EndEvents(){}
 
-    public static synchronized GameEvents getInstance()
+    public static synchronized EndEvents getInstance()
     {
         if(instance == null)
         {
-            instance = new GameEvents();
+            instance = new EndEvents();
         }
         return instance;
     }
@@ -21,7 +21,7 @@ public class GameEvents implements StateEvents
     @Override
     public void onStateBegin()
     {
-        Bukkit.broadcast("The game begin. GL HF", Server.BROADCAST_CHANNEL_USERS);
+        Bukkit.broadcast("Game Over. GG!", Server.BROADCAST_CHANNEL_USERS);
     }
 
     @Override

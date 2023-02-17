@@ -3,9 +3,16 @@ package ch.tower.managers;
 import ch.luca008.SpigotApi.Api.JSONApi;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
+import ch.tower.events.EndEvents;
 import ch.tower.events.GameEvents;
+import ch.tower.events.StateEvents;
+import ch.tower.events.WaitEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+
+import java.util.logging.Handler;
 
 import java.io.File;
 
@@ -15,7 +22,19 @@ public class GameManager {
 
     public enum GameState
     {
-        WAIT, GAME, END;
+        WAIT(WaitEvents.getInstance()),//
+        GAME(GameEvents.getInstance()),//
+        END(EndEvents.getInstance());
+
+        private StateEvents stateInstance;
+        private GameState(StateEvents stateInstance)
+        {
+            this.stateInstance = stateInstance;
+        }
+        public StateEvents getStateInstance()
+        {
+            return stateInstance;
+        }
     }
 
     private GameState state;
@@ -36,7 +55,7 @@ public class GameManager {
         worldManager = new WorldManager();
         if(worldManager.load())
         {
-            this.state = GameState.WAIT;
+            this.setState(GameState.WAIT);
             configInfos = SpigotApi.getJSONApi().readerFromFile(CONFIG_FILE);
             TeamsManager.registerTeams();
             scoreboardManager = new ScoreboardManager();
@@ -71,16 +90,15 @@ public class GameManager {
         return state;
     }
 
-    // TODO: 14/02/2023 Maëlys
     public void setState(GameState state)
     {
+        if(this.state != null) this.state.getStateInstance().onStateLeave();
         this.state = state;
-        //HandlerList.unregisterAll();
-        if(state == GameState.GAME)
-        {
-            Main.getInstance().getServer().getPluginManager().registerEvents(new GameEvents(), Main.getInstance());
-        }
-        //maybe register WaitEvents if state == GameState.WAIT, etc...
+        HandlerList.unregisterAll(EndEvents.getInstance());
+        HandlerList.unregisterAll(GameEvents.getInstance());
+        HandlerList.unregisterAll(WaitEvents.getInstance());
+        this.state.getStateInstance().onStateBegin();
+        Main.getInstance().getServer().getPluginManager().registerEvents(this.state.getStateInstance(), Main.getInstance());
     }
 
     public ScoreboardManager getScoreboardManager()
