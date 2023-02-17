@@ -67,6 +67,94 @@ public class WaitEvents implements StateEvents
         e.setCancelled(true);
     }
 
+    @EventHandler
+    public void disableItemDrop(PlayerDropItemEvent e)
+    {
+        e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onChatByPlayer(AsyncPlayerChatEvent e)
+    {
+        StringBuilder s = new StringBuilder("");
+        Player p = e.getPlayer();
+        TeamsManager.PlayerTeam t = TeamsManager.getPlayerTeam(p);
+        if(t != null)
+        {
+            s.append(t.getColorCode());
+            s.append("[");
+            s.append(t.name());
+            s.append("] ");
+            s.append(p.getDisplayName());
+            s.append(ChatColor.RESET);
+        }
+        else
+        {
+            s.append(p.getDisplayName());
+        }
+        s.append(" : ");
+        s.append(e.getMessage());
+        e.setCancelled(true);
+        Bukkit.broadcast(s.toString(), Server.BROADCAST_CHANNEL_USERS);
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent e)
+    {
+        Player p = e.getPlayer();
+        p.getInventory().clear();
+        Location lobby = TeamsManager.PlayerTeam.SPECTATOR.getSpawn();
+        p.teleport(lobby);
+        ItemStack bw = new ItemStack(Material.BLUE_WOOL,1);
+        ItemMeta bwMeta = bw.getItemMeta();
+        bwMeta.setDisplayName(ChatColor.BLUE + "Join BLUE Team");
+        bw.setItemMeta(bwMeta);
+        bw.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 1);
+
+        ItemStack rw = new ItemStack(Material.RED_WOOL,1);
+        ItemMeta rwMeta = rw.getItemMeta();
+        rwMeta.setDisplayName(ChatColor.RED + "Join RED Team");
+        rw.setItemMeta(rwMeta);
+        rw.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 1);
+
+        p.getInventory().addItem(bw);
+        p.getInventory().addItem(rw);
+        Bukkit.broadcast(p.getDisplayName() + " joined the game! (" + Main.getInstance().getServer().getOnlinePlayers().size() + "/" + Main.getInstance().getServer().getMaxPlayers() +" players)", Server.BROADCAST_CHANNEL_USERS);
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent e)
+    {
+        Player p = e.getPlayer();
+        if(TeamsManager.getPlayerTeam(p) != null)
+        {
+            TeamsManager.getPlayerTeam(p).removePlayer(p);
+        }
+    }
+
+    @EventHandler
+    public void joinTeamByInteract(PlayerInteractEvent e)
+    {
+        Player p = e.getPlayer();
+        ItemStack i = e.getItem();
+        TeamsManager.PlayerTeam team;
+        switch (i.getType())
+        {
+            case BLUE_WOOL -> team = TeamsManager.PlayerTeam.BLUE;
+            case RED_WOOL -> team = TeamsManager.PlayerTeam.RED;
+            default -> team = null;
+        }
+
+        if(team != null && team != TeamsManager.getPlayerTeam(p))
+        {
+            team.addPlayer(p);
+            p.sendTitle(team.getColorCode() + "You joined the " + team.name() + " team", "", 10, 20, 10);
+            Location lobby = team.getSpawn();
+            p.teleport(lobby);
+            Bukkit.broadcast(p.getDisplayName() + " joined the " + team.getColorCode() + team.name() + ChatColor.RESET + " team.", Server.BROADCAST_CHANNEL_USERS);
+        }
+    }
+
     @Override
     public void onStateBegin()
     {
