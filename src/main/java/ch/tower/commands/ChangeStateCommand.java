@@ -5,7 +5,8 @@ import ch.tower.managers.GameManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
+
+import static ch.tower.managers.GameManager.GameState.*;
 
 public class ChangeStateCommand implements CommandExecutor
 {
@@ -13,7 +14,14 @@ public class ChangeStateCommand implements CommandExecutor
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args)
     {
-        Main.getInstance().getManager().setState(GameManager.GameState.GAME);
+        GameManager.GameState nextState;
+        switch (Main.getInstance().getManager().getState())
+        {
+            case WAIT -> nextState = GAME;
+            case GAME -> nextState = END;
+            default -> nextState = WAIT;
+        }
+        Main.getInstance().getManager().setState(nextState);
         return true;
     }
 }
