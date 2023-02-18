@@ -55,8 +55,8 @@ public class GameManager {
         worldManager = new WorldManager();
         if(worldManager.load())
         {
-            this.setState(GameState.WAIT);
             configInfos = SpigotApi.getJSONApi().readerFromFile(CONFIG_FILE);
+            this.setState(GameState.WAIT);
             TeamsManager.registerTeams();
             scoreboardManager = new ScoreboardManager();
         }
