@@ -3,10 +3,16 @@ package ch.tower.managers;
 import ch.luca008.SpigotApi.Api.JSONApi;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
+import ch.tower.TowerPlayer;
 import ch.tower.utils.Scoreboard.Board;
 import ch.tower.utils.Scoreboard.PlayerBoard;
 import ch.tower.utils.Scoreboard.ScoreboardLine;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.json.simple.JSONArray;
 
 import java.io.File;
@@ -15,6 +21,32 @@ import java.util.Map;
 
 public class ScoreboardManager
 {
+    private final ScoreboardListener slistener = new ScoreboardListener();
+    public static class ScoreboardListener implements Listener
+    {
+        @EventHandler
+        public void onJoinSetBoard(PlayerJoinEvent e)
+        {
+            Main m = Main.getInstance();
+            Bukkit.getScheduler().runTaskLater(m, ()->{
+                String sb = "SPECTATOR";
+                if(m.getManager().getState() == GameManager.GameState.WAIT)
+                {
+                    sb = GameManager.GameState.WAIT.name();
+                }
+                else
+                {
+                    TowerPlayer tp = TowerPlayer.getPlayer(e.getPlayer());
+                    if(tp!=null)
+                    {
+                        sb = m.getManager().getState().name();
+                    }
+                }
+                m.getManager().getScoreboardManager().setBoard(e.getPlayer(), sb);
+            },1L);
+        }
+    }
+
     public static final File SCOREBOARD_FILE = new File(Main.getInstance().getDataFolder(), "scoreboards.json");
     private final ArrayList<Board> scoreboards = new ArrayList<>();
     private final ArrayList<PlayerBoard> players = new ArrayList<>();
@@ -28,7 +60,9 @@ public class ScoreboardManager
         POINTS_RED,
         POINTS_BLUE,
         MAX_POINTS,
+        POINTS, //Unique player points
         KILLS,
+        ASSISTS,
         DEATHS,
         MONEY,
         MVP_KILLS,
@@ -36,9 +70,13 @@ public class ScoreboardManager
         MVP_DEATHS,
         MVP_DEATHS_COUNT;
 
+        public String toFormat()
+        {
+            return String.format("{%s}", name());
+        }
         public void update(Player player, Object value)
         {
-            Main.getInstance().getManager().getScoreboardManager().updateLine(player, "{"+name()+"}", value);
+            Main.getInstance().getManager().getScoreboardManager().updateLine(player, toFormat(), value);
         }
 
     }
@@ -58,6 +96,7 @@ public class ScoreboardManager
             }
             registerScoreboard(sb, r_sb.getString("Title"), linesBuilder.getLines());
         }
+        Bukkit.getServer().getPluginManager().registerEvents(slistener, Main.getInstance());
     }
 
     public Board getScoreboard(String uniqueName)
@@ -103,7 +142,9 @@ public class ScoreboardManager
         }
     }
 
-    public void unregister(){
+    public void unregister()
+    {
+        HandlerList.unregisterAll(slistener);
         for(Board s : new ArrayList<>(scoreboards))
         {
             unregisterScoreboard(s.getName());
