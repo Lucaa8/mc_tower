@@ -10,9 +10,6 @@ import ch.tower.events.WaitEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
-
-import java.util.logging.Handler;
 
 import java.io.File;
 
@@ -42,12 +39,12 @@ public class GameManager {
     private final WorldManager worldManager;
     private final ScoreboardManager scoreboardManager;
 
-    private final JSONApi.JSONReader configInfos;
+    private static final JSONApi.JSONReader configInfos = SpigotApi.getJSONApi().readerFromFile(CONFIG_FILE);;
 
     public enum ConfigField
     {
         MAX_PLAYERS, MIN_PLAYERS, TIMER_DURATION_WAIT, TIMER_DURATION_GAME, GOAL_POINTS;
-        public int get(){return Main.getInstance().getManager().configInfos.getInt(name());}
+        public int get(){return configInfos.getInt(name());}
     }
 
     public GameManager()
@@ -55,7 +52,6 @@ public class GameManager {
         worldManager = new WorldManager();
         if(worldManager.load())
         {
-            configInfos = SpigotApi.getJSONApi().readerFromFile(CONFIG_FILE);
             this.setState(GameState.WAIT);
             TeamsManager.registerTeams();
             scoreboardManager = new ScoreboardManager();
@@ -64,7 +60,6 @@ public class GameManager {
         {
             //if not set to something, the final field crying ouin ouin
             scoreboardManager = null;
-            configInfos = null;
             System.err.println("Something went wrong while loading the maps.");
             Main.getInstance().getServer().getPluginManager().disablePlugin(Main.getInstance());
         }
