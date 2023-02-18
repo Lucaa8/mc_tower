@@ -1,24 +1,21 @@
 package ch.tower.events;
 
-import ch.luca008.SpigotApi.Api.TeamAPI;
 import ch.tower.Main;
 import ch.tower.managers.GameManager;
 import ch.tower.managers.TeamsManager;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Collection;
@@ -28,7 +25,7 @@ public class WaitEvents implements StateEvents
     private static WaitEvents instance = null;
 
 
-    private int countdown;
+    private int countdown = GameManager.ConfigField.TIMER_DURATION_WAIT.get();
 
     private WaitEvents(){}
 
@@ -47,15 +44,13 @@ public class WaitEvents implements StateEvents
     {
         if (Main.getInstance().getServer().getOnlinePlayers().size() == GameManager.ConfigField.MIN_PLAYERS.get() && countdownTask == null)
         {
-            countdown = GameManager.ConfigField.TIMER_DURATION_WAIT.get();
             countdownTask = Bukkit.getScheduler().runTaskTimer(Main.getInstance(), this::displayCountdownThenStart, 1L, 20L);
             Bukkit.broadcast("Game is starting soon", Server.BROADCAST_CHANNEL_USERS);
             Collection<? extends Player> players = Main.getInstance().getServer().getOnlinePlayers();
             for (Player player : players)
             {
-                player.sendTitle("Starting in " + GameManager.ConfigField.TIMER_DURATION_WAIT.get() + " seconds", "", 5, 20, 5);
+                player.sendTitle("Starting in " + countdown + " seconds", "", 5, 20, 5);
             }
-
         }
     }
 
@@ -66,6 +61,7 @@ public class WaitEvents implements StateEvents
             countdownTask.cancel();
             countdownTask = null;
             countdown = GameManager.ConfigField.TIMER_DURATION_WAIT.get();
+            Bukkit.getOnlinePlayers().forEach(p->p.setLevel(countdown)); //Resets the player bar xp with may count down
             Bukkit.broadcast("Game start is cancelled, a player left.", Server.BROADCAST_CHANNEL_USERS);
         }
     }
@@ -136,7 +132,6 @@ public class WaitEvents implements StateEvents
     public void disableExp(PlayerExpChangeEvent e)
     {
         e.setAmount(0);
-
     }
 
     @EventHandler
@@ -170,7 +165,7 @@ public class WaitEvents implements StateEvents
         Player p = e.getPlayer();
         if(Main.getInstance().getServer().getOnlinePlayers().size() >= GameManager.ConfigField.MAX_PLAYERS.get())
         {
-            e.getPlayer().kickPlayer("The limit of player is already passed, sorry.");
+            p.kickPlayer("The limit of player is already passed, sorry.");
             return;
         }
         p.getInventory().clear();
@@ -179,12 +174,14 @@ public class WaitEvents implements StateEvents
         ItemStack bw = new ItemStack(Material.BLUE_WOOL,1);
         ItemMeta bwMeta = bw.getItemMeta();
         bwMeta.setDisplayName(ChatColor.BLUE + "Join BLUE Team");
+        bwMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         bw.setItemMeta(bwMeta);
         bw.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 1);
 
         ItemStack rw = new ItemStack(Material.RED_WOOL,1);
         ItemMeta rwMeta = rw.getItemMeta();
         rwMeta.setDisplayName(ChatColor.RED + "Join RED Team");
+        rwMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         rw.setItemMeta(rwMeta);
         rw.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 1);
 
@@ -192,16 +189,18 @@ public class WaitEvents implements StateEvents
         p.getInventory().addItem(rw);
         e.setJoinMessage(p.getDisplayName() + " joined the game! (" + Main.getInstance().getServer().getOnlinePlayers().size() + "/" + Main.getInstance().getServer().getMaxPlayers() +" players, " + GameManager.ConfigField.MIN_PLAYERS.get() + " needed to begin) ");
         checkAndStartCountdown();
-        e.getPlayer().setExp(countdown);
+        p.setLevel(countdown);
+        p.setGameMode(GameMode.ADVENTURE);
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e)
     {
         Player p = e.getPlayer();
-        if(TeamsManager.getPlayerTeam(p) != null)
+        TeamsManager.PlayerTeam pt = TeamsManager.getPlayerTeam(p);
+        if(pt != null)
         {
-            TeamsManager.getPlayerTeam(p).removePlayer(p);
+            pt.removePlayer(p);
         }
         checkAndStopCountdown();
         e.setQuitMessage(p.getDisplayName() + " left the game! (" + (Main.getInstance().getServer().getOnlinePlayers().size() - 1) + "/" + Main.getInstance().getServer().getMaxPlayers() +" players)");
@@ -243,13 +242,13 @@ public class WaitEvents implements StateEvents
     @Override
     public void onStateLeave()
     {
-        Collection<? extends Player> players = Main.getInstance().getServer().getOnlinePlayers();
-        players = Main.getInstance().getServer().getOnlinePlayers();
+        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
         for (Player player : players)
         {
             player.setLevel(0);
             player.setExp(0);
             player.getInventory().clear();
+            player.setGameMode(GameMode.SURVIVAL);
         }
     }
 }
