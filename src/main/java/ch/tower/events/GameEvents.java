@@ -1,8 +1,8 @@
 package ch.tower.events;
 
+import ch.tower.TowerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
-import org.bukkit.event.Listener;
 
 public class GameEvents implements StateEvents
 {
@@ -21,6 +21,7 @@ public class GameEvents implements StateEvents
     @Override
     public void onStateBegin()
     {
+        TowerPlayer.registerPlayers();
         Bukkit.broadcast("The game begin. GL HF", Server.BROADCAST_CHANNEL_USERS);
     }
 
