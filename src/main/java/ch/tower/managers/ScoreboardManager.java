@@ -51,8 +51,8 @@ public class ScoreboardManager
     private final ArrayList<Board> scoreboards = new ArrayList<>();
     private final ArrayList<PlayerBoard> players = new ArrayList<>();
 
-    public enum BoardField {
-
+    public enum BoardField
+    {
         PLAYER_COUNT,
         MAX_PLAYER_COUNT,
         TEAM,
