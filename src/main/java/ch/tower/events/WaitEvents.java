@@ -2,7 +2,9 @@ package ch.tower.events;
 
 import ch.tower.Main;
 import ch.tower.managers.GameManager;
+import ch.tower.managers.ScoreboardManager;
 import ch.tower.managers.TeamsManager;
+import ch.tower.utils.Scoreboard.PlayerBoard;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
@@ -19,17 +21,19 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Collection;
+import java.util.Map;
 
 public class WaitEvents implements StateEvents
 {
     private static WaitEvents instance = null;
 
-
     private int countdown = GameManager.ConfigField.TIMER_DURATION_WAIT.get();
 
-    private WaitEvents(){}
+    private BukkitTask countdownTask;
 
-    BukkitTask countdownTask;
+    private final int maxPlayersCount = GameManager.ConfigField.MAX_PLAYERS.get();
+
+    private WaitEvents(){}
 
     public static synchronized WaitEvents getInstance()
     {
@@ -61,7 +65,11 @@ public class WaitEvents implements StateEvents
             countdownTask.cancel();
             countdownTask = null;
             countdown = GameManager.ConfigField.TIMER_DURATION_WAIT.get();
-            Bukkit.getOnlinePlayers().forEach(p->p.setLevel(countdown)); //Resets the player bar xp with may count down
+            Bukkit.getOnlinePlayers().forEach(p->
+            {
+                p.setLevel(countdown);
+                ScoreboardManager.BoardField.TIMER.update(p, countdown);
+            }); //Resets the player bar xp and scoreboard with the max count down
             Bukkit.broadcast("Game start is cancelled, a player left.", Server.BROADCAST_CHANNEL_USERS);
         }
     }
@@ -78,6 +86,7 @@ public class WaitEvents implements StateEvents
                     player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1,1);
                 }
                 player.setLevel(countdown);
+                ScoreboardManager.BoardField.TIMER.update(player, countdown);
             }
             countdown--;
         }
@@ -162,8 +171,9 @@ public class WaitEvents implements StateEvents
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e)
     {
+        int playersCount = Main.getInstance().getServer().getOnlinePlayers().size();
         Player p = e.getPlayer();
-        if(Main.getInstance().getServer().getOnlinePlayers().size() >= GameManager.ConfigField.MAX_PLAYERS.get())
+        if(playersCount >= maxPlayersCount)
         {
             p.kickPlayer("The limit of player is already passed, sorry.");
             return;
@@ -187,10 +197,23 @@ public class WaitEvents implements StateEvents
 
         p.getInventory().addItem(bw);
         p.getInventory().addItem(rw);
-        e.setJoinMessage(p.getDisplayName() + " joined the game! (" + Main.getInstance().getServer().getOnlinePlayers().size() + "/" + Main.getInstance().getServer().getMaxPlayers() +" players, " + GameManager.ConfigField.MIN_PLAYERS.get() + " needed to begin) ");
+        e.setJoinMessage(p.getDisplayName() + " joined the game! (" + playersCount + "/" + maxPlayersCount +" players, " + GameManager.ConfigField.MIN_PLAYERS.get() + " needed to begin) ");
         checkAndStartCountdown();
         p.setLevel(countdown);
         p.setGameMode(GameMode.ADVENTURE);
+
+        Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->
+        {
+            for(Player player : Bukkit.getOnlinePlayers())
+            {
+                if(player == p)
+                {
+                    ScoreboardManager.BoardField.TEAM.update(player, "§aNone");
+                    ScoreboardManager.BoardField.TIMER.update(player, countdown);
+                }
+                updatePlayersOnlineBoard(playersCount);
+            }
+        }, 10L);
     }
 
     @EventHandler
@@ -203,7 +226,9 @@ public class WaitEvents implements StateEvents
             pt.removePlayer(p);
         }
         checkAndStopCountdown();
-        e.setQuitMessage(p.getDisplayName() + " left the game! (" + (Main.getInstance().getServer().getOnlinePlayers().size() - 1) + "/" + Main.getInstance().getServer().getMaxPlayers() +" players)");
+        int playersCount = Main.getInstance().getServer().getOnlinePlayers().size() - 1;
+        e.setQuitMessage(p.getDisplayName() + " left the game! (" + playersCount + "/" + maxPlayersCount +" players)");
+        updatePlayersOnlineBoard(playersCount);
     }
 
     @EventHandler
@@ -226,10 +251,12 @@ public class WaitEvents implements StateEvents
         if(team != null && team != TeamsManager.getPlayerTeam(p))
         {
             team.addPlayer(p);
-            p.sendTitle(team.getColorCode() + "You joined the " + team.name() + " team", "", 10, 20, 10);
+            String name = team.getInfo().getName();
+            p.sendTitle(team.getColorCode() + "You joined the " + name + " team", "", 10, 20, 10);
             Location lobby = team.getSpawn();
             p.teleport(lobby);
-            Bukkit.broadcast(p.getDisplayName() + " joined the " + team.getColorCode() + team.name() + ChatColor.RESET + " team.", Server.BROADCAST_CHANNEL_USERS);
+            Bukkit.broadcast(p.getDisplayName() + " joined the " + team.getColorCode() + name + ChatColor.RESET + " team.", Server.BROADCAST_CHANNEL_USERS);
+            ScoreboardManager.BoardField.TEAM.update(p, team.getColorCode() + name);
         }
     }
 
@@ -249,6 +276,22 @@ public class WaitEvents implements StateEvents
             player.setExp(0);
             player.getInventory().clear();
             player.setGameMode(GameMode.SURVIVAL);
+        }
+    }
+
+    private void updatePlayersOnlineBoard(int playersCount)
+    {
+        for(Player player : Bukkit.getOnlinePlayers())
+        {
+            PlayerBoard pb = Main.getInstance().getManager().getScoreboardManager().getBoard(player);
+            if(pb != null)
+            {
+                pb.updateLines(Map.of
+                        (
+                                ScoreboardManager.BoardField.MAX_PLAYER_COUNT.toFormat(), maxPlayersCount,
+                                ScoreboardManager.BoardField.PLAYER_COUNT.toFormat(), playersCount
+                        ));
+            }
         }
     }
 }
