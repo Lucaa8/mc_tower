@@ -27,13 +27,10 @@ public class WaitEvents implements StateEvents
 {
     private static WaitEvents instance = null;
 
-    private final int nbPlayerToBegin = 1;
-    private int countdown = 10;
-    private final int countdownStart = 10;
 
-    private WaitEvents()
-    {
-    }
+    private int countdown;
+
+    private WaitEvents(){}
 
     BukkitTask countdownTask;
 
@@ -48,20 +45,27 @@ public class WaitEvents implements StateEvents
 
     public void checkAndStartCountdown()
     {
-
-        if (Main.getInstance().getServer().getOnlinePlayers().size() == this.nbPlayerToBegin && countdown == countdownStart)//Main.getInstance().getServer().getMaxPlayers())
+        if (Main.getInstance().getServer().getOnlinePlayers().size() == GameManager.ConfigField.MIN_PLAYERS.get() && countdownTask == null)
         {
+            countdown = GameManager.ConfigField.TIMER_DURATION_WAIT.get();
             countdownTask = Bukkit.getScheduler().runTaskTimer(Main.getInstance(), this::displayCountdownThenStart, 1L, 20L);
             Bukkit.broadcast("Game is starting soon", Server.BROADCAST_CHANNEL_USERS);
+            Collection<? extends Player> players = Main.getInstance().getServer().getOnlinePlayers();
+            for (Player player : players)
+            {
+                player.sendTitle("Starting in " + GameManager.ConfigField.TIMER_DURATION_WAIT.get() + " seconds", "", 5, 20, 5);
+            }
+
         }
     }
 
     public void checkAndStopCountdown()
     {
-        if (Main.getInstance().getServer().getOnlinePlayers().size() - 1 < this.nbPlayerToBegin && countdownTask != null && !countdownTask.isCancelled())
+        if (Main.getInstance().getServer().getOnlinePlayers().size() - 1 < GameManager.ConfigField.MIN_PLAYERS.get() && countdownTask != null)
         {
             countdownTask.cancel();
-            countdown = countdownStart;
+            countdownTask = null;
+            countdown = GameManager.ConfigField.TIMER_DURATION_WAIT.get();
             Bukkit.broadcast("Game start is cancelled, a player left.", Server.BROADCAST_CHANNEL_USERS);
         }
     }
@@ -73,10 +77,15 @@ public class WaitEvents implements StateEvents
         {
             for (Player player : players)
             {
-                player.sendTitle("The game will begin in " + countdown + " seconds", "If no-one leaves", 5, 10, 5);
-                countdown--;
+                if(countdown < 4)
+                {
+                    player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1,1);
+                }
+                player.setLevel(countdown);
             }
-        } else
+            countdown--;
+        }
+        else
         {
             countdownTask.cancel();
             Main.getInstance().getManager().setState(GameManager.GameState.GAME);
@@ -127,7 +136,7 @@ public class WaitEvents implements StateEvents
     public void disableExp(PlayerExpChangeEvent e)
     {
         e.setAmount(0);
-        e.getPlayer().setExp(0);
+
     }
 
     @EventHandler
@@ -159,6 +168,11 @@ public class WaitEvents implements StateEvents
     public void onPlayerJoin(PlayerJoinEvent e)
     {
         Player p = e.getPlayer();
+        if(Main.getInstance().getServer().getOnlinePlayers().size() >= GameManager.ConfigField.MAX_PLAYERS.get())
+        {
+            e.getPlayer().kickPlayer("The limit of player is already passed, sorry.");
+            return;
+        }
         p.getInventory().clear();
         Location lobby = TeamsManager.PlayerTeam.SPECTATOR.getSpawn();
         p.teleport(lobby);
@@ -176,8 +190,9 @@ public class WaitEvents implements StateEvents
 
         p.getInventory().addItem(bw);
         p.getInventory().addItem(rw);
-        e.setJoinMessage(p.getDisplayName() + " joined the game! (" + Main.getInstance().getServer().getOnlinePlayers().size() + "/" + Main.getInstance().getServer().getMaxPlayers() +" players, " + this.nbPlayerToBegin + " needed to begin) ");
+        e.setJoinMessage(p.getDisplayName() + " joined the game! (" + Main.getInstance().getServer().getOnlinePlayers().size() + "/" + Main.getInstance().getServer().getMaxPlayers() +" players, " + GameManager.ConfigField.MIN_PLAYERS.get() + " needed to begin) ");
         checkAndStartCountdown();
+        e.getPlayer().setExp(countdown);
     }
 
     @EventHandler
@@ -190,7 +205,6 @@ public class WaitEvents implements StateEvents
         }
         checkAndStopCountdown();
         e.setQuitMessage(p.getDisplayName() + " left the game! (" + (Main.getInstance().getServer().getOnlinePlayers().size() - 1) + "/" + Main.getInstance().getServer().getMaxPlayers() +" players)");
-
     }
 
     @EventHandler
@@ -199,6 +213,10 @@ public class WaitEvents implements StateEvents
         Player p = e.getPlayer();
         ItemStack i = e.getItem();
         TeamsManager.PlayerTeam team;
+        if(i == null)
+        {
+            return;
+        }
         switch (i.getType())
         {
             case BLUE_WOOL -> team = TeamsManager.PlayerTeam.BLUE;
@@ -229,6 +247,8 @@ public class WaitEvents implements StateEvents
         players = Main.getInstance().getServer().getOnlinePlayers();
         for (Player player : players)
         {
+            player.setLevel(0);
+            player.setExp(0);
             player.getInventory().clear();
         }
     }
