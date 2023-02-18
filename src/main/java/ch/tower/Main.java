@@ -16,14 +16,10 @@ public class Main extends JavaPlugin {
 
     private static Main instance;
 
-    //maybe put game in static, so we can do Main.getManager() instead of Main.getInstance().getManager() ?
     private GameManager game;
 
     public void onEnable()
     {
-        //registering commands:
-        this.getCommand("changeState").setExecutor(new ChangeStateCommand());
-
         instance = this;
         if(!getDataFolder().mkdirs() && !getDataFolder().exists())
         {
@@ -31,17 +27,20 @@ public class Main extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        if(!copyStreamToFile("spawns.json", WorldManager.SPAWN_FILE) ||
-           !copyStreamToFile("scoreboards.json", ScoreboardManager.SCOREBOARD_FILE) ||
-           !copyStreamToFile("config.json", GameManager.CONFIG_FILE))
+        if(!copyStreamToFile("config.json", GameManager.CONFIG_FILE) ||
+           !copyStreamToFile("spawns.json", WorldManager.SPAWN_FILE) ||
+           !copyStreamToFile("scoreboards.json", ScoreboardManager.SCOREBOARD_FILE))
         {
             System.err.println("Cannot generate all required resources...");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        //DO NOT ADD ANYTHING BEFORE THIS LINE
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new GlobalEvents(), this);
         game = new GameManager();
+        //registering commands:
+        this.getCommand("changeState").setExecutor(new ChangeStateCommand());
     }
 
     public void onDisable()

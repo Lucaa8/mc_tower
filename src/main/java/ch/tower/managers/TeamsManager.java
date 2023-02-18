@@ -114,8 +114,8 @@ public class TeamsManager implements Listener {
     public static void registerTeams()
     {
         Main.getInstance().getServer().getPluginManager().registerEvents(listener, Main.getInstance());
-        registerTeam("blue",      "Blue team",  "Blue | ",      TeamsPackets.TeamColor.BLUE, 1);
-        registerTeam("red",       "Red team",   "Red | ",       TeamsPackets.TeamColor.RED,  2);
+        registerTeam("blue",      "Blue",       "Blue | ",      TeamsPackets.TeamColor.BLUE, 1);
+        registerTeam("red",       "Red",        "Red | ",       TeamsPackets.TeamColor.RED,  2);
         registerTeam("spectator", "Spectators", "Spectator | ", TeamsPackets.TeamColor.GRAY, 3);
     }
 
