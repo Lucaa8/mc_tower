@@ -306,7 +306,6 @@ public class WaitEvents implements StateEvents
     public void onStateLeave()
     {
         Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-        Collection<? extends Player> players = Main.getInstance().getServer().getOnlinePlayers();
         if(TeamsManager.PlayerTeam.BLUE.getInfo().getPlayers().size() == 0 || TeamsManager.PlayerTeam.RED.getInfo().getPlayers().size() == 0)
         {
             for (Player player : players)
