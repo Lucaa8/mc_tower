@@ -20,8 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 public class WaitEvents implements StateEvents
 {
@@ -94,6 +93,43 @@ public class WaitEvents implements StateEvents
         {
             countdownTask.cancel();
             Main.getInstance().getManager().setState(GameManager.GameState.GAME);
+        }
+    }
+
+    public void putPlayersInTeams()
+    {
+        //TODO: Test with multiple players
+        Collection<? extends Player> listPlayers = Main.getInstance().getServer().getOnlinePlayers();
+        int nbRed = 0;
+        int nbBlue = 0;
+        List<Player> playersWithoutTeam = new ArrayList<Player>(listPlayers);
+        Iterator<Player> it = playersWithoutTeam.iterator();
+        while (it.hasNext())
+        {
+            Player player = it.next();
+            TeamsManager.PlayerTeam team = TeamsManager.getPlayerTeam(player);
+            if(TeamsManager.getPlayerTeam(player) != null)
+            {
+                it.remove();
+                if(team == TeamsManager.PlayerTeam.RED) nbRed++;
+                if(team == TeamsManager.PlayerTeam.BLUE) nbBlue++;
+            }
+        }
+        Random rand = new Random();
+        while(playersWithoutTeam.size() > 0)
+        {
+            Player player = playersWithoutTeam.get(rand.nextInt(playersWithoutTeam.size()));
+            playersWithoutTeam.remove(player);
+            if(nbBlue - nbRed > 0)
+            {
+                TeamsManager.PlayerTeam.RED.addPlayer(player);
+                nbRed++;
+            }
+            else
+            {
+                TeamsManager.PlayerTeam.BLUE.addPlayer(player);
+                nbBlue++;
+            }
         }
     }
 
@@ -270,6 +306,17 @@ public class WaitEvents implements StateEvents
     public void onStateLeave()
     {
         Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+        Collection<? extends Player> players = Main.getInstance().getServer().getOnlinePlayers();
+        if(TeamsManager.PlayerTeam.BLUE.getInfo().getPlayers().size() == 0 || TeamsManager.PlayerTeam.RED.getInfo().getPlayers().size() == 0)
+        {
+            for (Player player : players)
+            {
+                TeamsManager.PlayerTeam playerTeam = TeamsManager.getPlayerTeam(player);
+                if(playerTeam != null) playerTeam.removePlayer(player);
+            }
+            Bukkit.broadcast("Since everyone was on the same team, the teams were modified", Server.BROADCAST_CHANNEL_USERS);
+        }
+        putPlayersInTeams();
         for (Player player : players)
         {
             player.setLevel(0);
