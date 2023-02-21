@@ -27,10 +27,9 @@ public class SpigotPlayer {
         collection.forEach(player -> sendPackets(player, packets));
     }
 
-    //a and b fields working for 1.19.3 but not 1.17.x for instance, check before use.
     public static void sendPacket(Player player, Packet<?> packet) {
         NetworkManager nm = (NetworkManager) r.getField(getConnection(player), "b");
-        r.invoke(nm.getClass(), nm, "a", new Class[]{Packet.class}, packet);
+        nm.a(packet);
     }
 
     public static void sendPackets(Player player, Packet<?>[] packets) {
