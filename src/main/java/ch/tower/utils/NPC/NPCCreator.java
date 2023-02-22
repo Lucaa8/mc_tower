@@ -3,15 +3,15 @@ package ch.tower.utils.NPC;
 import ch.luca008.SpigotApi.Api.ReflectionApi;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.luca008.SpigotApi.Utils.WebRequest;
+import ch.tower.Main;
 import ch.tower.utils.Packets.EntityPackets;
 import ch.tower.utils.Packets.SpigotPlayer;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.minecraft.network.chat.IChatBaseComponent;
-import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.PacketPlayOutEntityHeadRotation;
 import net.minecraft.network.protocol.game.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.network.protocol.game.PacketPlayOutPlayerInfo;
-import net.minecraft.network.protocol.game.PacketPlayOutScoreboardTeam;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.server.level.WorldServer;
@@ -53,13 +53,18 @@ public class NPCCreator {
         if(this.npc.containsKey(uniqueName))
             return false;
         EntityPlayer npc = createNPC(spawn.getWorld(), uniqueName, skin, displayName);
+        //npc.b(spawn.getBlockX()+0.5, spawn.getBlockY(), spawn.getBlockZ()+0.5, spawn.getYaw(), spawn.getPitch());
         this.npc.put(uniqueName, npc);
         PacketPlayOutPlayerInfo packet1 = EntityPackets.addNPC(npc);
         PacketPlayOutNamedEntitySpawn packet2 = EntityPackets.spawnNPC(npc, spawn);
+        PacketPlayOutEntityHeadRotation packet3 = EntityPackets.headRotation(npc, 65);
+        PacketPlayOutPlayerInfo packet4 = EntityPackets.removeNPC(npc);
         for(Player player : spawn.getWorld().getPlayers())
         {
             SpigotPlayer.sendPacket(player, packet1);
             SpigotPlayer.sendPacket(player, packet2);
+            SpigotPlayer.sendPacket(player, packet3);
+            Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->SpigotPlayer.sendPacket(player, packet4),5L);
         }
         return true;
     }

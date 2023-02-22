@@ -7,6 +7,7 @@ import ch.tower.utils.Packets.EntityPackets;
 import ch.tower.utils.Packets.SpigotPlayer;
 import ch.tower.utils.Scoreboard.PlayerBoard;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -19,9 +20,10 @@ public class GlobalEvents implements Listener {
     public void helloNewPlayer(PlayerJoinEvent e)
     {
         e.getPlayer().sendMessage("Welcome. The Tower Plugin is in function.");
-        new NPCCreator().registerNPC("testNPC", "Shop", "Lord_Tigrou", e.getPlayer().getLocation());
-        System.out.println("ok");
-        
+        final Location spawnNpc = new Location(Bukkit.getWorld("Spawn"), 6, 50, 0);
+        Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->
+                new NPCCreator().registerNPC("testNPC", "Shop", "Lord_Tigrou", spawnNpc),
+                20L);
     }
 
     @EventHandler
