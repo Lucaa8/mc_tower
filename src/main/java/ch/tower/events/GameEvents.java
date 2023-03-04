@@ -1,6 +1,7 @@
 package ch.tower.events;
 
 import ch.tower.TowerPlayer;
+import ch.tower.utils.NPC.NPCLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 
@@ -22,6 +23,8 @@ public class GameEvents implements StateEvents
     public void onStateBegin()
     {
         TowerPlayer.registerPlayers();
+        //needs to be done after teleported players to the tower world
+        NPCLoader.load();
         Bukkit.broadcast("The game begin. GL HF", Server.BROADCAST_CHANNEL_USERS);
     }
 
