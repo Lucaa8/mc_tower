@@ -7,7 +7,10 @@ import ch.tower.events.EndEvents;
 import ch.tower.events.GameEvents;
 import ch.tower.events.StateEvents;
 import ch.tower.events.WaitEvents;
+import ch.tower.utils.NPC.NPCCreator;
+import ch.tower.utils.NPC.NPCLoader;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
@@ -38,6 +41,7 @@ public class GameManager {
 
     private final WorldManager worldManager;
     private final ScoreboardManager scoreboardManager;
+    private final NPCManager npcManager;
 
     private static final JSONApi.JSONReader configInfos = SpigotApi.getJSONApi().readerFromFile(CONFIG_FILE);;
 
@@ -55,11 +59,13 @@ public class GameManager {
             this.setState(GameState.WAIT);
             TeamsManager.registerTeams();
             scoreboardManager = new ScoreboardManager();
+            npcManager = new NPCManager();
         }
         else
         {
             //if not set to something, the final field crying ouin ouin
             scoreboardManager = null;
+            npcManager = null;
             System.err.println("Something went wrong while loading the maps.");
             Main.getInstance().getServer().getPluginManager().disablePlugin(Main.getInstance());
         }
@@ -68,6 +74,7 @@ public class GameManager {
     //The order of operations here is important, do not move lines up and down or do not insert code between lines if you are not sure what you are doing.
     public void stop()
     {
+        npcManager.unregisterAll();
         //Needs to be done before we kick the players. That's because we need to tell the client to explicitly destroy the current active scoreboard before leaving the server.
         //If not destroyed, it can cause errors on proxies like BungeeCord (Switching Spigot servers while Scoreboard are synchronized on the Bungee)
         scoreboardManager.unregister();
@@ -99,6 +106,13 @@ public class GameManager {
     public ScoreboardManager getScoreboardManager()
     {
         return scoreboardManager;
+    }
+
+    public WorldManager getWorldManager(){return worldManager;}
+
+    public NPCManager getNpcManager()
+    {
+        return npcManager;
     }
 
 }
