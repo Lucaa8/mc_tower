@@ -135,4 +135,14 @@ public class WorldManager {
         return new Location(Bukkit.getWorlds().get(0), 0.5, 60, 0.5);
     }
 
+    public World getSpawnWorld()
+    {
+        return spawn;
+    }
+
+    public World getTowerWorld()
+    {
+        return tower;
+    }
+
 }
