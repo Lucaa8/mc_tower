@@ -5,6 +5,7 @@ import ch.tower.events.GlobalEvents;
 import ch.tower.managers.GameManager;
 import ch.tower.managers.ScoreboardManager;
 import ch.tower.managers.WorldManager;
+import ch.tower.utils.NPC.NPCLoader;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -29,6 +30,7 @@ public class Main extends JavaPlugin {
         }
         if(!copyStreamToFile("config.json", GameManager.CONFIG_FILE) ||
            !copyStreamToFile("spawns.json", WorldManager.SPAWN_FILE) ||
+           !copyStreamToFile("npc.json", NPCLoader.NPC_FILE) ||
            !copyStreamToFile("scoreboards.json", ScoreboardManager.SCOREBOARD_FILE))
         {
             System.err.println("Cannot generate all required resources...");

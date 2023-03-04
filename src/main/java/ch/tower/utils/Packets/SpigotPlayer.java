@@ -29,6 +29,7 @@ public class SpigotPlayer {
 
     public static void sendPacket(Player player, Packet<?> packet) {
         NetworkManager nm = (NetworkManager) r.getField(getConnection(player), "b");
+        //not working for versions < 1.18
         nm.a(packet);
     }
 
