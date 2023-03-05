@@ -8,6 +8,9 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.syncher.DataWatcher;
+import net.minecraft.network.syncher.DataWatcherObject;
+import net.minecraft.network.syncher.DataWatcherRegistry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.server.level.WorldServer;
@@ -52,6 +55,19 @@ public class EntityPackets
     public static PacketPlayOutEntityHeadRotation headRotation(EntityPlayer entity, float yaw)
     {
         return new PacketPlayOutEntityHeadRotation(entity, (byte)((yaw%360)*256/360));
+    }
+
+    /**
+     * Add the second layer to this entity's skin
+     * @param entity The entity to update on the client
+     * @param skinMask See index 17 on <a href="https://wiki.vg/Entity_metadata#Player">Player</a>
+     * @return A packet which update this entity on the client
+     */
+    public static PacketPlayOutEntityMetadata updateSkin(EntityPlayer entity, byte skinMask)
+    {
+        DataWatcher d = entity.ai();
+        d.b(new DataWatcherObject<>(17, DataWatcherRegistry.a), skinMask);
+        return new PacketPlayOutEntityMetadata(entity.getBukkitEntity().getEntityId(), d, false, true);
     }
 
     public static PacketPlayOutEntity.PacketPlayOutEntityLook moveEntity(EntityPlayer entity, int yaw, int pitch)
