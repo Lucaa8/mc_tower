@@ -2,24 +2,20 @@ package ch.tower.events;
 
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
-import ch.tower.utils.NPC.NPCLoader;
-import ch.tower.managers.ScoreboardManager;
 import ch.tower.managers.TeamsManager;
+import ch.tower.utils.NPC.NPCLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.Collection;
-import java.util.TooManyListenersException;
 
 public class GameEvents implements StateEvents
 {
@@ -142,8 +138,6 @@ public class GameEvents implements StateEvents
     public void onStateBegin()
     {
         TowerPlayer.registerPlayers();
-        //needs to be done after teleported players to the tower world
-        NPCLoader.load();
         Bukkit.broadcast("The game begin. GL HF", Server.BROADCAST_CHANNEL_USERS);
         //TODO: tester
         Collection<? extends Player> players = Main.getInstance().getServer().getOnlinePlayers();
@@ -151,6 +145,7 @@ public class GameEvents implements StateEvents
         {
             player.teleport(TeamsManager.getPlayerTeam(player).getSpawn());
         }
+        NPCLoader.load();
     }
 
     @Override
