@@ -8,6 +8,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.DataWatcher;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.server.level.WorldServer;
@@ -96,6 +97,11 @@ public class NPCCreator {
             return loc;
         }
 
+        public DataWatcher getWatcher()
+        {
+            return ep.ai();
+        }
+
         public Packet<?>[] asPacket()
         {
             if(ep != null)
@@ -106,6 +112,7 @@ public class NPCCreator {
                                 TeamsPackets.updateEntities("npc", TeamsPackets.Mode.ADD_ENTITY, this.name),
                                 EntityPackets.spawnNPC(ep, this.getLocation(), this.getLocation().getYaw(), this.getLocation().getPitch()),
                                 EntityPackets.headRotation(ep, (float) getField(EntityLiving.class, ep, "aZ")),
+                                EntityPackets.updateSkin(ep, (byte)0x7F),
                                 EntityPackets.removeNPC(ep)
                         };
             }
