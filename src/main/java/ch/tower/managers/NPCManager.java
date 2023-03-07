@@ -27,6 +27,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -166,7 +167,7 @@ public class NPCManager {
 
     public void unregisterAll()
     {
-        for(EntityPlayer ep : this.npc.values())
+        for(EntityPlayer ep : new ArrayList<>(this.npc.values()))
         {
             unregisterNPC(ep.fy().getName());
         }
