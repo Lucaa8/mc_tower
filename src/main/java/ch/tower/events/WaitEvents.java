@@ -6,6 +6,7 @@ import ch.tower.managers.ScoreboardManager;
 import ch.tower.managers.TeamsManager;
 import ch.tower.utils.Scoreboard.PlayerBoard;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -49,8 +50,7 @@ public class WaitEvents implements StateEvents
         {
             countdownTask = Bukkit.getScheduler().runTaskTimer(Main.getInstance(), this::displayCountdownThenStart, 1L, 20L);
             Bukkit.broadcast("Game is starting soon", Server.BROADCAST_CHANNEL_USERS);
-            Collection<? extends Player> players = Main.getInstance().getServer().getOnlinePlayers();
-            for (Player player : players)
+            for (Player player : Bukkit.getOnlinePlayers())
             {
                 player.sendTitle("Starting in " + countdown + " seconds", "", 5, 20, 5);
             }
@@ -211,7 +211,7 @@ public class WaitEvents implements StateEvents
         Player p = e.getPlayer();
         if(playersCount >= maxPlayersCount)
         {
-            p.kickPlayer("The limit of player is already passed, sorry.");
+            p.kickPlayer("The game is already full.");
             return;
         }
         p.getInventory().clear();
@@ -320,6 +320,10 @@ public class WaitEvents implements StateEvents
         {
             player.setLevel(0);
             player.setExp(0);
+            player.setFoodLevel(20);
+            player.setSaturation(20.0f);
+            player.setExhaustion(0.0f);
+            player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
             player.getInventory().clear();
             player.setGameMode(GameMode.SURVIVAL);
         }
