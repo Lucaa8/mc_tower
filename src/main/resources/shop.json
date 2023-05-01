@@ -1,0 +1,1893 @@
+{
+  "Shop-Items": [
+    {
+      "Id": "tools",
+      "Shop": {
+        "Name": "Tools",
+        "Size": 14,
+        "Back": -1,
+        "Content": [
+          {
+            "Lore": [
+              "§7Level 1",
+              "",
+              "§9+4 Damage",
+              ""
+            ],
+            "Attributes": [
+              {
+                "Attribute": "GENERIC_ATTACK_SPEED",
+                "Value": 9.4,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a1"
+              },
+              {
+                "Attribute": "GENERIC_ATTACK_DAMAGE",
+                "Value": 3.0,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a2"
+              }
+            ],
+            "Id": "0_sword",
+            "Material": "STONE_SWORD",
+            "Invulnerable": true,
+            "Flags": [
+              "HIDE_ATTRIBUTES",
+              "HIDE_ENCHANTS",
+              "HIDE_UNBREAKABLE"
+            ],
+            "Count": 1,
+            "Slot": 2
+          },
+          {
+            "Lore": [
+              "§7Level 2",
+              "",
+              "§9+4 Damage",
+              ""
+            ],
+            "Attributes": [
+              {
+                "Attribute": "GENERIC_ATTACK_SPEED",
+                "Value": 9.4,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a1"
+              },
+              {
+                "Attribute": "GENERIC_ATTACK_DAMAGE",
+                "Value": 3.0,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a2"
+              }
+            ],
+            "Id": "1_sword",
+            "Slot": 2,
+            "Material": "STONE_SWORD",
+            "Invulnerable": true,
+            "Flags": [
+              "HIDE_ATTRIBUTES",
+              "HIDE_ENCHANTS",
+              "HIDE_UNBREAKABLE"
+            ],
+            "Count": 1,
+            "Enchants": [
+              {
+                "Level": 1,
+                "Key": "knockback"
+              }
+            ]
+          },
+          {
+            "Lore": [
+              "§7Level 3",
+              "",
+              "§9+5 Damage",
+              ""
+            ],
+            "Attributes": [
+              {
+                "Attribute": "GENERIC_ATTACK_SPEED",
+                "Value": 9.4,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a1"
+              },
+              {
+                "Attribute": "GENERIC_ATTACK_DAMAGE",
+                "Value": 3.0,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a2"
+              }
+            ],
+            "Id": "2_sword",
+            "Slot": 2,
+            "Material": "STONE_SWORD",
+            "Invulnerable": true,
+            "Flags": [
+              "HIDE_ATTRIBUTES",
+              "HIDE_ENCHANTS",
+              "HIDE_UNBREAKABLE"
+            ],
+            "Count": 1,
+            "Enchants": [
+              {
+                "Level": 1,
+                "Key": "knockback"
+              },
+              {
+                "Level": 1,
+                "Key": "sharpness"
+              }
+            ]
+          },
+          {
+            "Lore": [
+              "§7Level 4",
+              "",
+              "§9+6 Damage",
+              ""
+            ],
+            "Attributes": [
+              {
+                "Attribute": "GENERIC_ATTACK_SPEED",
+                "Value": 9.4,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a1"
+              },
+              {
+                "Attribute": "GENERIC_ATTACK_DAMAGE",
+                "Value": 4.0,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a2"
+              }
+            ],
+            "Id": "3_sword",
+            "Slot": 2,
+            "Material": "IRON_SWORD",
+            "Invulnerable": true,
+            "Flags": [
+              "HIDE_ATTRIBUTES",
+              "HIDE_ENCHANTS",
+              "HIDE_UNBREAKABLE"
+            ],
+            "Count": 1,
+            "Enchants": [
+              {
+                "Level": 1,
+                "Key": "knockback"
+              },
+              {
+                "Level": 1,
+                "Key": "sharpness"
+              }
+            ]
+          },
+          {
+            "Lore": [
+              "§7Level 5",
+              "",
+              "§9+6 Damage",
+              ""
+            ],
+            "Attributes": [
+              {
+                "Attribute": "GENERIC_ATTACK_SPEED",
+                "Value": 9.4,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a1"
+              },
+              {
+                "Attribute": "GENERIC_ATTACK_DAMAGE",
+                "Value": 4.0,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a2"
+              }
+            ],
+            "Id": "4_sword",
+            "Slot": 2,
+            "Material": "IRON_SWORD",
+            "Invulnerable": true,
+            "Flags": [
+              "HIDE_ATTRIBUTES",
+              "HIDE_ENCHANTS",
+              "HIDE_UNBREAKABLE"
+            ],
+            "Count": 1,
+            "Enchants": [
+              {
+                "Level": 1,
+                "Key": "knockback"
+              },
+              {
+                "Level": 1,
+                "Key": "sharpness"
+              },
+              {
+                "Level": 1,
+                "Key": "fire_aspect"
+              }
+            ]
+          },
+          {
+            "Lore": [
+              "§7Level max",
+              "",
+              "§9+6 Damage"
+            ],
+            "Id": "max_sword",
+            "Slot": 2,
+            "Material": "IRON_SWORD",
+            "Count": 1,
+            "Flags": [
+              "HIDE_ATTRIBUTES",
+              "HIDE_ENCHANTS"
+            ],
+            "Enchants": [
+              {
+                "Level": 1,
+                "Key": "luck_of_the_sea"
+              }
+            ]
+          },
+          {
+            "Lore": [
+              "§7Level 1",
+              "",
+              "§9+4 Mining speed",
+              "§9+3 Damage",
+              ""
+            ],
+            "Id": "0_pickaxe",
+            "Material": "STONE_PICKAXE",
+            "Durability": 80,
+            "Flags": [
+              "HIDE_ATTRIBUTES",
+              "HIDE_ENCHANTS"
+            ],
+            "Count": 1,
+            "Slot": 9
+          },
+          {
+            "Lore": [
+              "§7Level 2",
+              "",
+              "§9+6 Mining speed",
+              "§9+3 Damage",
+              ""
+            ],
+            "Id": "1_pickaxe",
+            "Durability": 80,
+            "Slot": 9,
+            "Material": "STONE_PICKAXE",
+            "Flags": [
+              "HIDE_ATTRIBUTES",
+              "HIDE_ENCHANTS"
+            ],
+            "Count": 1,
+            "Enchants": [
+              {
+                "Level": 1,
+                "Key": "efficiency"
+              },
+              {
+                "Level": 1,
+                "Key": "unbreaking"
+              }
+            ]
+          },
+          {
+            "Lore": [
+              "§7Level 3",
+              "",
+              "§9+9 Mining speed",
+              "§9+3 Damage",
+              ""
+            ],
+            "Id": "2_pickaxe",
+            "Slot": 9,
+            "Material": "STONE_PICKAXE",
+            "Flags": [
+              "HIDE_ATTRIBUTES",
+              "HIDE_ENCHANTS"
+            ],
+            "Count": 1,
+            "Enchants": [
+              {
+                "Level": 2,
+                "Key": "efficiency"
+              },
+              {
+                "Level": 1,
+                "Key": "unbreaking"
+              }
+            ]
+          },
+          {
+            "Lore": [
+              "§7Level 4",
+              "",
+              "§9+10 Mining speed",
+              "§9+3 Damage",
+              ""
+            ],
+            "Id": "3_pickaxe",
+            "Slot": 9,
+            "Durability": 264,
+            "Material": "DIAMOND_PICKAXE",
+            "Flags": [
+              "HIDE_ATTRIBUTES",
+              "HIDE_ENCHANTS"
+            ],
+            "Attributes": [
+              {
+                "Attribute": "GENERIC_ATTACK_DAMAGE",
+                "Value": 2.0,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a1"
+              }
+            ],
+            "Count": 1,
+            "Enchants": [
+              {
+                "Level": 1,
+                "Key": "efficiency"
+              }
+            ]
+          },
+          {
+            "Lore": [
+              "§7Level max",
+              "",
+              "§9+10 Mining speed",
+              "§9+3 Damage",
+              ""
+            ],
+            "Id": "max_pickaxe",
+            "Slot": 9,
+            "Durability": 264,
+            "Material": "DIAMOND_PICKAXE",
+            "Count": 1,
+            "Flags": [
+              "HIDE_ATTRIBUTES",
+              "HIDE_ENCHANTS"
+            ],
+            "Enchants": [
+              {
+                "Level": 1,
+                "Key": "luck_of_the_sea"
+              }
+            ]
+          },
+          {
+            "Lore": [
+              "§7Level 1",
+              "",
+              "§9+2 Mining speed",
+              "§9+2 Damage",
+              ""
+            ],
+            "Attributes": [
+              {
+                "Attribute": "GENERIC_ATTACK_SPEED",
+                "Value": 9.4,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a1"
+              },
+              {
+                "Attribute": "GENERIC_ATTACK_DAMAGE",
+                "Value": 1.0,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a2"
+              }
+            ],
+            "Id": "0_axe",
+            "Material": "WOODEN_AXE",
+            "Durability": 30,
+            "Flags": [
+              "HIDE_ATTRIBUTES",
+              "HIDE_ENCHANTS"
+            ],
+            "Count": 1,
+            "Slot": 4
+          },
+          {
+            "Lore": [
+              "§7Level 2",
+              "",
+              "§9+4 Mining speed",
+              "§9+3 Damage",
+              ""
+            ],
+            "Attributes": [
+              {
+                "Attribute": "GENERIC_ATTACK_SPEED",
+                "Value": 9.4,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a1"
+              },
+              {
+                "Attribute": "GENERIC_ATTACK_DAMAGE",
+                "Value": 2.0,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a2"
+              }
+            ],
+            "Id": "1_axe",
+            "Material": "STONE_AXE",
+            "Durability": 80,
+            "Flags": [
+              "HIDE_ATTRIBUTES",
+              "HIDE_ENCHANTS"
+            ],
+            "Count": 1,
+            "Slot": 4
+          },
+          {
+            "Lore": [
+              "§7Level 3",
+              "",
+              "§9+6 Mining speed",
+              "§9+3 Damage",
+              ""
+            ],
+            "Attributes": [
+              {
+                "Attribute": "GENERIC_ATTACK_SPEED",
+                "Value": 9.4,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a1"
+              },
+              {
+                "Attribute": "GENERIC_ATTACK_DAMAGE",
+                "Value": 2.0,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a2"
+              }
+            ],
+            "Id": "2_axe",
+            "Material": "STONE_AXE",
+            "Durability": 80,
+            "Flags": [
+              "HIDE_ATTRIBUTES",
+              "HIDE_ENCHANTS"
+            ],
+            "Enchants": [
+              {
+                "Level": 1,
+                "Key": "efficiency"
+              },
+              {
+                "Level": 1,
+                "Key": "unbreaking"
+              }
+            ],
+            "Count": 1,
+            "Slot": 4
+          },
+          {
+            "Lore": [
+              "§7Level max",
+              "",
+              "§9+6 Mining speed",
+              "§9+3 Damage",
+              ""
+            ],
+            "Id": "max_axe",
+            "Material": "STONE_AXE",
+            "Durability": 80,
+            "Flags": [
+              "HIDE_ATTRIBUTES",
+              "HIDE_ENCHANTS"
+            ],
+            "Enchants": [
+              {
+                "Level": 1,
+                "Key": "luck_of_the_sea"
+              }
+            ],
+            "Count": 1,
+            "Slot": 4
+          },
+          {
+            "Lore": [
+              "§7Level 1",
+              "",
+              "§8=== §7Helmet §8===",
+              "§c§mProtection I",
+              "§aProtection II",
+              "",
+              "§8=== §7Chestplate §8===",
+              "§c§mProtection I",
+              "§aProjectile Protection II",
+              "",
+              "§8=== §7Leggings §8===",
+              "§7Protection I",
+              "",
+              "§8=== §7Boots §8===",
+              "§7Protection I",
+              "§aFeather Falling I",
+              ""
+            ],
+            "Id": "0_armor",
+            "Slot": 11,
+            "Material": "LEATHER_CHESTPLATE",
+            "Flags": [
+              "HIDE_ENCHANTS",
+              "HIDE_ATTRIBUTES"
+            ],
+            "Count": 1,
+            "Name": "§bArmor Upgrade",
+            "Enchants": [
+              {
+                "Level": 1,
+                "Key": "luck_of_the_sea"
+              }
+            ]
+          },
+          {
+            "Lore": [
+              "§7Level 2",
+              "",
+              "§8=== §7Helmet §8===",
+              "§7Protection II",
+              "",
+              "§8=== §7Chestplate §8===",
+              "§c§mProjectile Protection II",
+              "§aProjectile Protection III",
+              "",
+              "§8=== §7Leggings §8===",
+              "§c§mProtection I",
+              "§aProtection II",
+              "",
+              "§8=== §7Boots §8===",
+              "§7Protection I",
+              "§c§mFeather Falling I",
+              "§aFeather Falling II",
+              ""
+            ],
+            "Id": "1_armor",
+            "Slot": 11,
+            "Material": "LEATHER_CHESTPLATE",
+            "Flags": [
+              "HIDE_ENCHANTS",
+              "HIDE_ATTRIBUTES"
+            ],
+            "Count": 1,
+            "Name": "§bArmor Upgrade",
+            "Enchants": [
+              {
+                "Level": 1,
+                "Key": "luck_of_the_sea"
+              }
+            ]
+          },
+          {
+            "Lore": [
+              "§7Level max",
+              "",
+              "§8=== §7Helmet §8===",
+              "§7Protection II",
+              "",
+              "§8=== §7Chestplate §8===",
+              "§7Projectile Protection III",
+              "",
+              "§8=== §7Leggings §8===",
+              "§7Protection II",
+              "",
+              "§8=== §7Boots §8===",
+              "§7Protection I",
+              "§7Feather Falling II",
+              ""
+            ],
+            "Id": "max_armor",
+            "Slot": 11,
+            "Material": "LEATHER_CHESTPLATE",
+            "Flags": [
+              "HIDE_ENCHANTS",
+              "HIDE_ATTRIBUTES"
+            ],
+            "Count": 1,
+            "Name": "§bArmor Upgrade",
+            "Enchants": [
+              {
+                "Level": 1,
+                "Key": "luck_of_the_sea"
+              }
+            ]
+          },
+          {
+            "Lore": [
+              "§7Level 1",
+              "",
+              "§4§oKeep in mind: Spam bowing is ruining the game of",
+              "§4§othe player on the other side of the arrow",
+              ""
+            ],
+            "Id": "0_bow",
+            "Durability": 40,
+            "Slot": 6,
+            "Material": "BOW",
+            "Flags": [
+              "HIDE_ATTRIBUTES"
+            ],
+            "Count": 1
+          },
+          {
+            "Lore": [
+              "§7Level 2",
+              "",
+              "§4§oKeep in mind: Spam bowing is ruining the game of",
+              "§4§othe player on the other side of the arrow",
+              ""
+            ],
+            "Id": "1_bow",
+            "Durability": 50,
+            "Slot": 6,
+            "Material": "BOW",
+            "Flags": [
+              "HIDE_ATTRIBUTES",
+              "HIDE_ENCHANTS"
+            ],
+            "Count": 1,
+            "Enchants": [
+              {
+                "Level": 1,
+                "Key": "power"
+              }
+            ]
+          },
+          {
+            "Id": "arrows",
+            "Material": "ARROW",
+            "Count": 32,
+            "Slot": 13
+          }
+        ]
+      }
+    },
+    {
+      "Id": "blocks",
+      "Shop": {
+        "Name": "Blocks",
+        "Size": 14,
+        "Back": -1,
+        "Content": [
+          {
+            "Material": "NETHER_BRICKS",
+            "Slot": 2,
+            "Id": "bricks",
+            "Count": 64
+          },
+          {
+            "Material": "OAK_PLANKS",
+            "Slot": 9,
+            "Id": "wood",
+            "Count": 32
+          },
+          {
+            "Material": "WHITE_STAINED_GLASS",
+            "Slot": 4,
+            "Id": "glass",
+            "Count": 64
+          },
+          {
+            "Material": "COAL_BLOCK",
+            "Slot": 11,
+            "Id": "coalblock",
+            "Count": 32
+          },
+          {
+            "Material": "QUARTZ_BLOCK",
+            "Slot": 6,
+            "Id": "quartzblock",
+            "Count": 64
+          },
+          {
+            "Material": "COBBLESTONE",
+            "Slot": 13,
+            "Id": "cobble",
+            "Count": 32
+          }
+        ]
+      }
+    },
+    {
+      "Id": "resources",
+      "Shop": {
+        "Name": "Resources",
+        "Size": 14,
+        "Back": -1,
+        "Content": [
+          {
+            "Material": "SLIME_BLOCK",
+            "Slot": 2,
+            "Id": "slimeblock",
+            "Count": 16
+          },
+          {
+            "Material": "INFESTED_COBBLESTONE",
+            "Slot": 9,
+            "Id": "infestedcobble",
+            "Count": 8
+          },
+          {
+            "Material": "NETHER_BRICK_FENCE",
+            "Slot": 4,
+            "Id": "brickfence",
+            "Count": 16
+          },
+          {
+            "Material": "COBWEB",
+            "Slot": 11,
+            "Id": "cobweb",
+            "Count": 4
+          },
+          {
+            "Material": "LADDER",
+            "Slot": 6,
+            "Id": "ladder",
+            "Count": 16
+          },
+          {
+            "Material": "STRING",
+            "Slot": 13,
+            "Id": "string",
+            "Count": 16
+          }
+        ]
+      }
+    },
+    {
+      "Id": "utilities",
+      "Shop": {
+        "Name": "Utilities",
+        "Size": 14,
+        "Back": -1,
+        "Content": [
+          {
+            "Material": "MINECART",
+            "Lore": [
+              "§e- Rail",
+              "§e- Powered Rail",
+              "§e- Activator Rail",
+              "§e- Detector Rail",
+              "§e- Minecart",
+              "§e- Minecart with Furnace",
+              "§e- Minecart with TNT"
+            ],
+            "Slot": 2,
+            "Id": "transport",
+            "Count": 1,
+            "Name": "§6SNCF"
+          },
+          {
+            "Material": "ENCHANTED_BOOK",
+            "Lore": [
+              "§cComing soon..."
+            ],
+            "Slot": 9,
+            "Id": "enchanting",
+            "Count": 1,
+            "Name": "§6Merlin (QoL plutot?)"
+          },
+          {
+            "Material": "POTION",
+            "Lore": [
+              "§d- Regeneration (1:00)",
+              "§d- Regeneration II (0:17)",
+              "§c- Instant Health II",
+              "§4- Strength (1:30)",
+              "§6- Fire Resistance (3:00)",
+              "§a- Jump Boost (1:00)",
+              "§2- Luck ? (?:??)",
+              "§3- Speed (3:00)",
+              "§7- Beer",
+              "§8- Splash Slowness (1:00)",
+              "§2- Splash Poison (0:30)",
+              "§2- Splash Poison II (0:12)",
+              "§9- Splash Weakness (1:30)",
+              "§5- Splash Instant Damage"
+            ],
+            "Slot": 4,
+            "Id": "potion",
+            "Flags": [
+              "HIDE_POTION_EFFECTS",
+              "HIDE_ENCHANTS"
+            ],
+            "Count": 1,
+            "ItemMeta": {
+              "Meta": {
+                "Color": {
+                  "r": 255,
+                  "b": 0,
+                  "g": 0
+                },
+                "BaseEffect": {
+                  "Type": "UNCRAFTABLE",
+                  "Extended": false,
+                  "Upgraded": false
+                }
+              },
+              "MetaType": "Potion"
+            },
+            "Name": "§6Harry Potter",
+            "Enchants": [
+              {
+                "Level": 1,
+                "Key": "luck_of_the_sea"
+              }
+            ]
+          },
+          {
+            "Material": "TNT",
+            "Lore": [
+              "§cComing soon..."
+            ],
+            "Slot": 11,
+            "Id": "tnt",
+            "Count": 1,
+            "Name": "§6TNT gives you wings"
+          },
+          {
+            "Material": "WATER_BUCKET",
+            "Lore": [
+              "§e- Rod of Fire",
+              "§e- Spiky Pumpkin",
+              "§e- Golden Apple",
+              "§e- Enchanted Golden Apple",
+              "§e- Water Bucket",
+              "§e- Ender Pearl",
+              "§e- Harmless Feather"
+            ],
+            "Slot": 6,
+            "Id": "combat",
+            "Count": 1,
+            "Name": "§6Fight Machine"
+          },
+          {
+            "Material": "BAKED_POTATO",
+            "Lore": [
+              "§7Definitive upgrade",
+              "§7§o(You respawn with the best you bought)",
+              "§c1. Carrot",
+              "§62. Bread",
+              "§e3. Cooked Chicken",
+              "§24. Cooked Salmon",
+              "§a5. Golden Carrot"
+            ],
+            "Slot": 13,
+            "Id": "food",
+            "Count": 1,
+            "Name": "§6Yummy"
+          }
+        ]
+      }
+    },
+    {
+      "Id": "utilities_transport",
+      "Shop": {
+        "Name": "SNCF",
+        "Size": 14,
+        "Back": 5,
+        "Content": [
+          {
+            "Material": "RAIL",
+            "Slot": 1,
+            "Id": "rails",
+            "Count": 16
+          },
+          {
+            "Material": "ACTIVATOR_RAIL",
+            "Slot": 3,
+            "Id": "activatorrail",
+            "Count": 16
+          },
+          {
+            "Material": "DETECTOR_RAIL",
+            "Slot": 5,
+            "Id": "detectorrail",
+            "Count": 16
+          },
+          {
+            "Material": "POWERED_RAIL",
+            "Slot": 7,
+            "Id": "poweredrail",
+            "Count": 16
+          },
+          {
+            "Material": "MINECART",
+            "Slot": 9,
+            "Id": "minecart",
+            "Count": 1
+          },
+          {
+            "Material": "FURNACE_MINECART",
+            "Slot": 11,
+            "Id": "furnaceminecart",
+            "Count": 1
+          },
+          {
+            "Material": "TNT_MINECART",
+            "Slot": 13,
+            "Id": "tntminecart",
+            "Count": 1
+          }
+        ]
+      }
+    },
+    {
+      "Id": "utilities_potion",
+      "Shop": {
+        "Name": "Harry Potter",
+        "Size": 14,
+        "Back": 5,
+        "Content": [
+          {
+            "Id": "1_regeneration",
+            "Slot": 1,
+            "Material": "POTION",
+            "Count": 1,
+            "ItemMeta": {
+              "Meta": {
+                "CustomEffects": [
+                  {
+                    "Type": "REGENERATION",
+                    "Duration": 1200,
+                    "Amplifier": 0,
+                    "Particles": true
+                  }
+                ],
+                "Color": {
+                  "r": 255,
+                  "b": 255,
+                  "g": 0
+                },
+                "BaseEffect": {
+                  "Type": "UNCRAFTABLE",
+                  "Extended": false,
+                  "Upgraded": false
+                }
+              },
+              "MetaType": "Potion"
+            },
+            "Name": "§fPotion of Regeneration"
+          },
+          {
+            "Id": "2_regeneration_ii",
+            "Slot": 2,
+            "Material": "POTION",
+            "Count": 1,
+            "ItemMeta": {
+              "Meta": {
+                "CustomEffects": [
+                  {
+                    "Type": "REGENERATION",
+                    "Duration": 340,
+                    "Amplifier": 1,
+                    "Particles": true
+                  }
+                ],
+                "Color": {
+                  "r": 255,
+                  "b": 255,
+                  "g": 0
+                },
+                "BaseEffect": {
+                  "Type": "UNCRAFTABLE",
+                  "Extended": false,
+                  "Upgraded": false
+                }
+              },
+              "MetaType": "Potion"
+            },
+            "Name": "§fPotion of Regeneration II"
+          },
+          {
+            "Id": "3_healing",
+            "Slot": 3,
+            "Material": "POTION",
+            "Count": 1,
+            "ItemMeta": {
+              "Meta": {
+                "CustomEffects": [
+                  {
+                    "Type": "HEAL",
+                    "Duration": 20,
+                    "Amplifier": 1,
+                    "Particles": true
+                  }
+                ],
+                "Color": {
+                  "r": 255,
+                  "b": 0,
+                  "g": 0
+                },
+                "BaseEffect": {
+                  "Type": "UNCRAFTABLE",
+                  "Extended": false,
+                  "Upgraded": false
+                }
+              },
+              "MetaType": "Potion"
+            },
+            "Name": "§fPotion of Healing"
+          },
+          {
+            "Id": "4_strength",
+            "Slot": 4,
+            "Material": "POTION",
+            "Count": 1,
+            "ItemMeta": {
+              "Meta": {
+                "CustomEffects": [
+                  {
+                    "Type": "INCREASE_DAMAGE",
+                    "Duration": 1800,
+                    "Amplifier": 0,
+                    "Particles": true
+                  }
+                ],
+                "Color": {
+                  "r": 128,
+                  "b": 0,
+                  "g": 0
+                },
+                "BaseEffect": {
+                  "Type": "UNCRAFTABLE",
+                  "Extended": false,
+                  "Upgraded": false
+                }
+              },
+              "MetaType": "Potion"
+            },
+            "Name": "§fPotion of Strength"
+          },
+          {
+            "Id": "5_fire_resistance",
+            "Slot": 5,
+            "Material": "POTION",
+            "Count": 1,
+            "ItemMeta": {
+              "Meta": {
+                "CustomEffects": [
+                  {
+                    "Type": "FIRE_RESISTANCE",
+                    "Duration": 3600,
+                    "Amplifier": 0,
+                    "Particles": true
+                  }
+                ],
+                "Color": {
+                  "r": 255,
+                  "b": 0,
+                  "g": 165
+                },
+                "BaseEffect": {
+                  "Type": "UNCRAFTABLE",
+                  "Extended": false,
+                  "Upgraded": false
+                }
+              },
+              "MetaType": "Potion"
+            },
+            "Name": "§fPotion of Fire Resistance"
+          },
+          {
+            "Id": "6_leaping",
+            "Slot": 6,
+            "Material": "POTION",
+            "Count": 1,
+            "ItemMeta": {
+              "Meta": {
+                "CustomEffects": [
+                  {
+                    "Type": "JUMP",
+                    "Duration": 1200,
+                    "Amplifier": 0,
+                    "Particles": true
+                  }
+                ],
+                "Color": {
+                  "r": 0,
+                  "b": 0,
+                  "g": 255
+                },
+                "BaseEffect": {
+                  "Type": "UNCRAFTABLE",
+                  "Extended": false,
+                  "Upgraded": false
+                }
+              },
+              "MetaType": "Potion"
+            },
+            "Name": "§fPotion of Leaping"
+          },
+          {
+            "Id": "7_luck",
+            "Lore": [
+              "§9Luck (?:??)",
+              "",
+              "§cTrust me...or not?",
+              "",
+              "§5When applied:",
+              "§9§kloooser"
+            ],
+            "Slot": 7,
+            "Material": "POTION",
+            "Flags": [
+              "HIDE_POTION_EFFECTS",
+              "HIDE_ENCHANTS"
+            ],
+            "Count": 1,
+            "ItemMeta": {
+              "Meta": {
+                "Color": {
+                  "r": 0,
+                  "b": 0,
+                  "g": 128
+                },
+                "BaseEffect": {
+                  "Type": "UNCRAFTABLE",
+                  "Extended": false,
+                  "Upgraded": false
+                }
+              },
+              "MetaType": "Potion"
+            },
+            "Name": "§fPotion of Luck ?",
+            "Enchants": [
+              {
+                "Level": 1,
+                "Key": "luck_of_the_sea"
+              }
+            ]
+          },
+          {
+            "Id": "8_swiftness",
+            "Slot": 8,
+            "Material": "POTION",
+            "Count": 1,
+            "ItemMeta": {
+              "Meta": {
+                "CustomEffects": [
+                  {
+                    "Type": "SPEED",
+                    "Duration": 3600,
+                    "Amplifier": 0,
+                    "Particles": true
+                  }
+                ],
+                "Color": {
+                  "r": 126,
+                  "b": 202,
+                  "g": 178
+                },
+                "BaseEffect": {
+                  "Type": "UNCRAFTABLE",
+                  "Extended": false,
+                  "Upgraded": false
+                }
+              },
+              "MetaType": "Potion"
+            },
+            "Name": "§fPotion of Swiftness"
+          },
+          {
+            "Id": "9_beer",
+            "Slot": 9,
+            "Material": "POTION",
+            "Flags": [
+              "HIDE_ENCHANTS"
+            ],
+            "Count": 1,
+            "ItemMeta": {
+              "Meta": {
+                "CustomEffects": [
+                  {
+                    "Type": "REGENERATION",
+                    "Duration": 900,
+                    "Amplifier": 0,
+                    "Particles": true
+                  },
+                  {
+                    "Type": "CONFUSION",
+                    "Duration": 500,
+                    "Amplifier": 0,
+                    "Particles": true
+                  },
+                  {
+                    "Type": "INCREASE_DAMAGE",
+                    "Duration": 500,
+                    "Amplifier": 2,
+                    "Particles": true
+                  }
+                ],
+                "Color": {
+                  "r": 0,
+                  "b": 255,
+                  "g": 0
+                },
+                "BaseEffect": {
+                  "Type": "UNCRAFTABLE",
+                  "Extended": false,
+                  "Upgraded": false
+                }
+              },
+              "MetaType": "Potion"
+            },
+            "Name": "§fBeer",
+            "Enchants": [
+              {
+                "Level": 1,
+                "Key": "luck_of_the_sea"
+              }
+            ]
+          },
+          {
+            "Id": "10_slowness",
+            "Slot": 10,
+            "Material": "SPLASH_POTION",
+            "Count": 1,
+            "ItemMeta": {
+              "Meta": {
+                "CustomEffects": [
+                  {
+                    "Type": "SLOW",
+                    "Duration": 1200,
+                    "Amplifier": 0,
+                    "Particles": true
+                  }
+                ],
+                "Color": {
+                  "r": 92,
+                  "b": 131,
+                  "g": 110
+                },
+                "BaseEffect": {
+                  "Type": "UNCRAFTABLE",
+                  "Extended": false,
+                  "Upgraded": false
+                }
+              },
+              "MetaType": "Potion"
+            },
+            "Name": "§fSplash Potion of Slowness"
+          },
+          {
+            "Id": "11_poison",
+            "Slot": 11,
+            "Material": "SPLASH_POTION",
+            "Count": 1,
+            "ItemMeta": {
+              "Meta": {
+                "CustomEffects": [
+                  {
+                    "Type": "POISON",
+                    "Duration": 600,
+                    "Amplifier": 0,
+                    "Particles": true
+                  }
+                ],
+                "Color": {
+                  "r": 79,
+                  "b": 50,
+                  "g": 150
+                },
+                "BaseEffect": {
+                  "Type": "UNCRAFTABLE",
+                  "Extended": false,
+                  "Upgraded": false
+                }
+              },
+              "MetaType": "Potion"
+            },
+            "Name": "§fSplash Potion of Poison"
+          },
+          {
+            "Id": "12_poison_ii",
+            "Slot": 12,
+            "Material": "SPLASH_POTION",
+            "Count": 1,
+            "ItemMeta": {
+              "Meta": {
+                "CustomEffects": [
+                  {
+                    "Type": "POISON",
+                    "Duration": 240,
+                    "Amplifier": 1,
+                    "Particles": true
+                  }
+                ],
+                "Color": {
+                  "r": 79,
+                  "b": 50,
+                  "g": 150
+                },
+                "BaseEffect": {
+                  "Type": "UNCRAFTABLE",
+                  "Extended": false,
+                  "Upgraded": false
+                }
+              },
+              "MetaType": "Potion"
+            },
+            "Name": "§fSplash Potion of Poison II"
+          },
+          {
+            "Id": "13_weakness",
+            "Slot": 13,
+            "Material": "SPLASH_POTION",
+            "Count": 1,
+            "ItemMeta": {
+              "Meta": {
+                "CustomEffects": [
+                  {
+                    "Type": "WEAKNESS",
+                    "Duration": 1800,
+                    "Amplifier": 0,
+                    "Particles": true
+                  }
+                ],
+                "Color": {
+                  "r": 73,
+                  "b": 73,
+                  "g": 78
+                },
+                "BaseEffect": {
+                  "Type": "UNCRAFTABLE",
+                  "Extended": false,
+                  "Upgraded": false
+                }
+              },
+              "MetaType": "Potion"
+            },
+            "Name": "§fSplash Potion of Weakness"
+          },
+          {
+            "Id": "14_harming",
+            "Slot": 14,
+            "Material": "SPLASH_POTION",
+            "Count": 1,
+            "ItemMeta": {
+              "Meta": {
+                "CustomEffects": [
+                  {
+                    "Type": "HARM",
+                    "Duration": 20,
+                    "Amplifier": 0,
+                    "Particles": true
+                  }
+                ],
+                "Color": {
+                  "r": 68,
+                  "b": 9,
+                  "g": 10
+                },
+                "BaseEffect": {
+                  "Type": "UNCRAFTABLE",
+                  "Extended": false,
+                  "Upgraded": false
+                }
+              },
+              "MetaType": "Potion"
+            },
+            "Name": "§fSplash Potion of Harming"
+          }
+        ]
+      }
+    },
+    {
+      "Id": "utilities_combat",
+      "Shop": {
+        "Name": "Fight Machine",
+        "Size": 14,
+        "Back": 5,
+        "Content": [
+          {
+            "Lore": [
+              "",
+              "",
+              "§9+1 Damage",
+              ""
+            ],
+            "Material": "BLAZE_ROD",
+            "Slot": 1,
+            "Id": "rod_of_fire",
+            "Count": 1,
+            "Name": "§b§oRod of Fire",
+            "Enchants": [
+              {
+                "Level": 2,
+                "Key": "fire_aspect"
+              }
+            ],
+            "Attributes": [
+              {
+                "Attribute": "GENERIC_ATTACK_SPEED",
+                "Value": 9.4,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a1"
+              }
+            ],
+            "Flags": [
+              "HIDE_ATTRIBUTES",
+              "HIDE_ENCHANTS"
+            ]
+          },
+          {
+            "Material": "CARVED_PUMPKIN",
+            "Lore": [
+              ""
+            ],
+            "Slot": 3,
+            "Id": "spiky_pumpkin",
+            "Count": 1,
+            "Name": "§b§oSpiky Pumpkin",
+            "Enchants": [
+              {
+                "Level": 7,
+                "Key": "thorns"
+              }
+            ],
+            "Flags": [
+              "HIDE_ENCHANTS"
+            ]
+          },
+          {
+            "Material": "GOLDEN_APPLE",
+            "Slot": 5,
+            "Id": "golden_apple",
+            "Count": 1,
+            "Name": "§b§oJeb-Golden Apple"
+          },
+          {
+            "Material": "ENCHANTED_GOLDEN_APPLE",
+            "Slot": 7,
+            "Id": "golden_apple1",
+            "Count": 1,
+            "Name": "§d§oNotch-Golden Apple"
+          },
+          {
+            "Material": "WATER_BUCKET",
+            "Slot": 9,
+            "Id": "waterbucket",
+            "Count": 1
+          },
+          {
+            "Material": "ENDER_PEARL",
+            "Slot": 11,
+            "Id": "enderpearl",
+            "Count": 1
+          },
+          {
+            "Lore": [
+              "",
+              "",
+              "§9+3 Damage",
+              "§7When in Main/Off Hand:",
+              " §9-15% Fall Damage",
+              ""
+            ],
+            "Material": "FEATHER",
+            "Slot": 13,
+            "Id": "harmless_feather",
+            "Count": 1,
+            "Name": "§b§oHarmless Feather",
+            "Enchants": [
+              {
+                "Level": 10,
+                "Key": "feather_falling"
+              },
+              {
+                "Level": 3,
+                "Key": "sharpness"
+              },
+              {
+                "Level": 1,
+                "Key": "knockback"
+              }
+            ],
+            "Attributes": [
+              {
+                "Attribute": "GENERIC_ATTACK_SPEED",
+                "Value": 9.4,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a1"
+              }
+            ],
+            "Flags": [
+              "HIDE_ATTRIBUTES",
+              "HIDE_ENCHANTS"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "Id": "utilities_food",
+      "Shop": {
+        "Name": "Yummy",
+        "Size": 14,
+        "Back": 5,
+        "Content": [
+          {
+            "Id": "0_carrot",
+            "Lore": [
+              "§7Level 1",
+              "",
+              "§eFood §l+1.5",
+              "§a|§6|§c||||||||",
+              "",
+              "§eSaturation §l+3.6",
+              "§a|||§6|§c|||||||||||"
+            ],
+            "Slot": 2,
+            "Material": "CARROT",
+            "Count": 32,
+            "Name": "§c§oCarrot"
+          },
+          {
+            "Id": "1_bread",
+            "Lore": [
+              "§7Level 2",
+              "",
+              "§eFood §l+2.5",
+              "§a||§6|§C|||||||",
+              "",
+              "§eSaturation §l+6",
+              "§a||||||§c|||||||||"
+            ],
+            "Slot": 10,
+            "Material": "BREAD",
+            "Count": 32,
+            "Name": "§6§oBread"
+          },
+          {
+            "Id": "2_cookedchicken",
+            "Lore": [
+              "§7Level 3",
+              "",
+              "§eFood §l+3",
+              "§a|||§c|||||||",
+              "",
+              "§eSaturation §l+7.2",
+              "§a|||||||§6|§c|||||||"
+            ],
+            "Slot": 4,
+            "Material": "COOKED_CHICKEN",
+            "Count": 16,
+            "Name": "§e§oCooked Chicken"
+          },
+          {
+            "Id": "3_cookedsalmon",
+            "Lore": [
+              "§7Level 4",
+              "",
+              "§eFood §l+3",
+              "§a|||§c|||||||",
+              "",
+              "§eSaturation §l+9.6",
+              "§a|||||||||§a|§6|§c||||"
+            ],
+            "Slot": 12,
+            "Material": "COOKED_SALMON",
+            "Count": 16,
+            "Name": "§2§oCooked Salmon"
+          },
+          {
+            "Id": "4_goldencarrot",
+            "Lore": [
+              "§7Level 5",
+              "",
+              "§eFood §l+3",
+              "§a|||§c|||||||",
+              "",
+              "§eSaturation §l+14.4",
+              "§a||||||||||||||§6|"
+            ],
+            "Slot": 6,
+            "Material": "GOLDEN_CARROT",
+            "Count": 12,
+            "Name": "§a§oGolden Carrot"
+          }
+        ]
+      }
+    }
+  ],
+  "Shop-Prices": {
+    "tools": [
+      {
+        "Item": "0_sword",
+        "Price-One": 10.0,
+        "Price-Definitive": 100.0
+      },
+      {
+        "Item": "1_sword",
+        "Price-One": 20.0,
+        "Price-Definitive": 200.0
+      },
+      {
+        "Item": "2_sword",
+        "Price-One": 30.0,
+        "Price-Definitive": 300.0
+      },
+      {
+        "Item": "3_sword",
+        "Price-One": 40.0,
+        "Price-Definitive": 400.0
+      },
+      {
+        "Item": "4_sword",
+        "Price-One": 50.0,
+        "Price-Definitive": 500.0
+      },
+      {
+        "Item": "0_pickaxe",
+        "Price-One": 10.0,
+        "Price-Definitive": 100.0
+      },
+      {
+        "Item": "1_pickaxe",
+        "Price-One": 20.0,
+        "Price-Definitive": 200.0
+      },
+      {
+        "Item": "2_pickaxe",
+        "Price-One": 30.0,
+        "Price-Definitive": 300.0
+      },
+      {
+        "Item": "3_pickaxe",
+        "Price-One": 40.0,
+        "Price-Definitive": 400.0
+      },
+      {
+        "Item": "0_axe",
+        "Price-One": 10.0,
+        "Price-Definitive": 100.0
+      },
+      {
+        "Item": "1_axe",
+        "Price-One": 20.0,
+        "Price-Definitive": 200.0
+      },
+      {
+        "Item": "2_axe",
+        "Price-One": 30.0,
+        "Price-Definitive": 300.0
+      },
+      {
+        "Item": "0_armor",
+        "Price-Definitive": 700.0
+      },
+      {
+        "Item": "1_armor",
+        "Price-Definitive": 1200.0
+      },
+      {
+        "Item": "0_bow",
+        "Price-One": 100.0,
+        "Price-Definitive": 1000.0
+      },
+      {
+        "Item": "1_bow",
+        "Price-One": 200.0
+      },
+      {
+        "Item": "arrows",
+        "Price-One": 8.0
+      }
+    ],
+    "blocks": [
+      {
+        "Item": "bricks",
+        "Price-One": 5.0
+      },
+      {
+        "Item": "wood",
+        "Price-One": 7.0
+      },
+      {
+        "Item": "glass",
+        "Price-One": 4.0
+      },
+      {
+        "Item": "coalblock",
+        "Price-One": 15.0
+      },
+      {
+        "Item": "quartzblock",
+        "Price-One": 0.3
+      },
+      {
+        "Item": "cobble",
+        "Price-One": 0.3
+      }
+    ],
+    "resources": [
+      {
+        "Item": "slimeblock",
+        "Price-One": 3.0
+      },
+      {
+        "Item": "infestedcobble",
+        "Price-One": 10.0
+      },
+      {
+        "Item": "brickfence",
+        "Price-One": 3.0
+      },
+      {
+        "Item": "cobweb",
+        "Price-One": 10.0
+      },
+      {
+        "Item": "ladder",
+        "Price-One": 4.0
+      },
+      {
+        "Item": "string",
+        "Price-One": 10.0
+      }
+    ],
+    "utilities": [],
+    "utilities_transport": [
+      {
+        "Item": "rails",
+        "Price-One": 5.0
+      },
+      {
+        "Item": "activatorrail",
+        "Price-One": 5.0
+      },
+      {
+        "Item": "detectorrail",
+        "Price-One": 5.0
+      },
+      {
+        "Item": "poweredrail",
+        "Price-One": 10.0
+      },
+      {
+        "Item": "minecart",
+        "Price-One": 30.0
+      },
+      {
+        "Item": "furnaceminecart",
+        "Price-One": 30.0
+      },
+      {
+        "Item": "tntminecart",
+        "Price-One": 35.0
+      }
+    ],
+    "utilities_potion": [
+      {
+        "Item": "1_regeneration",
+        "Price-One": 6.0
+      },
+      {
+        "Item": "2_regeneration_ii",
+        "Price-One": 8.0
+      },
+      {
+        "Item": "3_healing",
+        "Price-One": 4.0
+      },
+      {
+        "Item": "4_strength",
+        "Price-One": 12.0
+      },
+      {
+        "Item": "5_fire_resistance",
+        "Price-One": 4.0
+      },
+      {
+        "Item": "6_leaping",
+        "Price-One": 9.0
+      },
+      {
+        "Item": "7_luck",
+        "Price-One": 12.3
+      },
+      {
+        "Item": "8_swiftness",
+        "Price-One": 5.0
+      },
+      {
+        "Item": "9_beer",
+        "Price-One": 15.0
+      },
+      {
+        "Item": "10_slowness",
+        "Price-One": 17.0
+      },
+      {
+        "Item": "11_poison",
+        "Price-One": 8.0
+      },
+      {
+        "Item": "12_poison_ii",
+        "Price-One": 11.0
+      },
+      {
+        "Item": "13_weakness",
+        "Price-One": 7.0
+      },
+      {
+        "Item": "14_harming",
+        "Price-One": 4.0
+      }
+    ],
+    "utilities_combat": [
+      {
+        "Item": "rod_of_fire",
+        "Price-One": 14.0
+      },
+      {
+        "Item": "spiky_pumpkin",
+        "Price-One": 6.0
+      },
+      {
+        "Item": "golden_apple",
+        "Price-One": 7.0
+      },
+      {
+        "Item": "golden_apple1",
+        "Price-One": 14.0
+      },
+      {
+        "Item": "waterbucket",
+        "Price-One": 20.0
+      },
+      {
+        "Item": "enderpearl",
+        "Price-One": 40.0
+      },
+      {
+        "Item": "harmless_feather",
+        "Price-One": 17.0
+      }
+    ],
+    "utilities_food": [
+      {
+        "Item": "0_carrot",
+        "Price-Definitive": 5.0
+      },
+      {
+        "Item": "1_bread",
+        "Price-Definitive": 12.0
+      },
+      {
+        "Item": "2_cookedchicken",
+        "Price-Definitive": 20.0
+      },
+      {
+        "Item": "3_cookedsalmon",
+        "Price-Definitive": 50.0
+      },
+      {
+        "Item": "4_goldencarrot",
+        "Price-Definitive": 100.0
+      }
+    ]
+  }
+}
