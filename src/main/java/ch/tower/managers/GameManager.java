@@ -7,10 +7,7 @@ import ch.tower.events.EndEvents;
 import ch.tower.events.GameEvents;
 import ch.tower.events.StateEvents;
 import ch.tower.events.WaitEvents;
-import ch.tower.utils.NPC.NPCCreator;
-import ch.tower.utils.NPC.NPCLoader;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
@@ -42,6 +39,7 @@ public class GameManager {
     private final WorldManager worldManager;
     private final ScoreboardManager scoreboardManager;
     private final NPCManager npcManager;
+    private final ShopMenuManager shopManager;
 
     private static final JSONApi.JSONReader configInfos = SpigotApi.getJSONApi().readerFromFile(CONFIG_FILE);;
 
@@ -60,12 +58,14 @@ public class GameManager {
             TeamsManager.registerTeams();
             scoreboardManager = new ScoreboardManager();
             npcManager = new NPCManager();
+            shopManager = new ShopMenuManager();
         }
         else
         {
             //if not set to something, the final field crying ouin ouin
             scoreboardManager = null;
             npcManager = null;
+            shopManager = null;
             System.err.println("Something went wrong while loading the maps.");
             Main.getInstance().getServer().getPluginManager().disablePlugin(Main.getInstance());
         }
@@ -113,6 +113,11 @@ public class GameManager {
     public NPCManager getNpcManager()
     {
         return npcManager;
+    }
+
+    public ShopMenuManager getShopManager()
+    {
+        return shopManager;
     }
 
 }
