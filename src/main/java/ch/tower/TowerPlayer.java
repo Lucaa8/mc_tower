@@ -1,20 +1,49 @@
 package ch.tower;
 
+import ch.luca008.SpigotApi.Api.JSONApi;
+import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.managers.ScoreboardManager;
 import ch.tower.managers.TeamsManager;
 import ch.tower.managers.TeamsManager.PlayerTeam;
+import ch.tower.shop.ShopMenu;
+import ch.tower.shop.categoryMenus.FoodMenu;
+import ch.tower.shop.categoryMenus.ToolsMenu;
 import ch.tower.utils.Scoreboard.PlayerBoard;
+import ch.tower.utils.items.*;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Map;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.util.*;
 
 public class TowerPlayer
 {
+
+    public static Map<String, ItemStack> defaultTools = new HashMap<>();
+
+    static {
+        JSONApi.JSONReader r = SpigotApi.getJSONApi().readerFromFile(ToolsMenu.DEFAULT_TOOLS_FILE);
+        for(Object o : r.getArray("Items"))
+        {
+            JSONObject j = (JSONObject)o;
+            Item item = Item.fromJson((JSONObject)j.get("Item"));
+            if(item!=null)
+            {
+                defaultTools.put("-1_"+(String)j.get("Type"), item.toItemStack(item.getCount()));
+            }
+        }
+    }
+
     private static final ArrayList<TowerPlayer> players = new ArrayList<>();
 
     //Can register only once a game. When state changes from wait to game.
@@ -39,6 +68,7 @@ public class TowerPlayer
         return true;
     }
 
+    @Nullable
     public static TowerPlayer getPlayer(OfflinePlayer player)
     {
         if(player == null)
@@ -51,6 +81,44 @@ public class TowerPlayer
         return null;
     }
 
+    public static class Levels implements Iterable<Map.Entry<String, Integer>>
+    {
+
+        private final Map<String, Integer> levels = new HashMap<>()
+        {{
+            put("_sword", -1);
+            put("_pickaxe", -1);
+            put("_axe", -1);
+            put("_armor", -1);
+            put("_bow", -1);
+        }};
+
+        private int food = -1;
+
+        public void addLevel(String itemName)
+        {
+            if(itemName.contains("_"))
+            {
+                String key = "_"+itemName.split("_")[1];
+                levels.replace(key, levels.get(key)+1);
+            }
+        }
+
+        public void addFoodLevel()
+        {
+            this.food++;
+        }
+
+        public int getFoodLevel()
+        {
+            return this.food;
+        }
+
+        @Override
+        public Iterator<Map.Entry<String, Integer>> iterator() {
+            return this.levels.entrySet().iterator();
+        }
+    }
 
     private final OfflinePlayer player;
     private int points = 0;
@@ -59,9 +127,12 @@ public class TowerPlayer
     private int deaths = 0;
     private double money = 0d;
 
+    private final Levels levels;
+
     private TowerPlayer(Player player)
     {
         this.player = Bukkit.getOfflinePlayer(player.getUniqueId());
+        this.levels = new Levels();
     }
 
     public OfflinePlayer asOfflinePlayer()
@@ -164,6 +235,74 @@ public class TowerPlayer
         this.money -= money;
         ScoreboardManager.BoardField.MONEY.update(asPlayer(), this.money);
         return money;
+    }
+
+    public Levels getLevels()
+    {
+        return this.levels;
+    }
+
+    public void giveTools()
+    {
+        ShopMenu tools = Main.getInstance().getManager().getShopManager().getShop("tools");
+        if(tools==null) return; //never the case but better be safe than sorry
+        for(Map.Entry<String, Integer> entry : getLevels())
+        {
+            String itemUid = entry.getValue()+entry.getKey();
+            if(entry.getKey().contains("_armor"))
+            {
+                ArmorEquipment.equip(this, itemUid);
+                continue;
+            }
+
+            if(entry.getValue() == -1)
+            {
+                if(defaultTools.containsKey(itemUid))
+                {
+                    ItemStack item = defaultTools.get(itemUid);
+                    replaceTool(entry.getKey(), item);
+                }
+            }
+            else
+            {
+                Item i = tools.getItem(itemUid);
+                if(i != null)
+                {
+                    ItemStack item = tools.prepareItem(i, false);
+                    replaceTool(entry.getKey(), NBTTags.getInstance().getNBT(item).setTag("UUID", "current"+entry.getKey()).getBukkitItem());
+                }
+            }
+        }
+    }
+
+    public void giveFood()
+    {
+        FoodMenu food = (FoodMenu) Main.getInstance().getManager().getShopManager().getShop("utilities_food");
+        if(food==null) return; //never the case but better be safe than sorry
+        Item current = food.getItemForLevel(getLevels().getFoodLevel());
+        if(current==null) return;
+        ItemStack item = current.toItemStack(current.getCount());
+        replaceTool("_food", NBTTags.getInstance().getNBT(item).setTag("UUID", "current_food").getBukkitItem());
+    }
+
+    private void replaceTool(String type, ItemStack newItem)
+    {
+        String uid = "current"+type;
+        Player p = asPlayer();
+        int index = 0;
+        for(ItemStack i : p.getInventory())
+        {
+            index++;
+            NBTTags.NBTItem nbtCurrent = NBTTags.getInstance().getNBT(i);
+            if(!nbtCurrent.hasTag("UUID") || !nbtCurrent.getString("UUID").equals(uid))
+                continue;
+            p.getInventory().setItem(index-1, newItem);
+            return;
+        }
+        if(!p.getInventory().addItem(newItem).isEmpty())
+        {
+            p.sendMessage("§cYour inventory was full so your " + (type.contains("_") ? type.substring(1) : type) + " couldn't be delivered. You will get it at your next respawn.");
+        }
     }
 
     public PlayerBoard getScoreboard()
