@@ -1,11 +1,13 @@
 package ch.tower;
 
-import ch.tower.commands.ChangeStateCommand;
 import ch.tower.events.GlobalEvents;
 import ch.tower.managers.GameManager;
 import ch.tower.managers.ScoreboardManager;
+import ch.tower.managers.ShopMenuManager;
 import ch.tower.managers.WorldManager;
+import ch.tower.shop.categoryMenus.ToolsMenu;
 import ch.tower.utils.NPC.NPCLoader;
+import ch.tower.utils.items.ArmorEquipment;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -31,18 +33,21 @@ public class Main extends JavaPlugin {
         if(!copyStreamToFile("config.json", GameManager.CONFIG_FILE) ||
            !copyStreamToFile("spawns.json", WorldManager.SPAWN_FILE) ||
            !copyStreamToFile("npc.json", NPCLoader.NPC_FILE) ||
-           !copyStreamToFile("scoreboards.json", ScoreboardManager.SCOREBOARD_FILE))
+           !copyStreamToFile("scoreboards.json", ScoreboardManager.SCOREBOARD_FILE) ||
+           !copyStreamToFile("shop.json", ShopMenuManager.SHOP_FILE) ||
+           !copyStreamToFile("default_items.json", ToolsMenu.DEFAULT_TOOLS_FILE) ||
+           !copyStreamToFile("armor.json", ToolsMenu.ARMOR_FILE))
         {
             System.err.println("Cannot generate all required resources...");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        //just to execute the static code block.
+        new ArmorEquipment();
         //DO NOT ADD ANYTHING BEFORE THIS LINE
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new GlobalEvents(), this);
         game = new GameManager();
-        //registering commands:
-        this.getCommand("changeState").setExecutor(new ChangeStateCommand());
     }
 
     public void onDisable()
