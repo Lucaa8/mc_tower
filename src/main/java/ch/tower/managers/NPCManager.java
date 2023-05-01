@@ -81,7 +81,7 @@ public class NPCManager {
                                 NPCCreator.NPCInteract interact = Main.getInstance().getManager().getNpcManager().callbacks.get(npc.getName());
                                 if(interact != null)
                                 {
-                                    interact.click(npc, Bukkit.getPlayer(player));
+                                    Bukkit.getScheduler().runTask(Main.getInstance(), ()->interact.click(npc, Bukkit.getPlayer(player)));
                                 }
                                 return;
                             }
