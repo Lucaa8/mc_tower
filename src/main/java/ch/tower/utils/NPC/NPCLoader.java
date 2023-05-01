@@ -4,9 +4,7 @@ import ch.luca008.SpigotApi.Api.JSONApi;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
 import com.mojang.authlib.properties.Property;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -15,12 +13,6 @@ import java.io.File;
 public class NPCLoader {
 
     public static final File NPC_FILE = new File(Main.getInstance().getDataFolder(), "npc.json");
-
-    private static void openShop(NPCCreator.NPC npc, Player player)
-    {
-        Bukkit.broadcastMessage(player.getName() + " interacted with NPC " + npc.getName());
-        //Shop.openShop(player, npc.getName()); //maybe somethin lie that
-    }
 
     public static void load()
     {
@@ -33,7 +25,7 @@ public class NPCLoader {
                                    propFromJson(rNpc.getJson("Textures")),
                                    locFromJson(rNpc),
                                    NPCCreator.Directions.valueOf(rNpc.getString("Facing")),
-                                   NPCLoader::openShop);
+                                   Main.getInstance().getManager().getShopManager()::openShop);
         }
     }
 
