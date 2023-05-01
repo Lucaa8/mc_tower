@@ -4,16 +4,21 @@ import ch.tower.Main;
 import ch.tower.TowerPlayer;
 import ch.tower.managers.TeamsManager;
 import ch.tower.utils.NPC.NPCLoader;
+import ch.tower.utils.items.NBTTags;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.player.*;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
 
@@ -30,10 +35,12 @@ public class GameEvents implements StateEvents
         }
         return instance;
     }
+
+    //Maybe add a delay before giving back a player's bow (level 1 of BOW). To avoid spam camper killing themselves just to get back a bow
     @EventHandler
     public void onDeathOfPlayer(PlayerDeathEvent e)
     {
-        //TODO: tester
+        //TODO: tester (bcp de problemes ici)
         Player player = e.getEntity();
         EntityDamageEvent.DamageCause deathCause = player.getLastDamageCause().getCause();
         if (deathCause == EntityDamageEvent.DamageCause.ENTITY_ATTACK)
@@ -47,7 +54,7 @@ public class GameEvents implements StateEvents
                 towerPlayer.addDeath();
                 towerAttacker.addKill();
                 String message = TeamsManager.getPlayerTeam(player).getColorCode()
-                        + player.getName() + ChatColor.RESET + " has been killed by " + TeamsManager.getPlayerTeam(attacker).getColorCode() + player.getName();
+                        + player.getName() + ChatColor.RESET + " has been killed by " + TeamsManager.getPlayerTeam(attacker).getColorCode() + attacker.getName();
                 e.setDeathMessage(message);
             }
         }
@@ -60,6 +67,20 @@ public class GameEvents implements StateEvents
             e.setDeathMessage(message);
         }
     }
+
+    @EventHandler
+    public void onRespawnGiveStuffAndTeleport(PlayerRespawnEvent e)
+    {
+        TowerPlayer player = TowerPlayer.getPlayer(e.getPlayer());
+
+        if(player != null)
+        {
+            e.setRespawnLocation(player.getTeam().getSpawn());
+            player.giveTools();
+            player.giveFood();
+        }
+    }
+
     @EventHandler
     public void onChatByPlayer(AsyncPlayerChatEvent e)
     {
@@ -101,6 +122,68 @@ public class GameEvents implements StateEvents
 
     }
 
+    //------------------- START OF SHOP/ITEMS SECTION -------------------//
+
+    @EventHandler
+    public void onDropRestrictedItem(PlayerDropItemEvent e)
+    {
+        e.setCancelled(isRestrictedItem(e.getItemDrop().getItemStack()));
+    }
+
+    @EventHandler
+    public void onInventoryClickRestrictedItem(InventoryClickEvent e)
+    {
+        if(e.getClickedInventory() != null)
+        {
+            ItemStack i0 = e.getClickedInventory().getItem(0);
+            if(i0 != null && i0.getType() != Material.AIR && NBTTags.getInstance().getNBT(i0).hasTag("id-inv"))
+            {
+                //This is shop menu inventory, we do not need to cancel anything, the shop handler will do that.
+                return;
+            }
+        }
+        InventoryHolder holder = e.getView().getTopInventory().getHolder();
+        if(holder != e.getWhoClicked())
+        {
+            if(e.getClickedInventory() != e.getWhoClicked().getInventory() || e.getClick() == ClickType.SHIFT_LEFT || e.getClick() == ClickType.SHIFT_RIGHT)
+            {
+                e.setCancelled(isRestrictedItem(e.getCurrentItem()) || isRestrictedItem(e.getCursor()));
+            }
+        }
+    }
+
+    //Here because of the InventoryClickEvent glitch;
+    //Inventory drag events are called instead of inventory click events when the item is being dragged,
+    //and an item being dragged across 2 pixels in the same slot already counts as dragging, which doesn't call the inventory click event.
+    @EventHandler
+    public void onInventoryDragRestrictedItem(InventoryDragEvent e)
+    {
+        InventoryHolder holder = e.getView().getTopInventory().getHolder();
+        if(holder != e.getWhoClicked())
+        {
+            if(e.getInventory() != e.getWhoClicked().getInventory())
+            {
+                e.setCancelled(isRestrictedItem(e.getOldCursor()));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDeathRemoveRestrictedItems(PlayerDeathEvent e)
+    {
+        e.getDrops().removeIf(this::isRestrictedItem);
+    }
+
+    private boolean isRestrictedItem(ItemStack item)
+    {
+        if(item == null || item.getType() == Material.AIR)
+            return false;
+        NBTTags.NBTItem nbt = NBTTags.getInstance().getNBT(item);
+        return nbt.hasTag("UUID") && nbt.getString("UUID").startsWith("current_");
+    }
+
+    //------------------- END OF SHOP/ITEMS SECTION -------------------//
+
     @EventHandler
     public void onJoin(PlayerJoinEvent e)
     {
@@ -129,7 +212,7 @@ public class GameEvents implements StateEvents
         }
         else
         {
-            String message = TeamsManager.getPlayerTeam(p).getColorCode() + p.getName() + ChatColor.RESET + " leaved the game.";
+            String message = TeamsManager.getPlayerTeam(p).getColorCode() + p.getName() + ChatColor.RESET + " left the game.";
             e.setQuitMessage(message);
         }
     }
@@ -138,14 +221,20 @@ public class GameEvents implements StateEvents
     public void onStateBegin()
     {
         TowerPlayer.registerPlayers();
-        Bukkit.broadcast("The game begin. GL HF", Server.BROADCAST_CHANNEL_USERS);
-        //TODO: tester
+        Bukkit.broadcast("The game begins. GL HF", Server.BROADCAST_CHANNEL_USERS);
         Collection<? extends Player> players = Main.getInstance().getServer().getOnlinePlayers();
         for (Player player : players)
         {
             player.teleport(TeamsManager.getPlayerTeam(player).getSpawn());
+            TowerPlayer p = TowerPlayer.getPlayer(player);
+            if(p==null) continue;
+            Main.getInstance().getManager().getScoreboardManager().setBoard(p.asPlayer(), Main.getInstance().getManager().getState().name());
+            p.updateBoard();
+            p.giveTools();
+            p.giveFood();
         }
         NPCLoader.load();
+        Bukkit.getServer().getPluginManager().registerEvents(new InventoryEvent(), Main.getInstance());
     }
 
     @Override
