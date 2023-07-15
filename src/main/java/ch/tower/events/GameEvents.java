@@ -3,6 +3,7 @@ package ch.tower.events;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
 import ch.tower.managers.TeamsManager;
+import ch.tower.shop.LuckShuffle;
 import ch.tower.utils.NPC.NPCLoader;
 import ch.tower.utils.items.NBTTags;
 import org.bukkit.*;
@@ -24,6 +25,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collection;
+import java.util.Random;
 
 public class GameEvents implements StateEvents
 {
@@ -94,23 +96,19 @@ public class GameEvents implements StateEvents
             NBTTags.NBTItem nbt = NBTTags.getInstance().getNBT(e.getItem());
             if(nbt.hasTag("UUID") && nbt.getString("UUID").equals("7_luck"))
             {
-                //Peut-etre voir pr faire un shuffe avec d'autres sons cools.
                 p.playSound(p, Sound.AMBIENT_CAVE, 1.0f, 1.0f);
                 p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 1, true, false));
                 Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->
                 {
                     if(!p.isOnline())return;
-                    //A terminer (ajouter des % de chance d'obtenir des items "normaux", un peu custom et des effets p.ex avoir 2 coeurs de plus (12) jusqua
-                    //la prochaine mort
-                    p.getInventory().addItem(new ItemStack(Material.STONE));
-                }, 100L);
+                    LuckShuffle.apply(TowerPlayer.getPlayer(p));
+                }, 80L);
             }
         }
     }
 
     //------------------- END OF THE LUCK POTION SECTION -------------------//
 
-    //Maybe add a delay before giving back a player's bow (level 1 of BOW). To avoid spam camper killing themselves just to get back a bow
     @EventHandler
     public void onDeathOfPlayer(PlayerDeathEvent e)
     {
@@ -142,6 +140,7 @@ public class GameEvents implements StateEvents
         }
     }
 
+    //Maybe add a delay before giving back a player's bow (level 1 of BOW). To avoid spam camper killing themselves just to get back a bow
     @EventHandler
     public void onRespawnGiveStuffAndTeleport(PlayerRespawnEvent e)
     {
