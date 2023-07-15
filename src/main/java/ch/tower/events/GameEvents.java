@@ -3,12 +3,11 @@ package ch.tower.events;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
 import ch.tower.managers.TeamsManager;
+import ch.tower.shop.LuckShuffle;
 import ch.tower.utils.NPC.NPCLoader;
 import ch.tower.utils.items.NBTTags;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Server;
+import org.bukkit.*;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -17,10 +16,16 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collection;
+import java.util.Random;
 
 public class GameEvents implements StateEvents
 {
@@ -36,7 +41,74 @@ public class GameEvents implements StateEvents
         return instance;
     }
 
-    //Maybe add a delay before giving back a player's bow (level 1 of BOW). To avoid spam camper killing themselves just to get back a bow
+    //------------------- START OF THE HARMLESS FEATHER SECTION -------------------//
+
+    @EventHandler
+    public void onDamageWithFeather(EntityDamageEvent e)
+    {
+        if(e.getEntityType() == EntityType.PLAYER && e.getCause() == EntityDamageEvent.DamageCause.FALL)
+        {
+            Player p = (Player) e.getEntity();
+            if(isHarmlessFeatherValid(p, EquipmentSlot.HAND) || isHarmlessFeatherValid(p, EquipmentSlot.OFF_HAND))
+            {
+                //Removes 15% on the FINAL damage if the player got a harmless feather in one of his hand.
+                //if the player already have -24% fall damage (FFII enchant) it WONT remove 39% (24%+15%) of the damage. But only 15% of the damage after the 24% reduction.
+                //e.g if the damage was 15.00. 39% of 15.00 is 5.85 then the final damage will be 15.00-5.85=9.15
+                //but in our case its 24% of 15.00 = 3.6 so the pre-final damage => 15.00 - 3.6 = 11.4
+                //THEN we apply the 15% reduction on the pre-final damage: 15% of 11.4 = 1.71 so the FINAL damage is 11.4 - 1.71 = 9.69 (The damage is bigger than the 39% reduction)
+                //The difference isn't big here but a big fall damage can be 25-30 and the player can barely survive due to the -24% AND the -15% after that
+                double ratio = e.getFinalDamage() * 15.0 /100.0;
+                e.setDamage(e.getFinalDamage()-ratio);
+            }
+        }
+    }
+
+    private boolean isHarmlessFeatherValid(Player player, EquipmentSlot slot)
+    {
+        ItemStack is = player.getInventory().getItem(slot);
+        if(is != null && is.getType() == Material.FEATHER)
+        {
+            NBTTags.NBTItem nbt = NBTTags.getInstance().getNBT(is);
+            return nbt.hasTag("UUID") && nbt.getString("UUID").equals("harmless_feather");
+        }
+        return false;
+    }
+
+    //------------------- END OF THE HARMLESS FEATHER SECTION -------------------//
+
+    //------------------- START OF THE LUCK POTION SECTION -------------------//
+
+    @EventHandler
+    public void onLuckPotionConsume(PlayerItemConsumeEvent e)
+    {
+        if(e.getItem().getType() == Material.POTION)
+        {
+            Player p = e.getPlayer();
+            Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->
+            {
+                if(!p.isOnline())return;
+                ItemStack is = p.getInventory().getItem(e.getHand());
+                if(is != null && is.getType()==Material.GLASS_BOTTLE)
+                {
+                    p.getInventory().setItem(e.getHand(), new ItemStack(Material.AIR));
+                }
+            }, 1L);
+            NBTTags.NBTItem nbt = NBTTags.getInstance().getNBT(e.getItem());
+            if(nbt.hasTag("UUID") && nbt.getString("UUID").equals("7_luck"))
+            {
+                p.playSound(p, Sound.AMBIENT_CAVE, 1.0f, 1.0f);
+                p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 1, true, false));
+                Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->
+                {
+                    if(!p.isOnline())return;
+                    LuckShuffle.apply(TowerPlayer.getPlayer(p));
+                }, 80L);
+            }
+        }
+    }
+
+    //------------------- END OF THE LUCK POTION SECTION -------------------//
+
     @EventHandler
     public void onDeathOfPlayer(PlayerDeathEvent e)
     {
@@ -68,6 +140,7 @@ public class GameEvents implements StateEvents
         }
     }
 
+    //Maybe add a delay before giving back a player's bow (level 1 of BOW). To avoid spam camper killing themselves just to get back a bow
     @EventHandler
     public void onRespawnGiveStuffAndTeleport(PlayerRespawnEvent e)
     {
@@ -84,6 +157,7 @@ public class GameEvents implements StateEvents
     @EventHandler
     public void onChatByPlayer(AsyncPlayerChatEvent e)
     {
+        TowerPlayer.getPlayer(e.getPlayer()).giveMoney(500);
         e.setCancelled(true);
         StringBuilder s = new StringBuilder("");
         Player p = e.getPlayer();
