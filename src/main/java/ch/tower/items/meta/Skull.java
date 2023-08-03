@@ -1,10 +1,14 @@
-package ch.tower.utils.items.meta;
+package ch.tower.items.meta;
 
-import ch.tower.utils.Utils;
-import ch.tower.utils.items.NBTTags;
+import ch.luca008.SpigotApi.Api.NBTTagApi;
+import ch.luca008.SpigotApi.SpigotApi;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagIntArray;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.json.simple.JSONObject;
@@ -12,7 +16,7 @@ import org.json.simple.JSONObject;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class Skull implements Meta{
+public class Skull implements Meta {
 
     public enum SkullOwnerType{
         PLAYER, //A dynamic custom player (with applyOwner(UniPlayer)) (owner = null)
@@ -38,11 +42,11 @@ public class Skull implements Meta{
     }
 
     @Override
-    public boolean hasSameMeta(ItemStack item, @Nullable Player player) {
-        if(item!=null&&item.getItemMeta() instanceof SkullMeta&&type!=null){
+    public boolean hasSameMeta(ItemStack item, @Nullable OfflinePlayer player) {
+        if(item!=null&&item.getItemMeta() instanceof SkullMeta &&type!=null){
             if(type==SkullOwnerType.PLAYER)
-                return true; //dynamic player skin when applyOwner is called on the fly, cannot compare.
-            else if(type==SkullOwnerType.PSEUDO){ //static player name (do not change on give to anyone)
+                return true; //No fixed data on this skull meta instance, so nothing to check.
+            else if(type==SkullOwnerType.PSEUDO){
                 SkullMeta sm = (SkullMeta) item.getItemMeta();
                 if(sm.hasOwner()){
                     String name = sm.getOwningPlayer().getName();
@@ -50,7 +54,7 @@ public class Skull implements Meta{
                 }
             }
             else{//MCHEADS
-                NBTTags.NBTItem nbt = NBTTags.getInstance().getNBT(item);
+                NBTTagApi.NBTItem nbt = SpigotApi.getNBTTagApi().getNBT(item);
                 if(nbt.hasTags()&&owner!=null){
                     try{
                         String value = nbt.getTags().toString().split("Value:\"")[1];
@@ -65,8 +69,8 @@ public class Skull implements Meta{
     }
 
     public static boolean hasMeta(ItemStack item){
-        if(item.getType()!=Material.PLAYER_HEAD)return false;
-        return NBTTags.getInstance().getNBT(item).hasTag("SkullOwner");
+        if(item.getType()!= Material.PLAYER_HEAD)return false;
+        return SpigotApi.getNBTTagApi().getNBT(item).hasTag("SkullOwner");
     }
 
     @Override
@@ -77,7 +81,7 @@ public class Skull implements Meta{
             sm.setOwningPlayer(Bukkit.getOfflinePlayer(owner));
             item.setItemMeta(sm);
             return item;
-        }else return Utils.applySignature(item, owner); //won't work with 1.19-
+        }else return applySignature(item, owner);
     }
 
     public ItemStack applyOwner(ItemStack item, UUID player){
@@ -112,5 +116,30 @@ public class Skull implements Meta{
     @Override
     public String toString(){
         return "{MetaType:SKULL,Type:"+(type==null?"Null":type.name())+"Owner:{Value:"+(owner==null?"None":owner)+"}}";
+    }
+
+    public static ItemStack applySignature(ItemStack item, String encodedURL){
+        net.minecraft.world.item.ItemStack nmsItem = SpigotApi.getNBTTagApi().getNMSItem(item);
+
+        NBTTagCompound tags = SpigotApi.getNBTTagApi().getNBT(item).getTags(); //NBTTagCompound "tag"
+
+        NBTTagIntArray id = new NBTTagIntArray(new int[]{0,0,0,0});
+        NBTTagString val = NBTTagString.a(encodedURL);
+
+        NBTTagCompound compoundSO = new NBTTagCompound();
+        NBTTagCompound compoundProp = new NBTTagCompound();
+        NBTTagCompound compound0 = new NBTTagCompound();
+        NBTTagList textures = new NBTTagList();
+
+        compound0.a("Value", val);
+        textures.b(0, compound0);
+        compoundProp.a("textures", textures);
+        compoundSO.a("Id", id);
+        compoundSO.a("Properties", compoundProp);
+
+        tags.a("SkullOwner", compoundSO);
+        nmsItem.c(tags);
+
+        return SpigotApi.getNBTTagApi().getBukkitItem(nmsItem);
     }
 }

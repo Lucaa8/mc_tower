@@ -1,23 +1,16 @@
 package ch.tower.managers;
 
+import ch.luca008.SpigotApi.Api.JSONApi;
+import ch.luca008.SpigotApi.Api.NPCApi;
 import ch.luca008.SpigotApi.Api.ReflectionApi;
+import ch.luca008.SpigotApi.Packets.TeamsPackets;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
-import ch.tower.utils.NPC.NPCCreator;
-import ch.tower.utils.Packets.EntityPackets;
-import ch.tower.utils.Packets.SpigotPlayer;
-import ch.tower.utils.Packets.TeamsPackets;
 import com.mojang.authlib.properties.Property;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelDuplexHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.EventLoop;
-import net.minecraft.network.protocol.Packet;
+import net.minecraft.EnumChatFormat;
 import net.minecraft.network.protocol.game.PacketPlayInUseEntity;
-import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
 import net.minecraft.server.level.EntityPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityLiving;
+import net.minecraft.world.scores.ScoreboardTeamBase;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -25,16 +18,26 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
-import java.lang.reflect.Field;
+import javax.annotation.Nullable;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class NPCManager {
 
-    private final Map<String, EntityPlayer> npc = new HashMap<>();
-    private final Map<String, NPCCreator.NPCInteract> callbacks = new HashMap<>();
+    public interface NPCInteract
+    {
+        void click(NPCApi.NPC npc, Player player);
+    }
+
+    public static final File NPC_FILE = new File(Main.getInstance().getDataFolder(), "npc.json");
+
+    private final Map<String, NPCApi.NPC> npc = new HashMap<>();
+    private final Map<String, NPCInteract> callbacks = new HashMap<>();
 
     public NPCManager()
     {
@@ -48,10 +51,10 @@ public class NPCManager {
         {
             Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->
             {
-                SpigotPlayer.sendPacket(e.getPlayer(), TeamsPackets.createOrUpdateTeam("npc", TeamsPackets.Mode.CREATE, "NPC", false, false, TeamsPackets.NameTagVisibility.ALWAYS, TeamsPackets.TeamPush.NEVER, TeamsPackets.TeamColor.YELLOW, "NPC | ", ""));
-                for(EntityPlayer ep : Main.getInstance().getManager().getNpcManager().npc.values())
+                SpigotApi.getMainApi().players().sendPacket(e.getPlayer(), TeamsPackets.createOrUpdateTeam("npc", TeamsPackets.Mode.CREATE, "NPC", false, false, ScoreboardTeamBase.EnumNameTagVisibility.a, ScoreboardTeamBase.EnumTeamPush.b, EnumChatFormat.o, "NPC | ", ""));
+                for(NPCApi.NPC npc : Main.getInstance().getManager().getNpcManager().npc.values())
                 {
-                    send(e.getPlayer(), new NPCCreator.NPC(ep).asPacket());
+                    send(e.getPlayer(), npc);
                 }
             }, 5L);
         }
@@ -59,107 +62,80 @@ public class NPCManager {
         @EventHandler
         public void onQuitUnregisterTeam(PlayerQuitEvent e)
         {
-            SpigotPlayer.sendPacket(e.getPlayer(), TeamsPackets.deleteTeam("npc"));
+            SpigotApi.getMainApi().players().sendPacket(e.getPlayer(), TeamsPackets.deleteTeam("npc"));
+            for(NPCApi.NPC npc : Main.getInstance().getManager().getNpcManager().npc.values())
+            {
+                npc.despawn(e.getPlayer());
+            }
         }
 
         @EventHandler
         public void onJoinSniff(PlayerJoinEvent e)
         {
-            ReflectionApi r = SpigotApi.getReflectionApi();
-            Class<?> craftplayer = r.spigot().getOBCClass("entity", "CraftPlayer");
-            EntityPlayer ep = (EntityPlayer) r.invoke(craftplayer, e.getPlayer(), "getHandle", new Class[0]);
-            final String player = e.getPlayer().getName();
-            ep.b.b.m.pipeline().addBefore("packet_handler", e.getPlayer().getName(), new ChannelDuplexHandler(){
-                public void channelRead(ChannelHandlerContext channelHandlerContext, Object packet) throws Exception {
-                    if(packet instanceof PacketPlayInUseEntity p)
+            SpigotApi.getMainApi().players().handlePacket(e.getPlayer(), (packet, event) ->{
+                if(packet instanceof PacketPlayInUseEntity p)
+                {
+                    Object bInstance = ReflectionApi.invoke(packet.getClass(), packet, "getActionType", new Class<?>[0]);
+                    Class<?> bEnum = ReflectionApi.getPrivateInnerClass(PacketPlayInUseEntity.class, "b");
+                    Object ainteract = ReflectionApi.getEnumValue(bEnum, "INTERACT");
+                    Object battack = ReflectionApi.getEnumValue(bEnum, "ATTACK");
+                    if(bInstance == ainteract || bInstance == battack)
                     {
-                        if(p.getActionType() == PacketPlayInUseEntity.b.b)
+                        int id = (int) ReflectionApi.getField(p, "a");
+                        NPCApi.NPC npc = Main.getInstance().getManager().getNpcManager().getNPC(id);
+                        if(npc != null)
                         {
-                            NPCCreator.NPC npc = Main.getInstance().getManager().getNpcManager().getNPC(p.getEntityId());
-                            if(npc != null)
+                            NPCInteract interact = Main.getInstance().getManager().getNpcManager().callbacks.get(npc.name);
+                            if(interact != null)
                             {
-                                NPCCreator.NPCInteract interact = Main.getInstance().getManager().getNpcManager().callbacks.get(npc.getName());
-                                if(interact != null)
-                                {
-                                    Bukkit.getScheduler().runTask(Main.getInstance(), ()->interact.click(npc, Bukkit.getPlayer(player)));
-                                }
-                                return;
+                                Bukkit.getScheduler().runTask(Main.getInstance(), ()->interact.click(npc, Bukkit.getPlayer(e.getPlayer().getName())));
                             }
+                            //Avoid the server handling this packet as this entity doesnt exists on the server (client-side npc)
+                            event.setCancelled(true);
                         }
                     }
-                    super.channelRead(channelHandlerContext, packet);
                 }
             });
         }
-
-        @EventHandler
-        public void onQuitUnsniff(PlayerQuitEvent e)
-        {
-            ReflectionApi r = SpigotApi.getReflectionApi();
-            Class<?> craftplayer = r.spigot().getOBCClass("entity", "CraftPlayer");
-            EntityPlayer ep = (EntityPlayer) r.invoke(craftplayer, e.getPlayer(), "getHandle", new Class[0]);
-            Channel channel = ep.b.b.m;
-            EventLoop loop = channel.eventLoop();
-            loop.submit(() -> {
-                channel.pipeline().remove(e.getPlayer().getName());
-                return null;
-            });
-        }
     }
 
-    public NPCCreator.NPC getNPC(String name)
+    @Nullable
+    public NPCApi.NPC getNPC(String name)
     {
-        EntityPlayer ep = this.npc.get(name);
-        if(ep != null)
+        return this.npc.get(name);
+    }
+
+    @Nullable
+    public NPCApi.NPC getNPC(int entityId)
+    {
+        for(NPCApi.NPC npc : this.npc.values())
         {
-            return new NPCCreator.NPC(ep);
+            if(npc.bukkitId == entityId)
+                return npc;
         }
         return null;
     }
 
-    public NPCCreator.NPC getNPC(int entityid)
-    {
-        for(EntityPlayer ep : this.npc.values())
-        {
-            if(ep.getBukkitEntity().getEntityId() == entityid)
-                return new NPCCreator.NPC(ep);
-        }
-        return null;
-    }
-
-    public NPCCreator.NPC registerNPC(String uniqueName, Property skin, Location spawn, NPCCreator.Directions facing, NPCCreator.NPCInteract onClick)
+    public NPCApi.NPC registerNPC(String uniqueName, Property skin, Location spawn, NPCApi.Directions facing, NPCInteract onClick)
     {
         if(!this.npc.containsKey(uniqueName))
         {
-            EntityPlayer npc = NPCCreator.createNPC(spawn.getWorld(), uniqueName, skin);
-            setField(Entity.class, npc, "t", spawn.getX());
-            setField(Entity.class, npc, "u", spawn.getY());
-            setField(Entity.class, npc, "v", spawn.getZ());
-            setField(Entity.class, npc, "aA", facing == NPCCreator.Directions.OTHER ? spawn.getYaw() : facing.getBodyYaw());
-            setField(Entity.class, npc, "aB", facing == NPCCreator.Directions.OTHER ? spawn.getPitch() : facing.getPitch());
-            setField(EntityLiving.class, npc, "aZ", facing.getHeadYaw());
+            EntityPlayer entity = SpigotApi.getNpcApi().createEntity(spawn.getWorld(), uniqueName, skin);
+            NPCApi.NPC npc = new NPCApi.NPC(entity, spawn, facing, true);
+            SpigotApi.getMainApi().players().sendPacket(Bukkit.getOnlinePlayers(), TeamsPackets.updateEntities("npc", TeamsPackets.Mode.ADD_ENTITY, npc.name));
             this.npc.put(uniqueName, npc);
             this.callbacks.put(uniqueName, onClick);
-            Packet<?>[] packets = new NPCCreator.NPC(npc).asPacket();
-            for(Player player : Bukkit.getOnlinePlayers())
-            {
-                send(player, packets);
-            }
         }
-        return new NPCCreator.NPC(this.npc.get(uniqueName));
+        return this.npc.get(uniqueName);
     }
 
     public boolean unregisterNPC(String uniqueName)
     {
         this.callbacks.remove(uniqueName);
-        EntityPlayer ep = this.npc.remove(uniqueName);
-        if(ep != null)
+        NPCApi.NPC npc = this.npc.remove(uniqueName);
+        if(npc != null)
         {
-            PacketPlayOutEntityDestroy packet = EntityPackets.destroyNPC(ep);
-            for(Player p : Bukkit.getOnlinePlayers())
-            {
-                SpigotPlayer.sendPacket(p, packet);
-            }
+            npc.despawn();
             return true;
         }
         return false;
@@ -167,35 +143,45 @@ public class NPCManager {
 
     public void unregisterAll()
     {
-        for(EntityPlayer ep : new ArrayList<>(this.npc.values()))
+        for(NPCApi.NPC npc : new ArrayList<>(this.npc.values()))
         {
-            unregisterNPC(ep.fy().getName());
+            unregisterNPC(npc.name);
         }
-        for(Player p : Bukkit.getOnlinePlayers())
+        SpigotApi.getMainApi().players().sendPacket(Bukkit.getOnlinePlayers(), TeamsPackets.deleteTeam("npc"));
+    }
+
+    private static void send(Player player, NPCApi.NPC npc)
+    {
+        npc.spawn(player);
+        SpigotApi.getMainApi().players().sendPacket(player, TeamsPackets.updateEntities("npc", TeamsPackets.Mode.ADD_ENTITY, npc.name));
+    }
+
+    public void load(){
+        JSONApi.JSONReader r = SpigotApi.getJSONApi().readerFromFile(NPC_FILE);
+        JSONArray jarr = r.getArray("NPC");
+        for(Object o : jarr)
         {
-            SpigotPlayer.sendPacket(p, TeamsPackets.deleteTeam("npc"));
+            JSONApi.JSONReader rNpc = SpigotApi.getJSONApi().getReader((JSONObject) o);
+            registerNPC(rNpc.getString("Name"),
+                    propFromJson(rNpc.getJson("Textures")),
+                    locFromJson(rNpc),
+                    NPCApi.Directions.valueOf(rNpc.getString("Facing")),
+                    Main.getInstance().getManager().getShopManager()::openShop);
         }
     }
 
-    private static void send(Player player, Packet<?>[] packets)
+    private Property propFromJson(JSONApi.JSONReader j)
     {
-        for (int i = 0; i < packets.length-1; i++)
-        {
-            SpigotPlayer.sendPacket(player, packets[i]);
-        }
-        Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->SpigotPlayer.sendPacket(player, packets[packets.length-1]), 5L);
+        if(!j.c("value") || !j.c("signature"))
+            return null;
+        return new Property("textures", j.getString("value"), j.getString("signature"));
     }
 
-    private static void setField(Class<?> clazz, Object instance, String field, Object value)
+    private Location locFromJson(JSONApi.JSONReader j)
     {
-        try {
-            Field f = clazz.getDeclaredField(field);
-            f.setAccessible(true);
-            f.set(instance, value);
-            f.setAccessible(false);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            System.err.println("Unknown field: " + field);
-        }
+        if(j.c("X") && j.c("Y") && j.c("Z") && j.c("Facing"))
+            return new Location(Main.getInstance().getManager().getWorldManager().getTowerWorld(), j.getDouble("X"), j.getDouble("Y"), j.getDouble("Z"));
+        return null;
     }
 
 }

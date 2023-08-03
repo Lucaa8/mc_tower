@@ -23,7 +23,7 @@ public class GameManager {
         GAME(GameEvents.getInstance()),//
         END(EndEvents.getInstance());
 
-        private StateEvents stateInstance;
+        private final StateEvents stateInstance;
         private GameState(StateEvents stateInstance)
         {
             this.stateInstance = stateInstance;

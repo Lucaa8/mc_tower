@@ -1,8 +1,9 @@
-package ch.tower.utils.items.meta;
+package ch.tower.items.meta;
 
-import ch.tower.utils.Utils;
+import ch.luca008.SpigotApi.Api.JSONApi;
+import ch.luca008.SpigotApi.SpigotApi;
 import org.bukkit.Color;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
@@ -16,9 +17,9 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Potion implements Meta{
+public class Potion implements Meta {
 
-    private PotionData mainEffect;
+    private final PotionData mainEffect;
     private List<PotionEffect> customsEffects;
     private Color color = null;
 
@@ -26,8 +27,8 @@ public class Potion implements Meta{
         if(json.containsKey("Color")){
             Object o = json.get("Color");
             if(o instanceof JSONObject){
-                JSONObject j = (JSONObject)o;
-                color = Color.fromRGB(Utils.getInt(j, "r"),Utils.getInt(j, "g"),Utils.getInt(j, "b"));
+                JSONApi.JSONReader r = SpigotApi.getJSONApi().getReader((JSONObject) o);
+                color = Color.fromRGB(r.getInt("r"),r.getInt("g"),r.getInt("b"));
             }
         }
         if(json.containsKey("BaseEffect")){
@@ -38,8 +39,11 @@ public class Potion implements Meta{
             JSONArray jarr = (JSONArray) json.get("CustomEffects");
             customsEffects = new ArrayList<>();
             for (Object o : jarr) {
-                JSONObject j = (JSONObject) o;
-                customsEffects.add(new PotionEffect(PotionEffectType.getByName((String)j.get("Type")), Utils.getInt(j,"Duration"), Utils.getInt(j,"Amplifier"), j.containsKey("Ambient")?(boolean) j.get("Ambient"):false, j.containsKey("Particles")?(boolean)j.get("Particles"):false));
+                JSONApi.JSONReader r = SpigotApi.getJSONApi().getReader((JSONObject) o);
+                PotionEffectType type = PotionEffectType.getByName(r.getString("Type"));
+                if(type!=null){
+                    customsEffects.add(new PotionEffect(type, r.getInt("Duration"), r.getInt("Amplifier"), r.c("Ambient")&&r.getBool("Ambient"), r.c("Particles")&&r.getBool("Particles")));
+                }
             }
         }
     }
@@ -137,7 +141,7 @@ public class Potion implements Meta{
     }
 
     @Override
-    public boolean hasSameMeta(ItemStack item, @Nullable Player player) {
+    public boolean hasSameMeta(ItemStack item, @Nullable OfflinePlayer player) {
         if(item!=null&&item.getItemMeta() instanceof PotionMeta){
             PotionMeta pm = (PotionMeta) item.getItemMeta();
             PotionData metaData = pm.getBasePotionData();

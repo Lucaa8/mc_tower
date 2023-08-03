@@ -1,16 +1,17 @@
-package ch.tower.utils.items.meta;
+package ch.tower.items.meta;
 
-import ch.tower.utils.Utils;
+import ch.luca008.SpigotApi.Api.JSONApi;
+import ch.luca008.SpigotApi.SpigotApi;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.json.simple.JSONObject;
 
 import javax.annotation.Nullable;
 
-public class LeatherArmor implements Meta{
+public class LeatherArmor implements Meta {
 
     private Color color = Bukkit.getItemFactory().getDefaultLeatherColor();
 
@@ -18,8 +19,8 @@ public class LeatherArmor implements Meta{
         if(json.containsKey("Color")){
             Object o = json.get("Color");
             if(o instanceof JSONObject) {
-                JSONObject jrgb = (JSONObject) o;
-                color = Color.fromRGB(Utils.getInt(jrgb, "r"), Utils.getInt(jrgb, "g"), Utils.getInt(jrgb, "b"));
+                JSONApi.JSONReader r = SpigotApi.getJSONApi().getReader((JSONObject) o);
+                color = Color.fromRGB(r.getInt("r"), r.getInt("g"), r.getInt("b"));
             }
         }
     }
@@ -67,7 +68,7 @@ public class LeatherArmor implements Meta{
     }
 
     @Override
-    public boolean hasSameMeta(ItemStack item, @Nullable Player player) {
+    public boolean hasSameMeta(ItemStack item, @Nullable OfflinePlayer player) {
         if(item!=null&&item.getItemMeta() instanceof LeatherArmorMeta){
             return ((LeatherArmorMeta)item.getItemMeta()).getColor().equals(color);
         }

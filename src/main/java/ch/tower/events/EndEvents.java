@@ -18,6 +18,8 @@ public class EndEvents implements StateEvents
         return instance;
     }
 
+    //TODO Cancel LoginEvent (Has scoreboards dont update placeholders in this state), mercii!
+
     @Override
     public void onStateBegin()
     {

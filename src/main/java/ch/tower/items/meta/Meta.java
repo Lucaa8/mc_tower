@@ -1,9 +1,10 @@
-package ch.tower.utils.items.meta;
+package ch.tower.items.meta;
 
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 
 public interface Meta {
@@ -27,7 +28,7 @@ public interface Meta {
 
     public MetaType getType();
 
-    public boolean hasSameMeta(ItemStack item, Player player); //need ItemStack to compare some deep NBT with skulls...
+    public boolean hasSameMeta(ItemStack item, @Nullable OfflinePlayer player); //need ItemStack to compare some deep NBT with skulls...
 
     //Used to check if an item CONTAINS(not equal to anything) some meta data like skullowner, colored armor, etc...
     public static boolean hasMeta(ItemStack itemStack){

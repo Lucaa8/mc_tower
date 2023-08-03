@@ -12,6 +12,11 @@
       <option name="url" value="http://skyblockv4.fr" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="spigot-repo" />
+      <option name="name" value="spigot-repo" />
+      <option name="url" value="https://hub.spigotmc.org/nexus/content/repositories/snapshots/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="dev-mc" />
       <option name="name" value="dev-mc" />
       <option name="url" value="https://www.skyblockv4.fr/nexus/" />
@@ -20,6 +25,11 @@
       <option name="id" value="dev-mc" />
       <option name="name" value="dev-mc" />
       <option name="url" value="https://www.skyblockv4.fr/nexus/dev-mc/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="dev-mc" />
+      <option name="name" value="dev-mc" />
+      <option name="url" value="https://mvn.luca-dc.ch/nexus/content/repositories/dev-mc/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />

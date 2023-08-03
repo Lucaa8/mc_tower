@@ -4,11 +4,10 @@ import ch.luca008.SpigotApi.Api.JSONApi;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
+import ch.tower.items.Enchant;
+import ch.tower.items.Item;
+import ch.tower.items.ItemBuilder;
 import ch.tower.managers.TeamsManager;
-import ch.tower.utils.items.Enchant;
-import ch.tower.utils.items.Item;
-import ch.tower.utils.items.ItemBuilder;
-import ch.tower.utils.items.NBTTags;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -133,7 +132,7 @@ public abstract class ShopMenu implements Shop {
     {
         Inventory inv = Bukkit.createInventory(null, this.size, this.name);
         ItemStack border = player.getTeam()==TeamsManager.PlayerTeam.BLUE?blueGlass:redGlass;
-        inv.setItem(0, NBTTags.getInstance().getNBT(border).setTag("id-inv", this.getId()).getBukkitItem());
+        inv.setItem(0, SpigotApi.getNBTTagApi().getNBT(border).setTag("id-inv", this.getId()).getBukkitItem());
         for(int i=1;i<this.size;i++)
         {
             if(i<10 || i>(this.size-9) || i%9==0 || i%9==8)

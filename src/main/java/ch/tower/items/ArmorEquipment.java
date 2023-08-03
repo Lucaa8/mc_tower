@@ -1,13 +1,13 @@
-package ch.tower.utils.items;
+package ch.tower.items;
 
 import ch.luca008.SpigotApi.Api.JSONApi;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
+import ch.tower.items.meta.LeatherArmor;
 import ch.tower.shop.ShopMenu;
 import ch.tower.shop.categoryMenus.ToolsMenu;
-import ch.tower.utils.Packets.TeamsPackets;
-import ch.tower.utils.items.meta.LeatherArmor;
+import net.minecraft.EnumChatFormat;
 import org.bukkit.Color;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -50,10 +50,10 @@ public class ArmorEquipment {
                 Item cloned = armorPiece.getValue().clone();
                 if(!cloned.hasMeta())
                 {
-                    cloned.setMeta(new LeatherArmor(player.getTeam().getInfo().getColor() == TeamsPackets.TeamColor.BLUE ? Color.BLUE : Color.RED));
+                    cloned.setMeta(new LeatherArmor(player.getTeam().getInfo().apiTeam().getColor() == EnumChatFormat.j ? Color.BLUE : Color.RED));
                 }
                 ItemStack item = tools.prepareItem(cloned, false);
-                p.getInventory().setItem(armorPiece.getKey(), NBTTags.getInstance().getNBT(item).setTag("UUID", "current_armor").getBukkitItem());
+                p.getInventory().setItem(armorPiece.getKey(), SpigotApi.getNBTTagApi().getNBT(item).setTag("UUID", "current_armor").getBukkitItem());
             }
         }
     }

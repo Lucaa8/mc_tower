@@ -1,29 +1,26 @@
 package ch.tower;
 
 import ch.luca008.SpigotApi.Api.JSONApi;
+import ch.luca008.SpigotApi.Api.NBTTagApi;
+import ch.luca008.SpigotApi.Api.ScoreboardAPI;
 import ch.luca008.SpigotApi.SpigotApi;
+import ch.tower.items.ArmorEquipment;
+import ch.tower.items.Item;
+import ch.tower.managers.ScoreboardManager.PlaceholderHelper;
 import ch.tower.managers.ScoreboardManager;
 import ch.tower.managers.TeamsManager;
 import ch.tower.managers.TeamsManager.PlayerTeam;
 import ch.tower.shop.ShopMenu;
 import ch.tower.shop.categoryMenus.FoodMenu;
 import ch.tower.shop.categoryMenus.ToolsMenu;
-import ch.tower.utils.Scoreboard.PlayerBoard;
-import ch.tower.utils.items.*;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
 import javax.annotation.Nullable;
-import java.io.File;
 import java.util.*;
 
 public class TowerPlayer
@@ -125,13 +122,18 @@ public class TowerPlayer
     private int kills = 0;
     private int assists = 0;
     private int deaths = 0;
-    private double money = 0d;
+    private double money = 30d;
 
     private final Levels levels;
+
+    //Can return the placeholder value for each player stat (like kills, etc...)
+    //Can be public because final and unalterable (fields in PlayerHelper are also final)
+    public final PlaceholderHelper.PlayerHelper boardHelder;
 
     private TowerPlayer(Player player)
     {
         this.player = Bukkit.getOfflinePlayer(player.getUniqueId());
+        this.boardHelder = PlaceholderHelper.getPlayerHelper(this);
         this.levels = new Levels();
     }
 
@@ -147,7 +149,8 @@ public class TowerPlayer
 
     public int addPoint()
     {
-        ScoreboardManager.BoardField.POINTS.update(asPlayer(), ++points);
+        points++;
+        ScoreboardManager.BoardField.POINTS.update(asPlayer(), boardHelder.getPoints());
         return points;
     }
 
@@ -158,7 +161,8 @@ public class TowerPlayer
 
     public int addKill()
     {
-        ScoreboardManager.BoardField.KILLS.update(asPlayer(), ++kills);
+        kills++;
+        ScoreboardManager.BoardField.KILLS.update(asPlayer(), boardHelder.getKills());
         return kills;
     }
 
@@ -169,7 +173,8 @@ public class TowerPlayer
 
     public int addAssist()
     {
-        ScoreboardManager.BoardField.ASSISTS.update(asPlayer(), ++assists);
+        assists++;
+        ScoreboardManager.BoardField.ASSISTS.update(asPlayer(), boardHelder.getAssists());
         return assists;
     }
 
@@ -180,7 +185,8 @@ public class TowerPlayer
 
     public int addDeath()
     {
-        ScoreboardManager.BoardField.DEATHS.update(asPlayer(), ++deaths);
+        deaths++;
+        ScoreboardManager.BoardField.DEATHS.update(asPlayer(), boardHelder.getDeaths());
         return deaths;
     }
 
@@ -217,7 +223,7 @@ public class TowerPlayer
     public double giveMoney(double money)
     {
         this.money += money;
-        ScoreboardManager.BoardField.MONEY.update(asPlayer(), this.money);
+        ScoreboardManager.BoardField.MONEY.update(asPlayer(), boardHelder.getMoney());
         return money;
     }
 
@@ -233,7 +239,7 @@ public class TowerPlayer
             return -1d;
         }
         this.money -= money;
-        ScoreboardManager.BoardField.MONEY.update(asPlayer(), this.money);
+        ScoreboardManager.BoardField.MONEY.update(asPlayer(), boardHelder.getMoney());
         return money;
     }
 
@@ -269,7 +275,7 @@ public class TowerPlayer
                 if(i != null)
                 {
                     ItemStack item = tools.prepareItem(i, false);
-                    replaceTool(entry.getKey(), NBTTags.getInstance().getNBT(item).setTag("UUID", "current"+entry.getKey()).getBukkitItem());
+                    replaceTool(entry.getKey(), SpigotApi.getNBTTagApi().getNBT(item).setTag("UUID", "current"+entry.getKey()).getBukkitItem());
                 }
             }
         }
@@ -282,7 +288,7 @@ public class TowerPlayer
         Item current = food.getItemForLevel(getLevels().getFoodLevel());
         if(current==null) return;
         ItemStack item = current.toItemStack(current.getCount());
-        replaceTool("_food", NBTTags.getInstance().getNBT(item).setTag("UUID", "current_food").getBukkitItem());
+        replaceTool("_food", SpigotApi.getNBTTagApi().getNBT(item).setTag("UUID", "current_food").getBukkitItem());
     }
 
     private void replaceTool(String type, ItemStack newItem)
@@ -293,7 +299,7 @@ public class TowerPlayer
         for(ItemStack i : p.getInventory())
         {
             index++;
-            NBTTags.NBTItem nbtCurrent = NBTTags.getInstance().getNBT(i);
+            NBTTagApi.NBTItem nbtCurrent = SpigotApi.getNBTTagApi().getNBT(i);
             if(!nbtCurrent.hasTag("UUID") || !nbtCurrent.getString("UUID").equals(uid))
                 continue;
             p.getInventory().setItem(index-1, newItem);
@@ -305,26 +311,19 @@ public class TowerPlayer
         }
     }
 
-    public PlayerBoard getScoreboard()
+    @Nullable
+    public ScoreboardAPI.PlayerScoreboard getScoreboard()
     {
-        return Main.getInstance().getManager().getScoreboardManager().getBoard(asPlayer());
+        if(player.isOnline()){
+            return SpigotApi.getScoreboardApi().getScoreboard(asPlayer());
+        }
+        return null;
     }
 
+    @Nullable
     public PlayerTeam getTeam()
     {
         return TeamsManager.getPlayerTeam(asPlayer());
     }
 
-    public void updateBoard()
-    {
-        getScoreboard().updateLines(
-                Map.of(
-                    ScoreboardManager.BoardField.POINTS.toFormat(), points,
-                    ScoreboardManager.BoardField.KILLS.toFormat(), kills,
-                    ScoreboardManager.BoardField.ASSISTS.toFormat(), assists,
-                    ScoreboardManager.BoardField.DEATHS.toFormat(), deaths,
-                    ScoreboardManager.BoardField.MONEY.toFormat(), money
-                )
-        );
-    }
 }

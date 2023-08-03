@@ -1,8 +1,9 @@
 package ch.tower.events;
 
+import ch.luca008.SpigotApi.Api.NBTTagApi;
+import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
 import ch.tower.managers.ShopMenuManager;
-import ch.tower.utils.items.NBTTags;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,11 +25,11 @@ public class InventoryEvent implements Listener {
         ItemStack i0 = e.getClickedInventory().getItem(0);
         if(i0 == null)
             return;
-        NBTTags.NBTItem item = NBTTags.getInstance().getNBT(i0);
+        NBTTagApi.NBTItem item = SpigotApi.getNBTTagApi().getNBT(i0);
         if(item.hasTag("id-inv"))
         {
             e.setCancelled(true);
-            NBTTags.NBTItem clicked = NBTTags.getInstance().getNBT(e.getCurrentItem());
+            NBTTagApi.NBTItem clicked = SpigotApi.getNBTTagApi().getNBT(e.getCurrentItem());
             if(clicked.hasTag("UUID"))
             {
                 String id = clicked.getString("UUID");

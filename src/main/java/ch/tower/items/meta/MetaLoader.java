@@ -1,4 +1,4 @@
-package ch.tower.utils.items.meta;
+package ch.tower.items.meta;
 
 import org.json.simple.JSONObject;
 
@@ -29,5 +29,5 @@ public class MetaLoader {
         }
         return j;
     }
-}
 
+}

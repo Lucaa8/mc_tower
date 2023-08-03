@@ -1,13 +1,9 @@
 package ch.tower;
 
 import ch.tower.events.GlobalEvents;
-import ch.tower.managers.GameManager;
-import ch.tower.managers.ScoreboardManager;
-import ch.tower.managers.ShopMenuManager;
-import ch.tower.managers.WorldManager;
+import ch.tower.items.ArmorEquipment;
+import ch.tower.managers.*;
 import ch.tower.shop.categoryMenus.ToolsMenu;
-import ch.tower.utils.NPC.NPCLoader;
-import ch.tower.utils.items.ArmorEquipment;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -32,7 +28,7 @@ public class Main extends JavaPlugin {
         }
         if(!copyStreamToFile("config.json", GameManager.CONFIG_FILE) ||
            !copyStreamToFile("spawns.json", WorldManager.SPAWN_FILE) ||
-           !copyStreamToFile("npc.json", NPCLoader.NPC_FILE) ||
+           !copyStreamToFile("npc.json", NPCManager.NPC_FILE) ||
            !copyStreamToFile("scoreboards.json", ScoreboardManager.SCOREBOARD_FILE) ||
            !copyStreamToFile("shop.json", ShopMenuManager.SHOP_FILE) ||
            !copyStreamToFile("default_items.json", ToolsMenu.DEFAULT_TOOLS_FILE) ||
@@ -48,6 +44,7 @@ public class Main extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new GlobalEvents(), this);
         game = new GameManager();
+
     }
 
     public void onDisable()

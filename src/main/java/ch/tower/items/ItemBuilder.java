@@ -1,6 +1,6 @@
-package ch.tower.utils.items;
+package ch.tower.items;
 
-import ch.tower.utils.items.meta.Meta;
+import ch.tower.items.meta.Meta;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 

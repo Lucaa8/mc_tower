@@ -1,11 +1,11 @@
 package ch.tower.events;
 
+import ch.luca008.SpigotApi.Api.NBTTagApi;
+import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
 import ch.tower.managers.TeamsManager;
 import ch.tower.shop.LuckShuffle;
-import ch.tower.utils.NPC.NPCLoader;
-import ch.tower.utils.items.NBTTags;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -19,13 +19,10 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collection;
-import java.util.Random;
 
 public class GameEvents implements StateEvents
 {
@@ -68,7 +65,7 @@ public class GameEvents implements StateEvents
         ItemStack is = player.getInventory().getItem(slot);
         if(is != null && is.getType() == Material.FEATHER)
         {
-            NBTTags.NBTItem nbt = NBTTags.getInstance().getNBT(is);
+            NBTTagApi.NBTItem nbt = SpigotApi.getNBTTagApi().getNBT(is);
             return nbt.hasTag("UUID") && nbt.getString("UUID").equals("harmless_feather");
         }
         return false;
@@ -93,7 +90,7 @@ public class GameEvents implements StateEvents
                     p.getInventory().setItem(e.getHand(), new ItemStack(Material.AIR));
                 }
             }, 1L);
-            NBTTags.NBTItem nbt = NBTTags.getInstance().getNBT(e.getItem());
+            NBTTagApi.NBTItem nbt = SpigotApi.getNBTTagApi().getNBT(e.getItem());
             if(nbt.hasTag("UUID") && nbt.getString("UUID").equals("7_luck"))
             {
                 p.playSound(p, Sound.AMBIENT_CAVE, 1.0f, 1.0f);
@@ -117,9 +114,8 @@ public class GameEvents implements StateEvents
         EntityDamageEvent.DamageCause deathCause = player.getLastDamageCause().getCause();
         if (deathCause == EntityDamageEvent.DamageCause.ENTITY_ATTACK)
         {
-            if(player.getLastDamageCause().getEntity() instanceof Player)
+            if(player.getLastDamageCause().getEntity() instanceof Player attacker)
             {
-                Player attacker = (Player) player.getLastDamageCause().getEntity();
 
                 TowerPlayer towerPlayer = TowerPlayer.getPlayer(player);
                 TowerPlayer towerAttacker = TowerPlayer.getPlayer(attacker);
@@ -140,7 +136,6 @@ public class GameEvents implements StateEvents
         }
     }
 
-    //Maybe add a delay before giving back a player's bow (level 1 of BOW). To avoid spam camper killing themselves just to get back a bow
     @EventHandler
     public void onRespawnGiveStuffAndTeleport(PlayerRespawnEvent e)
     {
@@ -157,7 +152,6 @@ public class GameEvents implements StateEvents
     @EventHandler
     public void onChatByPlayer(AsyncPlayerChatEvent e)
     {
-        TowerPlayer.getPlayer(e.getPlayer()).giveMoney(500);
         e.setCancelled(true);
         StringBuilder s = new StringBuilder("");
         Player p = e.getPlayer();
@@ -210,7 +204,7 @@ public class GameEvents implements StateEvents
         if(e.getClickedInventory() != null)
         {
             ItemStack i0 = e.getClickedInventory().getItem(0);
-            if(i0 != null && i0.getType() != Material.AIR && NBTTags.getInstance().getNBT(i0).hasTag("id-inv"))
+            if(i0 != null && i0.getType() != Material.AIR && SpigotApi.getNBTTagApi().getNBT(i0).hasTag("id-inv"))
             {
                 //This is shop menu inventory, we do not need to cancel anything, the shop handler will do that.
                 return;
@@ -252,7 +246,7 @@ public class GameEvents implements StateEvents
     {
         if(item == null || item.getType() == Material.AIR)
             return false;
-        NBTTags.NBTItem nbt = NBTTags.getInstance().getNBT(item);
+        NBTTagApi.NBTItem nbt = SpigotApi.getNBTTagApi().getNBT(item);
         return nbt.hasTag("UUID") && nbt.getString("UUID").startsWith("current_");
     }
 
@@ -276,7 +270,8 @@ public class GameEvents implements StateEvents
         p.teleport(TeamsManager.getPlayerTeam(p).getSpawn());
     }
 
-    @EventHandler void onQuit(PlayerQuitEvent e)
+    @EventHandler
+    public void onQuit(PlayerQuitEvent e)
     {
         //TODO: tester
         Player p = e.getPlayer();
@@ -286,6 +281,7 @@ public class GameEvents implements StateEvents
         }
         else
         {
+            //TODO luca: crash car TeamApi retire le joueur de la team, meme crash lorsqu'il rejoint la partie.
             String message = TeamsManager.getPlayerTeam(p).getColorCode() + p.getName() + ChatColor.RESET + " left the game.";
             e.setQuitMessage(message);
         }
@@ -302,12 +298,11 @@ public class GameEvents implements StateEvents
             player.teleport(TeamsManager.getPlayerTeam(player).getSpawn());
             TowerPlayer p = TowerPlayer.getPlayer(player);
             if(p==null) continue;
-            Main.getInstance().getManager().getScoreboardManager().setBoard(p.asPlayer(), Main.getInstance().getManager().getState().name());
-            p.updateBoard();
+            Main.getInstance().getManager().getScoreboardManager().updateBoard(player);
             p.giveTools();
             p.giveFood();
         }
-        NPCLoader.load();
+        Main.getInstance().getManager().getNpcManager().load();
         Bukkit.getServer().getPluginManager().registerEvents(new InventoryEvent(), Main.getInstance());
     }
 

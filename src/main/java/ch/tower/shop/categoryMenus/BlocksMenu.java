@@ -2,9 +2,9 @@ package ch.tower.shop.categoryMenus;
 
 import ch.luca008.SpigotApi.Api.JSONApi;
 import ch.tower.TowerPlayer;
+import ch.tower.items.Item;
 import ch.tower.managers.TeamsManager;
 import ch.tower.shop.ShopMenu;
-import ch.tower.utils.items.Item;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;

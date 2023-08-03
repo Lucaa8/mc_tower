@@ -1,4 +1,4 @@
-package ch.tower.utils.items;
+package ch.tower.items;
 
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;

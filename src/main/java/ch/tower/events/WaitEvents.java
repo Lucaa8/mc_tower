@@ -1,13 +1,13 @@
 package ch.tower.events;
 
+import ch.luca008.SpigotApi.Item.ItemBuilder;
 import ch.tower.Main;
 import ch.tower.managers.GameManager;
 import ch.tower.managers.ScoreboardManager;
+import ch.tower.managers.ScoreboardManager.PlaceholderHelper;
 import ch.tower.managers.TeamsManager;
-import ch.tower.utils.Scoreboard.PlayerBoard;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,9 +16,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
@@ -44,6 +42,18 @@ public class WaitEvents implements StateEvents
         return instance;
     }
 
+    private final ItemStack bw = new ItemBuilder()
+            .setMaterial(Material.BLUE_WOOL)
+            .setName(ChatColor.BLUE + "Join BLUE Team")
+            .setGlowing(true)
+            .createItem().toItemStack(1);
+
+    private final ItemStack rw = new ItemBuilder()
+            .setMaterial(Material.RED_WOOL)
+            .setName(ChatColor.RED + "Join RED Team")
+            .setGlowing(true)
+            .createItem().toItemStack(1);
+
     public void checkAndStartCountdown()
     {
         if (Main.getInstance().getServer().getOnlinePlayers().size() == GameManager.ConfigField.MIN_PLAYERS.get() && countdownTask == null)
@@ -67,7 +77,7 @@ public class WaitEvents implements StateEvents
             Bukkit.getOnlinePlayers().forEach(p->
             {
                 p.setLevel(countdown);
-                ScoreboardManager.BoardField.TIMER.update(p, countdown);
+                ScoreboardManager.BoardField.TIMER.update(p, String.valueOf(countdown));
             }); //Resets the player bar xp and scoreboard with the max count down
             Bukkit.broadcast("Game start is cancelled, a player left.", Server.BROADCAST_CHANNEL_USERS);
         }
@@ -85,7 +95,7 @@ public class WaitEvents implements StateEvents
                     player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1,1);
                 }
                 player.setLevel(countdown);
-                ScoreboardManager.BoardField.TIMER.update(player, countdown);
+                ScoreboardManager.BoardField.TIMER.update(player, String.valueOf(countdown));
             }
             countdown--;
         }
@@ -214,42 +224,22 @@ public class WaitEvents implements StateEvents
             p.kickPlayer("The game is already full.");
             return;
         }
+
         p.getInventory().clear();
+
         Location lobby = TeamsManager.PlayerTeam.SPECTATOR.getSpawn();
         p.teleport(lobby);
-        ItemStack bw = new ItemStack(Material.BLUE_WOOL,1);
-        ItemMeta bwMeta = bw.getItemMeta();
-        bwMeta.setDisplayName(ChatColor.BLUE + "Join BLUE Team");
-        bwMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        bw.setItemMeta(bwMeta);
-        bw.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 1);
-
-        ItemStack rw = new ItemStack(Material.RED_WOOL,1);
-        ItemMeta rwMeta = rw.getItemMeta();
-        rwMeta.setDisplayName(ChatColor.RED + "Join RED Team");
-        rwMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        rw.setItemMeta(rwMeta);
-        rw.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 1);
 
         p.getInventory().addItem(bw);
         p.getInventory().addItem(rw);
+
         e.setJoinMessage(p.getDisplayName() + " joined the game! (" + playersCount + "/" + maxPlayersCount +" players, " + GameManager.ConfigField.MIN_PLAYERS.get() + " needed to begin) ");
         checkAndStartCountdown();
         p.setLevel(countdown);
         p.setGameMode(GameMode.ADVENTURE);
 
-        Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->
-        {
-            for(Player player : Bukkit.getOnlinePlayers())
-            {
-                if(player == p)
-                {
-                    ScoreboardManager.BoardField.TEAM.update(player, "§aNone");
-                    ScoreboardManager.BoardField.TIMER.update(player, countdown);
-                }
-                updatePlayersOnlineBoard(playersCount);
-            }
-        }, 10L);
+        ScoreboardManager.BoardField.TEAM.update(p, PlaceholderHelper.getTeamName(null));
+        updatePlayersOnlineBoard();
     }
 
     @EventHandler
@@ -262,9 +252,8 @@ public class WaitEvents implements StateEvents
             pt.removePlayer(p);
         }
         checkAndStopCountdown();
-        int playersCount = Main.getInstance().getServer().getOnlinePlayers().size() - 1;
-        e.setQuitMessage(p.getDisplayName() + " left the game! (" + playersCount + "/" + maxPlayersCount +" players)");
-        updatePlayersOnlineBoard(playersCount);
+        e.setQuitMessage(p.getDisplayName() + " left the game! (" + (Main.getInstance().getServer().getOnlinePlayers().size()-1) + "/" + maxPlayersCount +" players)");
+        updatePlayersOnlineBoard();
     }
 
     @EventHandler
@@ -287,12 +276,13 @@ public class WaitEvents implements StateEvents
         if(team != null && team != TeamsManager.getPlayerTeam(p))
         {
             team.addPlayer(p);
-            String name = team.getInfo().getName();
+            String name = team.getInfo().apiTeam().getDisplayName();
             p.sendTitle(team.getColorCode() + "You joined the " + name + " team", "", 10, 20, 10);
             Location lobby = team.getSpawn();
             p.teleport(lobby);
             Bukkit.broadcast(p.getDisplayName() + " joined the " + team.getColorCode() + name + ChatColor.RESET + " team.", Server.BROADCAST_CHANNEL_USERS);
-            ScoreboardManager.BoardField.TEAM.update(p, team.getColorCode() + name);
+            //TODO verifier si la team s'actualise sur le scoreboard avec cette ligne commentée (si oui, la supprimer)
+            //ScoreboardManager.BoardField.TEAM.update(p, PlaceholderHelper.getTeamName(team));
         }
     }
 
@@ -329,19 +319,8 @@ public class WaitEvents implements StateEvents
         }
     }
 
-    private void updatePlayersOnlineBoard(int playersCount)
+    private void updatePlayersOnlineBoard()
     {
-        for(Player player : Bukkit.getOnlinePlayers())
-        {
-            PlayerBoard pb = Main.getInstance().getManager().getScoreboardManager().getBoard(player);
-            if(pb != null)
-            {
-                pb.updateLines(Map.of
-                        (
-                                ScoreboardManager.BoardField.MAX_PLAYER_COUNT.toFormat(), maxPlayersCount,
-                                ScoreboardManager.BoardField.PLAYER_COUNT.toFormat(), playersCount
-                        ));
-            }
-        }
+        Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()-> Bukkit.getOnlinePlayers().forEach(p->ScoreboardManager.BoardField.PLAYER_COUNT.update(p, PlaceholderHelper.getTotalPlayerCount())), 5L);
     }
 }

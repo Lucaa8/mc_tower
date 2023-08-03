@@ -1,11 +1,10 @@
-package ch.tower.utils.items.meta;
+package ch.tower.items.meta;
 
+import ch.luca008.SpigotApi.Api.ReflectionApi;
 import ch.luca008.SpigotApi.SpigotApi;
-import ch.tower.utils.items.NBTTags;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.TropicalFish.Pattern;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.TropicalFishBucketMeta;
 import org.json.simple.JSONObject;
@@ -13,22 +12,22 @@ import org.json.simple.JSONObject;
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 
-public class TropicalFish implements Meta{
+public class TropicalFish implements Meta {
 
     DyeColor body;
     DyeColor colorPattern;
-    Pattern pattern;
+    org.bukkit.entity.TropicalFish.Pattern pattern;
 
     public TropicalFish(JSONObject json){
         body = json.containsKey("BodyColor") ? DyeColor.valueOf((String)json.get("BodyColor")) : DyeColor.BLACK;
         colorPattern = json.containsKey("PatternColor") ? DyeColor.valueOf((String)json.get("PatternColor")) : DyeColor.WHITE;
-        pattern = json.containsKey("Pattern") ? Pattern.valueOf((String)json.get("Pattern")) : Pattern.KOB;
+        pattern = json.containsKey("Pattern") ? org.bukkit.entity.TropicalFish.Pattern.valueOf((String)json.get("Pattern")) : org.bukkit.entity.TropicalFish.Pattern.KOB;
     }
 
-    public TropicalFish(Pattern pattern, DyeColor bodyColor, DyeColor patternColor){
+    public TropicalFish(org.bukkit.entity.TropicalFish.Pattern pattern, DyeColor bodyColor, DyeColor patternColor){
         this.body = bodyColor==null?DyeColor.BLACK:bodyColor;
         this.colorPattern = patternColor==null?DyeColor.WHITE:patternColor;
-        this.pattern = pattern==null?Pattern.KOB:pattern;
+        this.pattern = pattern==null? org.bukkit.entity.TropicalFish.Pattern.KOB:pattern;
     }
 
     public TropicalFish(TropicalFishBucketMeta tm){
@@ -39,14 +38,14 @@ public class TropicalFish implements Meta{
         }else{
             this.body = DyeColor.BLACK;
             this.colorPattern = DyeColor.WHITE;
-            this.pattern = Pattern.KOB;
+            this.pattern = org.bukkit.entity.TropicalFish.Pattern.KOB;
         }
     }
 
     private int getData() {
         int DataValue = 0;
         try{
-            Class<?> c = SpigotApi.getReflectionApi().spigot().getOBCClass("entity","CraftTropicalFish$CraftPattern");
+            Class<?> c = ReflectionApi.getOBCClass("entity","CraftTropicalFish$CraftPattern");
             Object value = ((Object[]) c.getMethod("values").invoke(c))[pattern.ordinal()];
             DataValue = (int) value.getClass().getMethod("getDataValue").invoke(value);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
@@ -58,8 +57,8 @@ public class TropicalFish implements Meta{
     @Override
     public ItemStack apply(ItemStack item) {
         if(item==null||item.getItemMeta()==null)return null;
-        if(item.getType()==Material.TROPICAL_FISH_BUCKET){
-            return NBTTags.getInstance().getNBT(item).setTag("BucketVariantTag",getData()).getBukkitItem();
+        if(item.getType()== Material.TROPICAL_FISH_BUCKET){
+            return SpigotApi.getNBTTagApi().getNBT(item).setTag("BucketVariantTag",getData()).getBukkitItem();
         }
         return null;
     }
@@ -84,7 +83,7 @@ public class TropicalFish implements Meta{
     }
 
     @Override
-    public boolean hasSameMeta(ItemStack item, @Nullable Player player) {
+    public boolean hasSameMeta(ItemStack item, @Nullable OfflinePlayer player) {
         if(item!=null&&item.getItemMeta() instanceof TropicalFishBucketMeta){
             TropicalFishBucketMeta m = (TropicalFishBucketMeta) item.getItemMeta();
             return m.getBodyColor().equals(body)&&m.getPattern().equals(pattern)&&colorPattern.equals(m.getPatternColor());
@@ -93,6 +92,6 @@ public class TropicalFish implements Meta{
     }
 
     public static boolean hasMeta(ItemStack item){
-        return NBTTags.getInstance().getNBT(item).hasTag("BucketVariantTag");
+        return SpigotApi.getNBTTagApi().getNBT(item).hasTag("BucketVariantTag");
     }
 }

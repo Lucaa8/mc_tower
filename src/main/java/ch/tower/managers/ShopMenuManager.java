@@ -1,13 +1,13 @@
 package ch.tower.managers;
 
 import ch.luca008.SpigotApi.Api.JSONApi;
+import ch.luca008.SpigotApi.Api.NPCApi;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
+import ch.tower.items.Item;
 import ch.tower.shop.Shop;
 import ch.tower.shop.ShopMenu;
-import ch.tower.utils.NPC.NPCCreator;
-import ch.tower.utils.items.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.json.simple.JSONObject;
@@ -35,9 +35,9 @@ public class ShopMenuManager {
                 .toList();
     }
 
-    public void openShop(NPCCreator.NPC npc, Player player)
+    public void openShop(NPCApi.NPC npc, Player player)
     {
-        String shop = npc.getName().toLowerCase();
+        String shop = npc.name.toLowerCase();
         if(shop.endsWith("§f"))
             shop = shop.substring(0, shop.length()-4);
         openShop(shop, TowerPlayer.getPlayer(player));

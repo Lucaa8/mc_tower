@@ -1,6 +1,7 @@
-package ch.tower.utils.items;
+package ch.tower.items;
 
-import ch.tower.utils.Utils;
+import ch.luca008.SpigotApi.Api.JSONApi;
+import ch.luca008.SpigotApi.SpigotApi;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentWrapper;
@@ -43,9 +44,9 @@ public class Enchant {
 
     public Enchant(String json){
         try {
-            JSONObject j = (JSONObject) new JSONParser().parse(json);
-            enchantment = EnchantmentWrapper.getByKey(NamespacedKey.minecraft((String)j.get("Key")));
-            level = Utils.getInt(j, "Level");
+            JSONApi.JSONReader j = SpigotApi.getJSONApi().getReader((JSONObject) new JSONParser().parse(json));
+            enchantment = EnchantmentWrapper.getByKey(NamespacedKey.minecraft(j.getString("Key")));
+            level = j.getInt("Level");
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -95,7 +96,7 @@ public class Enchant {
 
     public String asMinecraftEnchantment()
     {
-        return "§7" + Utils.enumName(enchantment.getKey().getKey()) + " " + getRomanLevel();
+        return "§7" + ch.luca008.SpigotApi.Utils.StringUtils.enumName(enchantment.getKey().getKey()) + " " + getRomanLevel();
     }
 
     public JSONObject toJson(){

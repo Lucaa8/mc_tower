@@ -1,8 +1,8 @@
-package ch.tower.utils.items.meta;
+package ch.tower.items.meta;
 
-import ch.tower.utils.Utils;
+import ch.luca008.SpigotApi.Utils.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.json.simple.JSONObject;
@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Book implements Meta{
+public class Book implements Meta {
 
     private String author = null;
     private String title = null;
@@ -121,7 +121,7 @@ public class Book implements Meta{
     }
 
     @Override
-    public boolean hasSameMeta(ItemStack item, @Nullable Player player) {
+    public boolean hasSameMeta(ItemStack item, @Nullable OfflinePlayer player) {
         if(item!=null&&item.getItemMeta() instanceof BookMeta){
             BookMeta bm = (BookMeta) item.getItemMeta();
             String playername = player==null?"{P}":player.getName();
@@ -131,7 +131,7 @@ public class Book implements Meta{
             if(localAuthor!=null&&!localAuthor.isEmpty()){//checks only if author is set into config
                 if(!bm.hasAuthor()||!bm.getAuthor().equals(localAuthor))return false;
             }
-            if(!Utils.equalLists(this.pages, bm.getPages()))return false;
+            if(!StringUtils.equalLists(this.pages, bm.getPages()))return false;
             return true;
         }
         return false;

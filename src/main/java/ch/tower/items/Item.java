@@ -1,11 +1,12 @@
-package ch.tower.utils.items;
+package ch.tower.items;
 
 import ch.luca008.SpigotApi.Api.JSONApi;
-import ch.tower.utils.Utils;
-import ch.tower.utils.items.meta.Book;
-import ch.tower.utils.items.meta.Meta;
-import ch.tower.utils.items.meta.MetaLoader;
-import ch.tower.utils.items.meta.Skull;
+import ch.luca008.SpigotApi.Api.NBTTagApi;
+import ch.luca008.SpigotApi.SpigotApi;
+import ch.tower.items.meta.Book;
+import ch.tower.items.meta.Meta;
+import ch.tower.items.meta.MetaLoader;
+import ch.tower.items.meta.Skull;
 import com.google.common.collect.Multimap;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -67,58 +68,52 @@ public class Item {
         this.count = count;
     }
 
-    public static Item fromJson(JSONObject j){
-        try {
-            ItemBuilder item = new ItemBuilder();
-            if(j.containsKey("Id"))item.setUid((String)j.get("Id"));
-            try{
-                item.setMaterial(Material.valueOf((String)j.get("Material")));
-            }catch(Exception e){
-                String pvName = j.containsKey("Id")?(String)j.get("Id"):"unknown";
-                System.err.println("Can't load item '"+pvName+"' because bukkit couldn't find Material '"+j.get("Material")+"'.");
-                System.err.println("The present item will be replaced by a simple stone block until it gets fixed.");
-                return new ItemBuilder().setMaterial(Material.STONE).createItem();
-            }
-            if(j.containsKey("Name"))item.setName((String)j.get("Name"));
-            if(j.containsKey("RepairCost"))item.setRepairCost(Utils.getInt(j, "RepairCost"));
-            if(j.containsKey("CustomData"))item.setCustomData(Utils.getInt(j, "CustomData"));
-            if(j.containsKey("Lore")){
-                JSONArray jarr = (JSONArray) j.get("Lore");
-                List<String> l = new ArrayList<String>();
-                jarr.forEach(o->l.add((String)o));
-                item.setLore(l);
-            }
-            if(j.containsKey("Enchants")){
-                JSONArray jarr = (JSONArray) j.get("Enchants");
-                List<Enchant> e = new ArrayList<Enchant>();
-                jarr.forEach(o->e.add(new Enchant(((JSONObject)o).toJSONString())));
-                item.setEnchantList(e);
-            }
-            if(j.containsKey("Attributes")){
-                JSONArray jarr = (JSONArray) j.get("Attributes");
-                List<ItemAttribute> a = new ArrayList<ItemAttribute>();
-                jarr.forEach(o->a.add(new ItemAttribute(((JSONObject)o).toJSONString())));
-                item.setAttributes(a);
-            }
-            if(j.containsKey("Flags")){
-                JSONArray jarr = (JSONArray) j.get("Flags");
-                List<ItemFlag> f = new ArrayList<ItemFlag>();
-                jarr.forEach(o->f.add(ItemFlag.valueOf((String)o)));
-                item.setFlags(f);
-            }
-            if(j.containsKey("ItemMeta")){
-                item.setMeta(new MetaLoader().load((JSONObject)j.get("ItemMeta")));
-            }
-            if(j.containsKey("Durability"))item.setDamage(Utils.getInt(j,"Durability"));
-            if(j.containsKey("Invulnerable"))item.isInvulnerable((boolean)j.get("Invulnerable"));
-            if(j.containsKey("Slot"))item.setSlot(Utils.getInt(j,"Slot"));
-            if(j.containsKey("Count"))item.setCount(Utils.getInt(j,"Count"));
-            return item.createItem();
-        } catch (Exception e) {
-            System.err.println("Can't load item with JSON:\n"+ JSONApi.prettyJson(j));
-            e.printStackTrace();
+    public static Item fromJson(JSONObject json){
+        JSONApi.JSONReader r = SpigotApi.getJSONApi().getReader(json);
+        ItemBuilder item = new ItemBuilder();
+        if(r.c("Id"))item.setUid(r.getString("Id"));
+        try{
+            item.setMaterial(Material.valueOf(r.getString("Material")));
+        }catch(Exception e){
+            System.err.println("Can't load item '"+(r.c("Id")?r.getString("Id"):"unknown")+"' because bukkit couldn't find Material '"+r.getString("Material")+"'.");
+            System.err.println("The present item will be replaced by a simple stone block until it gets fixed.");
+            return new ItemBuilder().setMaterial(Material.STONE).createItem();
         }
-        return null;
+        if(r.c("Name"))item.setName(r.getString("Name"));
+        if(r.c("RepairCost"))item.setRepairCost(r.getInt("RepairCost"));
+        if(r.c("CustomData"))item.setCustomData(r.getInt("CustomData"));
+        if(r.c("Lore")){
+            JSONArray jarr = r.getArray("Lore");
+            List<String> l = new ArrayList<String>();
+            jarr.forEach(o->l.add((String)o));
+            item.setLore(l);
+        }
+        if(r.c("Enchants")){
+            JSONArray jarr = r.getArray("Enchants");
+            List<Enchant> e = new ArrayList<>();
+            jarr.forEach(o->e.add(new Enchant(((JSONObject)o).toJSONString())));
+            item.setEnchantList(e);
+        }
+        if(r.c("Attributes")){
+            JSONArray jarr = r.getArray("Attributes");
+            List<ItemAttribute> a = new ArrayList<>();
+            jarr.forEach(o->a.add(new ItemAttribute(((JSONObject)o).toJSONString())));
+            item.setAttributes(a);
+        }
+        if(r.c("Flags")){
+            JSONArray jarr = r.getArray("Flags");
+            List<ItemFlag> f = new ArrayList<ItemFlag>();
+            jarr.forEach(o->f.add(ItemFlag.valueOf((String)o)));
+            item.setFlags(f);
+        }
+        if(r.c("ItemMeta")){
+            item.setMeta(new MetaLoader().load(r.getJson("ItemMeta").asJson()));
+        }
+        if(r.c("Durability"))item.setDamage(r.getInt("Durability"));
+        if(r.c("Invulnerable"))item.isInvulnerable(r.getBool("Invulnerable"));
+        if(r.c("Slot"))item.setSlot(r.getInt("Slot"));
+        if(r.c("Count"))item.setCount(r.getInt("Count"));
+        return item.createItem();
     }
 
     public void glow(){
@@ -157,7 +152,7 @@ public class Item {
                 }
             }
         }
-        NBTTags.NBTItem nbt = NBTTags.getInstance().getNBT(item);
+        NBTTagApi.NBTItem nbt = SpigotApi.getNBTTagApi().getNBT(item);
         if(repairCost>0)nbt.setTag("RepairCost",repairCost);
         if(uid!=null&&!uid.isEmpty())nbt.setTag("UUID", uid);
         return nbt.getBukkitItem();
@@ -275,7 +270,7 @@ public class Item {
      * <p>
      * Meta: Skull, Book, TropicalFishBucket, LeatherArmor and Potions(Splash & Lingering included)
      * @param item The itemstack to compare. Can contain meta like skull, book(even with {P} balises for playername), nbttags like custom data, repaircost, damage, etc
-     * @param player A potential player who can be used in {@link Meta#hasSameMeta(ItemStack, Player)}. Can be null without throwing exceptions
+     * @param player A potential player who can be used in {@link Meta#hasSameMeta(ItemStack, org.bukkit.OfflinePlayer)}. Can be null without throwing exceptions
      * @return if the itemstack match the current item
      */
     public boolean isSimilar(ItemStack item, @Nullable Player player){
@@ -285,7 +280,7 @@ public class Item {
         if(item.hasItemMeta()){
             ItemMeta itemMeta1 = item.getItemMeta(), itemMeta2 = getItemMeta();
             if(!StringUtils.equals(itemMeta1.getDisplayName(), itemMeta2.getDisplayName()))return false;
-            if(!Utils.equalLists(itemMeta1.getLore(), itemMeta2.getLore()))return false;
+            if(!ch.luca008.SpigotApi.Utils.StringUtils.equalLists(itemMeta1.getLore(), itemMeta2.getLore()))return false;
             if(!compareFlags(itemMeta1.getItemFlags(),itemMeta2.getItemFlags()))return false;
             if(!(itemMeta1.hasEnchants()?itemMeta2.hasEnchants()&&itemMeta2.getEnchants().equals(itemMeta1.getEnchants()):!itemMeta2.hasEnchants()))return false;
             if(!(itemMeta1.hasAttributeModifiers()?itemMeta2.hasAttributeModifiers()&&compareModifiers(itemMeta1.getAttributeModifiers(),itemMeta2.getAttributeModifiers()):!itemMeta2.hasAttributeModifiers()))return false;
@@ -297,10 +292,10 @@ public class Item {
                 Damageable d1 = (Damageable) itemMeta1, d2 = (Damageable) itemMeta2;
                 if(!(d1.hasDamage()?d2.hasDamage()&&d1.getDamage()==d2.getDamage():!d2.hasDamage()))return false;
             }
-            NBTTags.NBTItem nbt = NBTTags.getInstance().getNBT(item);
+            NBTTagApi.NBTItem nbt = SpigotApi.getNBTTagApi().getNBT(item);
             int itemCost = nbt.hasTag("RepairCost")?Integer.parseInt(nbt.getTag("RepairCost").toString()):0;
             if(!(repairCost>0?repairCost==itemCost:itemCost==0))return false;
-            String itemUid = nbt.hasTag("UUID")?(String)nbt.getTag("UUID"):null;
+            String itemUid = nbt.hasTag("UUID")? nbt.getString("UUID"):null;
             if(!(uid!=null&&!uid.isEmpty()?itemUid!=null&&!itemUid.isEmpty()&&uid.equals(itemUid):(itemUid==null||itemUid.isEmpty())))return false;
             boolean hasMeta = Meta.hasMeta(item);
             if(!(hasMeta()?hasMeta&&meta.hasSameMeta(item,player):!hasMeta))return false;//check les meta potion, armure cuir, fish bucket, skull
@@ -352,7 +347,7 @@ public class Item {
 
     public String getName(){
         if(name!=null&&!name.isEmpty())return name;
-        return Utils.enumName(getMaterial());
+        return ch.luca008.SpigotApi.Utils.StringUtils.enumName(getMaterial());
     }
 
     public Meta getMeta(){
@@ -367,7 +362,7 @@ public class Item {
         this.meta = meta;
     }
     public void setLore(String lore){
-        this.lore = Utils.asLore(lore);
+        this.lore = ch.luca008.SpigotApi.Utils.StringUtils.asLore(lore);
     }
     public List<String> getLore()
     {

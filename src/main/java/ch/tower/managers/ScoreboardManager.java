@@ -1,23 +1,22 @@
 package ch.tower.managers;
 
 import ch.luca008.SpigotApi.Api.JSONApi;
+import ch.luca008.SpigotApi.Api.ScoreboardAPI;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
-import ch.tower.utils.Scoreboard.Board;
-import ch.tower.utils.Scoreboard.PlayerBoard;
-import ch.tower.utils.Scoreboard.ScoreboardLine;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.json.simple.JSONArray;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Map;
 
 public class ScoreboardManager
 {
@@ -27,29 +26,16 @@ public class ScoreboardManager
         @EventHandler
         public void onJoinSetBoard(PlayerJoinEvent e)
         {
-            Main m = Main.getInstance();
-            Bukkit.getScheduler().runTaskLater(m, ()->{
-                String sb = "SPECTATOR";
-                if(m.getManager().getState() == GameManager.GameState.WAIT)
-                {
-                    sb = GameManager.GameState.WAIT.name();
-                }
-                else
-                {
-                    TowerPlayer tp = TowerPlayer.getPlayer(e.getPlayer());
-                    if(tp!=null)
-                    {
-                        sb = m.getManager().getState().name();
-                    }
-                }
-                m.getManager().getScoreboardManager().setBoard(e.getPlayer(), sb);
-            },1L);
+            Main.getInstance().getManager().getScoreboardManager().updateBoard(e.getPlayer());
+        }
+
+        @EventHandler
+        public void onQuitNullifyBoard(PlayerQuitEvent e){
+            SpigotApi.getScoreboardApi().setScoreboard(e.getPlayer(), null);
         }
     }
 
     public static final File SCOREBOARD_FILE = new File(Main.getInstance().getDataFolder(), "scoreboards.json");
-    private final ArrayList<Board> scoreboards = new ArrayList<>();
-    private final ArrayList<PlayerBoard> players = new ArrayList<>();
 
     public enum BoardField
     {
@@ -74,9 +60,91 @@ public class ScoreboardManager
         {
             return String.format("{%s}", name());
         }
-        public void update(Player player, Object value)
+        public void update(Player player, String value)
         {
-            Main.getInstance().getManager().getScoreboardManager().updateLine(player, toFormat(), value);
+            ScoreboardAPI.PlayerScoreboard board = SpigotApi.getScoreboardApi().getScoreboard(player);
+            if(board != null){
+                board.setPlaceholder(name(), value);
+            }
+        }
+
+    }
+
+    //This class is used to keep consistency between bulk placeholders update on join/change board and single placeholder update on event
+    public static class PlaceholderHelper {
+
+        public static class PlayerHelper {
+
+            private final TowerPlayer player;
+
+            private PlayerHelper(@Nonnull TowerPlayer player){
+                this.player = player;
+            }
+
+            public String getTeam(){
+                return PlaceholderHelper.getTeamName(player.getTeam());
+            }
+
+            public String getPoints(){
+                return String.valueOf(player.getPoints());
+            }
+
+            public String getKills(){
+                return String.valueOf(player.getKills());
+            }
+
+            public String getAssists(){
+                return String.valueOf(player.getAssists());
+            }
+
+            public String getDeaths(){
+                return String.valueOf(player.getDeaths());
+            }
+
+            public String getMoney(){
+                return String.valueOf(player.getMoney())+"$";
+            }
+
+        }
+
+        @Nonnull
+        public static PlayerHelper getPlayerHelper(@Nonnull TowerPlayer player){
+            return new PlayerHelper(player);
+        }
+
+        //TODO return red team points
+        public static String getRedPoints(){
+            return "0";
+        }
+
+        //TODO return blue team points
+        public static String getBluePoints(){
+            return "0";
+        }
+
+        public static String getGoalPoints(){
+            return String.valueOf(GameManager.ConfigField.GOAL_POINTS.get());
+        }
+
+        public static String getTotalPlayerCount(){
+            return String.valueOf(Bukkit.getOnlinePlayers().size());
+        }
+
+        public static String getMaxPlayerCount(){
+            return String.valueOf(GameManager.ConfigField.MAX_PLAYERS.get());
+        }
+
+        public static String getWaitTimer(){
+            return String.valueOf(GameManager.ConfigField.TIMER_DURATION_WAIT.get());
+        }
+
+        public static String getGameTimer(){
+            return String.valueOf(GameManager.ConfigField.TIMER_DURATION_GAME.get());
+        }
+
+        @Nonnull
+        public static String getTeamName(@Nullable TeamsManager.PlayerTeam team){
+            return team == null ? "§aNone" : (team.getColorCode()+team.getInfo().apiTeam().getDisplayName());
         }
 
     }
@@ -89,110 +157,84 @@ public class ScoreboardManager
             String sb = (String)sb_key;
             JSONApi.JSONReader r_sb = r.getJson(sb);
             JSONArray lines = r_sb.getArray("Lines");
-            ScoreboardLine.LinesBuilder linesBuilder = new ScoreboardLine.LinesBuilder();
+            ScoreboardAPI.LinesBuilder linesBuilder = new ScoreboardAPI.LinesBuilder();
             for(int i=0;i<lines.size();i++)
             {
                 linesBuilder.add(i, (String) lines.get(i));
             }
-            registerScoreboard(sb, r_sb.getString("Title"), linesBuilder.getLines());
+            SpigotApi.getScoreboardApi().registerScoreboard(sb, r_sb.getString("Title"), linesBuilder.getLines());
         }
         Bukkit.getServer().getPluginManager().registerEvents(slistener, Main.getInstance());
+        registerPlayers();
     }
 
-    public Board getScoreboard(String uniqueName)
-    {
-        if(uniqueName==null)return null;
-        for(Board s : scoreboards)
-        {
-            if(s.getName().equals(uniqueName))
-            {
-                return s;
-            }
-        }
-        return null;
+    private void registerPlayers(){
+        Bukkit.getOnlinePlayers().forEach(this::updateBoard);
     }
 
-    public boolean doesScoreboardExist(String name)
-    {
-        return getScoreboard(name)!=null;
-    }
-
-    private void registerScoreboard(String name, String title, ArrayList<ScoreboardLine> lines)
-    {
-        if(!doesScoreboardExist(name))
-        {
-            scoreboards.add(new Board(name, title, lines));
-        }
-    }
-
-    private void unregisterScoreboard(String scoreboard)
-    {
-        if(scoreboard!=null&&doesScoreboardExist(scoreboard))
-        {
-            Board b = getScoreboard(scoreboard);
-            for(PlayerBoard pb : players)
-            {
-                Board sb = pb.getParentBoard();
-                if(sb!=null&&sb.getName().equals(b.getName()))
-                {
-                    pb.setParentBoard(null);
-                }
-            }
-            scoreboards.remove(b);
-        }
-    }
-
-    public void unregister()
-    {
+    public void unregister(){
+        ScoreboardAPI api = SpigotApi.getScoreboardApi();
+        Bukkit.getOnlinePlayers().forEach(p->api.setScoreboard(p, null));
         HandlerList.unregisterAll(slistener);
-        for(Board s : new ArrayList<>(scoreboards))
-        {
-            unregisterScoreboard(s.getName());
-        }
-        //to be safe
-        scoreboards.clear();
     }
 
-    public PlayerBoard getBoard(Player player)
-    {
-        for(PlayerBoard pb : players)
-        {
-            if(pb.getPlayer() == player)
-            {
-                return pb;
-            }
-        }
-        return null;
+    public void updateBoard(Player player){
+        String board = shouldHaveScoreboard(player);
+        Main m = Main.getInstance();
+        Bukkit.getScheduler().runTaskLater(m, ()->updatePH(SpigotApi.getScoreboardApi().setScoreboard(player, board)),1L);
     }
 
-    /**
-     * Show or hide the specified scoreboard.
-     * @param player The player on which the action takes place
-     * @param board The new scoreboard to display. <p>If the scoreboard already displayed is the same then nothing happen. <p>You can pass null if you want to hide any current active scoreboard.
-     */
-    public void setBoard(Player player, String board)
-    {
-        if(board != null && !doesScoreboardExist(board))
-            return;
-        PlayerBoard pb = getBoard(player);
-        if(pb == null)
+    private String shouldHaveScoreboard(Player player){
+        Main m = Main.getInstance();
+        String sb = "SPECTATOR";
+        if(m.getManager().getState() == GameManager.GameState.WAIT)
         {
-            players.add(new PlayerBoard(player, board));
+            sb = GameManager.GameState.WAIT.name();
         }
         else
         {
-            if(!pb.getParentBoard().getName().equals(board))
-                pb.setParentBoard(board);
+            TowerPlayer tp = TowerPlayer.getPlayer(player);
+            if(tp!=null)
+            {
+                sb = m.getManager().getState().name();
+            }
         }
+        return sb;
     }
 
-    private void updateLine(Player player, String field, Object value)
-    {
-        PlayerBoard pb = getBoard(player);
-        if(pb != null)
-        {
-            pb.updateLines(Map.of(field, value));
+    //Bulk updating scoreboard on set or on change (i.e when the wait board is switched to game board, or when a player rejoin during the game)
+    private void updatePH(@Nullable ScoreboardAPI.PlayerScoreboard board){
+        if(board == null || !board.isParentBoardValid()){
+            return;
         }
+
+        String name = board.getParentBoard().getName();
+
+        if(name.equals(GameManager.GameState.WAIT.name())){
+            board.setPlaceholder(BoardField.TEAM.name(), PlaceholderHelper.getTeamName(TeamsManager.getPlayerTeam(board.getPlayer())));
+            board.setPlaceholder(BoardField.PLAYER_COUNT.name(), PlaceholderHelper.getTotalPlayerCount());
+            board.setPlaceholder(BoardField.MAX_PLAYER_COUNT.name(), PlaceholderHelper.getMaxPlayerCount());
+            //We set the maximum (in case the timer hasnt started yet). If the timer has started, WaitEvents will update it the next second.
+            board.setPlaceholder(BoardField.TIMER.name(), PlaceholderHelper.getWaitTimer());
+        } else if(name.equals(GameManager.GameState.GAME.name())){
+            TowerPlayer tp = TowerPlayer.getPlayer(board.getPlayer());
+            if(tp != null){
+                PlaceholderHelper.PlayerHelper playerInfos = tp.boardHelder;
+                board.setPlaceholder(BoardField.TEAM.name(), playerInfos.getTeam());
+                board.setPlaceholder(BoardField.KILLS.name(), playerInfos.getKills());
+                board.setPlaceholder(BoardField.ASSISTS.name(), playerInfos.getAssists());
+                board.setPlaceholder(BoardField.POINTS.name(), playerInfos.getPoints());
+                board.setPlaceholder(BoardField.DEATHS.name(), playerInfos.getDeaths());
+                board.setPlaceholder(BoardField.MONEY.name(), playerInfos.getMoney());
+            }
+            board.setPlaceholder(BoardField.POINTS_BLUE.name(), PlaceholderHelper.getBluePoints());
+            board.setPlaceholder(BoardField.POINTS_RED.name(), PlaceholderHelper.getRedPoints());
+            board.setPlaceholder(BoardField.MAX_POINTS.name(), PlaceholderHelper.getGoalPoints());
+            //We set the maximum by default. But GameEvents will update it the next second.
+            board.setPlaceholder(BoardField.TIMER.name(), PlaceholderHelper.getGameTimer());
+        }
+        //LoginEvent is cancelled in the end state so ne need to bulk update scoreboard placeholder.
+
     }
 
 }
