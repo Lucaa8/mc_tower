@@ -243,6 +243,11 @@ public class TowerPlayer
         return money;
     }
 
+    public void setMoney(double money){
+        this.money = money;
+        ScoreboardManager.BoardField.MONEY.update(asPlayer(), boardHelder.getMoney());
+    }
+
     public Levels getLevels()
     {
         return this.levels;

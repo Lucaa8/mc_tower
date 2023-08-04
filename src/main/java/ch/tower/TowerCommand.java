@@ -48,7 +48,7 @@ public class TowerCommand implements CommandExecutor {
                 p.teleport(loc);
                 return true;
             }
-            if((args.length == 1 || args.length == 3) && args[0].equals("tp")){
+            else if((args.length == 1 || args.length == 3) && args[0].equals("tp")){
                 if(args.length == 1){
                     p.sendMessage("§6Usage: §r/tower tp game|copy blue|red|spec");
                     p.sendMessage("§6I.e: §r/tower tp copy blue");
@@ -69,6 +69,31 @@ public class TowerCommand implements CommandExecutor {
                         return true;
                     }catch(Exception e){
                         p.sendMessage("§4Cannot find any team named §c"+teamName);
+                        return false;
+                    }
+                }
+            }
+            else if(args.length >= 1 && args[0].equals("money")){
+                if(args.length != 3){
+                    p.sendMessage("§6Usage: §r/tower money pseudo <value>");
+                    p.sendMessage("§6I.e: §r/tower money Luca008 487.56");
+                    return true;
+                } else {
+                    TowerPlayer player = TowerPlayer.getPlayer(Bukkit.getOfflinePlayer(args[1]));
+                    if(player == null){
+                        p.sendMessage("§4Cannot find a player currently in game with the name §c"+args[1]);
+                        return false;
+                    }
+                    try{
+                        double money = Double.parseDouble(args[2]);
+                        if(money < 0){
+                            p.sendMessage("§4Cannot give negative money.");
+                            return false;
+                        }
+                        player.setMoney(money);
+                        return true;
+                    }catch(NumberFormatException nfe){
+                        p.sendMessage("§4Cannot parse " + args[2] + " has a decimal.");
                         return false;
                     }
                 }
