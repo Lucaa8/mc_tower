@@ -10,6 +10,7 @@ import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
@@ -19,6 +20,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -186,8 +188,6 @@ public class GameEvents implements StateEvents
                 playerOfTeam.sendMessage(s.toString());
             }
         }
-
-
     }
 
     //------------------- START OF SHOP/ITEMS SECTION -------------------//
@@ -264,13 +264,14 @@ public class GameEvents implements StateEvents
         }
         else
         {
+            TeamsManager.PlayerTeam.valueOf(e.getPlayer().getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "team"), PersistentDataType.STRING)).addPlayer(e.getPlayer());
             String message = TeamsManager.getPlayerTeam(p).getColorCode() + p.getName() + ChatColor.RESET + " joined the game.";
             e.setJoinMessage(message);
         }
         p.teleport(TeamsManager.getPlayerTeam(p).getSpawn());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onQuit(PlayerQuitEvent e)
     {
         //TODO: tester
@@ -281,7 +282,7 @@ public class GameEvents implements StateEvents
         }
         else
         {
-            //TODO luca: crash car TeamApi retire le joueur de la team, meme crash lorsqu'il rejoint la partie.
+            e.getPlayer().getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "team"), PersistentDataType.STRING, TeamsManager.getPlayerTeam(p).name());
             String message = TeamsManager.getPlayerTeam(p).getColorCode() + p.getName() + ChatColor.RESET + " left the game.";
             e.setQuitMessage(message);
         }

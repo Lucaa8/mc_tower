@@ -4,7 +4,7 @@
       "Name": "Utilities§b§f",
       "X": -64.5,
       "Y": 192.0,
-      "Z": 1160.5,
+      "Z": 1161.5,
       "Facing": "EAST",
       "Textures": {
         "value": "eyJ0aW1lc3RhbXAiOjE1NDM5ODc2MjI0NjgsInByb2ZpbGVJZCI6IjNlMjZiMDk3MWFjZDRjNmQ5MzVjNmFkYjE1YjYyMDNhIiwicHJvZmlsZU5hbWUiOiJOYWhlbGUiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2VjM2U0YjU1MzBhMWZjM2I3ZGI0ZDhlNjYzMTM2ODE1YmMyMTA4OTk1OTQ1MTJmZDE5MjJlMGIyNmE3NGQyYTEifX19",
@@ -15,7 +15,7 @@
       "Name": "Utilities§r§f",
       "X": 65.5,
       "Y": 192.0,
-      "Z": 1144.5,
+      "Z": 1143.5,
       "Facing": "WEST",
       "Textures": {
         "value": "eyJ0aW1lc3RhbXAiOjE1NDM5ODc2MjI0NjgsInByb2ZpbGVJZCI6IjNlMjZiMDk3MWFjZDRjNmQ5MzVjNmFkYjE1YjYyMDNhIiwicHJvZmlsZU5hbWUiOiJOYWhlbGUiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2VjM2U0YjU1MzBhMWZjM2I3ZGI0ZDhlNjYzMTM2ODE1YmMyMTA4OTk1OTQ1MTJmZDE5MjJlMGIyNmE3NGQyYTEifX19",
@@ -26,7 +26,7 @@
       "Name": "Tools§b§f",
       "X": -64.5,
       "Y": 192.0,
-      "Z": 1158.5,
+      "Z": 1157.5,
       "Facing": "EAST",
       "Textures": {
         "value": "ewogICJ0aW1lc3RhbXAiIDogMTY2MTczNTcxMzM1MywKICAicHJvZmlsZUlkIiA6ICJhMWU4OThjNWEyNmY0MTYyOTQyYmNmNmM1MzRiMTE5ZiIsCiAgInByb2ZpbGVOYW1lIiA6ICJ0b21keGlpaSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9kNjQ0NzQyZDQ2MGM3NjhkYmIyZTM0ZmFhYTcyZTI2MWI4NmRkOWViMGRkMTBjZmQxNmRkMWVjZjcyMjZmYmE5IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0=",
@@ -37,7 +37,7 @@
       "Name": "Tools§r§f",
       "X": 65.5,
       "Y": 192.0,
-      "Z": 1146.5,
+      "Z": 1147.5,
       "Facing": "WEST",
       "Textures": {
         "value": "ewogICJ0aW1lc3RhbXAiIDogMTY2MTczNTcxMzM1MywKICAicHJvZmlsZUlkIiA6ICJhMWU4OThjNWEyNmY0MTYyOTQyYmNmNmM1MzRiMTE5ZiIsCiAgInByb2ZpbGVOYW1lIiA6ICJ0b21keGlpaSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9kNjQ0NzQyZDQ2MGM3NjhkYmIyZTM0ZmFhYTcyZTI2MWI4NmRkOWViMGRkMTBjZmQxNmRkMWVjZjcyMjZmYmE5IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0=",
@@ -48,7 +48,7 @@
       "Name": "Blocks§b§f",
       "X": -60.5,
       "Y": 192.0,
-      "Z": 1158.5,
+      "Z": 1157.5,
       "Facing": "WEST",
       "Textures": {
         "value": "ewogICJ0aW1lc3RhbXAiIDogMTY3NTAzMzczODQzNywKICAicHJvZmlsZUlkIiA6ICJkYjJmMTJhMmU5MTI0ZThiODZjZmQyNzU2MDk1N2JhNCIsCiAgInByb2ZpbGVOYW1lIiA6ICJDYWxpYnJlcyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9hMmU3M2JkZjgwZjMyMTg0MDI1ZjE1N2I4YjY3YTI4MWQyMDhlODU0NGYzZTE2ZWNlYTRiOTRmZWQwMzdiOGUwIgogICAgfQogIH0KfQ==",
@@ -59,7 +59,7 @@
       "Name": "Blocks§r§f",
       "X": 61.5,
       "Y": 192.0,
-      "Z": 1146.5,
+      "Z": 1147.5,
       "Facing": "EAST",
       "Textures": {
         "value": "ewogICJ0aW1lc3RhbXAiIDogMTY3NTAzMzczODQzNywKICAicHJvZmlsZUlkIiA6ICJkYjJmMTJhMmU5MTI0ZThiODZjZmQyNzU2MDk1N2JhNCIsCiAgInByb2ZpbGVOYW1lIiA6ICJDYWxpYnJlcyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9hMmU3M2JkZjgwZjMyMTg0MDI1ZjE1N2I4YjY3YTI4MWQyMDhlODU0NGYzZTE2ZWNlYTRiOTRmZWQwMzdiOGUwIgogICAgfQogIH0KfQ==",
@@ -70,7 +70,7 @@
       "Name": "Resources§b§f",
       "X": -60.5,
       "Y": 192.0,
-      "Z": 1160.5,
+      "Z": 1161.5,
       "Facing": "WEST",
       "Textures": {
         "value": "ewogICJ0aW1lc3RhbXAiIDogMTY3NTAzMzU4MDM3NCwKICAicHJvZmlsZUlkIiA6ICI5MWYwNGZlOTBmMzY0M2I1OGYyMGUzMzc1Zjg2ZDM5ZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJTdG9ybVN0b3JteSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9jY2NiOWNkN2JkZWFmNjRhMjQzM2NkYzU0MTMyMzM0YWE3YjA4YTM4Y2U1NThkNzg4NDE0MmI5ZDliODcxZDFjIgogICAgfQogIH0KfQ==",
@@ -81,7 +81,7 @@
       "Name": "Resources§r§f",
       "X": 61.5,
       "Y": 192.0,
-      "Z": 1144.5,
+      "Z": 1143.5,
       "Facing": "EAST",
       "Textures": {
         "value": "ewogICJ0aW1lc3RhbXAiIDogMTY3NTAzMzU4MDM3NCwKICAicHJvZmlsZUlkIiA6ICI5MWYwNGZlOTBmMzY0M2I1OGYyMGUzMzc1Zjg2ZDM5ZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJTdG9ybVN0b3JteSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9jY2NiOWNkN2JkZWFmNjRhMjQzM2NkYzU0MTMyMzM0YWE3YjA4YTM4Y2U1NThkNzg4NDE0MmI5ZDliODcxZDFjIgogICAgfQogIH0KfQ==",

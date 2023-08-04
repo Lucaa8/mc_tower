@@ -1,10 +1,7 @@
 package ch.tower;
 
-import ch.tower.events.GlobalEvents;
-import ch.tower.items.ArmorEquipment;
 import ch.tower.managers.*;
 import ch.tower.shop.categoryMenus.ToolsMenu;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -38,18 +35,14 @@ public class Main extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        //just to execute the static code block.
-        new ArmorEquipment();
+        getCommand("tower").setExecutor(new TowerCommand());
         //DO NOT ADD ANYTHING BEFORE THIS LINE
-        PluginManager pm = getServer().getPluginManager();
-        pm.registerEvents(new GlobalEvents(), this);
         game = new GameManager();
-
     }
 
     public void onDisable()
     {
-        //maybe null if onEnable failed and want to disable the plugin
+        //maybe null if onEnable failed and wants to disable the plugin
         if(game != null)
             game.stop();
     }

@@ -5,3 +5,8 @@ depend:
   - SpigotApi
 main: ${mainClass}
 api-version: 1.19
+commands:
+  tower:
+    description: Admin tools to manage the tower
+    permission-message: §cYou dont have the permission.
+    permission: tower.command.use
