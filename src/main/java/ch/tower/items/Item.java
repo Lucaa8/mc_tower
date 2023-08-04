@@ -303,22 +303,41 @@ public class Item {
         return true;
     }
 
-    public void giveOrDrop(Player p, int amount){
+    private void _giveOrDrop(Player p, ItemStack[] items){
         PlayerInventory inv = p.getInventory();
-        ItemStack current = toItemStack(amount);
-        if(meta instanceof Skull){
-            if(((Skull)meta).getOwningType()==Skull.SkullOwnerType.PLAYER)current = ((Skull)meta).applyOwner(current, p.getUniqueId());
-        }
-        if(meta instanceof Book){
-            current = ((Book)meta).applyForPlayer(current, p.getName());
-        }
-        Map<Integer, ItemStack> full = inv.addItem(current);
-        if (!full.isEmpty()) {
-            Location loc = p.getLocation();
-            for(Map.Entry<Integer, ItemStack> extra : full.entrySet()) {
-                p.getWorld().dropItem(loc, extra.getValue());
+        for(ItemStack item : items){
+            Map<Integer, ItemStack> full = inv.addItem(item);
+            if (!full.isEmpty()) {
+                Location loc = p.getLocation();
+                for(Map.Entry<Integer, ItemStack> extra : full.entrySet()) {
+                    p.getWorld().dropItem(loc, extra.getValue());
+                }
             }
         }
+    }
+
+    public void giveOrDrop(Player p, int amount){
+        ItemStack[] items = toItemStacks(amount, p);
+        _giveOrDrop(p, items);
+    }
+
+    /*
+    Useful for blocks. Giving blocks to player with a nbt tag can lead to stacking problems.
+    If you give 32 cobblestone to the player with a nbt, then a place one bloc and mines it, he wont stack with 31 others blocks because the block lost his nbt
+     */
+    public void giveOrDopWithoutNBT(Player p, int amount){
+        ItemStack[] items = toItemStacks(amount, p);
+        ItemStack[] withoutNbtItems = new ItemStack[items.length];
+        int i = 0;
+        NBTTagApi api = SpigotApi.getNBTTagApi();
+        for(ItemStack item : toItemStacks(amount, p)){
+            NBTTagApi.NBTItem nbt = api.getNBT(item);
+            for(String tag : api.getNBT(item).getTags().e()){
+                nbt.removeTag(tag);
+            }
+            withoutNbtItems[i++] = nbt.getBukkitItem();
+        }
+        _giveOrDrop(p, withoutNbtItems);
     }
 
     public String getUid(){

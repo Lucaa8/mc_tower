@@ -18,6 +18,8 @@ import org.json.simple.JSONArray;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 
 public class ScoreboardManager
 {
@@ -74,6 +76,15 @@ public class ScoreboardManager
     //This class is used to keep consistency between bulk placeholders update on join/change board and single placeholder update on event
     public static class PlaceholderHelper {
 
+
+        private final static DecimalFormat df;
+
+        static {
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+            symbols.setGroupingSeparator('\'');
+            df = new DecimalFormat("#,###.##", symbols);
+        }
+
         public static class PlayerHelper {
 
             private final TowerPlayer player;
@@ -103,7 +114,7 @@ public class ScoreboardManager
             }
 
             public String getMoney(){
-                return String.valueOf(player.getMoney())+"$";
+                return df.format(player.getMoney())+"$";
             }
 
         }

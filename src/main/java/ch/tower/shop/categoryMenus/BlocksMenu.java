@@ -36,7 +36,7 @@ public class BlocksMenu extends ShopMenu
         {
             player.takeMoney(price);
             Item toGive = cloneColouredGlass(item, player.getTeam());
-            toGive.giveOrDrop(player.asPlayer(), toGive.getCount());
+            toGive.giveOrDopWithoutNBT(player.asPlayer(), toGive.getCount());
         }
         return -1.0;
     }
