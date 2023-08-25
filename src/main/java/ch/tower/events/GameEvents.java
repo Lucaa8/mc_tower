@@ -116,9 +116,9 @@ public class GameEvents implements StateEvents
         EntityDamageEvent.DamageCause deathCause = player.getLastDamageCause().getCause();
         if (deathCause == EntityDamageEvent.DamageCause.ENTITY_ATTACK)
         {
-            if(player.getLastDamageCause().getEntity() instanceof Player attacker)
+            if(player.getLastDamageCause().getEntity() instanceof Player)
             {
-
+                Player attacker = player.getKiller();
                 TowerPlayer towerPlayer = TowerPlayer.getPlayer(player);
                 TowerPlayer towerAttacker = TowerPlayer.getPlayer(attacker);
                 towerPlayer.addDeath();
