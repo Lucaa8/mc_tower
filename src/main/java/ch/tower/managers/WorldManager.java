@@ -92,6 +92,8 @@ public class WorldManager {
             w.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
             w.setGameRule(GameRule.DO_MOB_SPAWNING, false);
             w.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true); //useful for tower map
+            w.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+            w.setGameRule(GameRule.DISABLE_RAIDS, true);
             System.out.println("Loaded world " + w.getName() + "!");
         }
         else
