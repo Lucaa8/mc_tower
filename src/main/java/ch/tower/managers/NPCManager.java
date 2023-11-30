@@ -75,10 +75,13 @@ public class NPCManager {
             SpigotApi.getMainApi().players().handlePacket(e.getPlayer(), (packet, event) ->{
                 if(packet instanceof PacketPlayInUseEntity p)
                 {
-                    Object bInstance = ReflectionApi.invoke(packet.getClass(), packet, "getActionType", new Class<?>[0]);
+                    Object bEnumEntityUseAction = ReflectionApi.getField(packet, "b");
+                    Object bInstance = ReflectionApi.invoke(bEnumEntityUseAction.getClass(), bEnumEntityUseAction, "a", new Class[0]);
                     Class<?> bEnum = ReflectionApi.getPrivateInnerClass(PacketPlayInUseEntity.class, "b");
+
                     Object ainteract = ReflectionApi.getEnumValue(bEnum, "INTERACT");
                     Object battack = ReflectionApi.getEnumValue(bEnum, "ATTACK");
+
                     if(bInstance == ainteract || bInstance == battack)
                     {
                         int id = (int) ReflectionApi.getField(p, "a");
