@@ -16,6 +16,7 @@ import java.io.File;
 public class GameManager {
 
     public static final File CONFIG_FILE = new File(Main.getInstance().getDataFolder(), "config.json");
+    public static final File MESSAGES_FILE = new File(Main.getInstance().getDataFolder(), "plugin_messages.json");
 
     public enum GameState
     {
@@ -41,12 +42,25 @@ public class GameManager {
     private final NPCManager npcManager;
     private final ShopMenuManager shopManager;
 
-    private static final JSONApi.JSONReader configInfos = SpigotApi.getJSONApi().readerFromFile(CONFIG_FILE);;
+    private static final JSONApi.JSONReader configInfos = SpigotApi.getJSONApi().readerFromFile(CONFIG_FILE);
+    private static final JSONApi.JSONReader messages = SpigotApi.getJSONApi().readerFromFile(MESSAGES_FILE);
 
     public enum ConfigField
     {
-        MAX_PLAYERS, MIN_PLAYERS, TIMER_DURATION_WAIT, TIMER_DURATION_GAME, GOAL_POINTS;
+        MAX_PLAYERS, MIN_PLAYERS, TIMER_DURATION_WAIT, TIMER_DURATION_GAME, GOAL_POINTS, LAST_ATTACKER_TIMER;
         public int get(){return configInfos.getInt(name());}
+    }
+
+    public static String getMessage(String key, String...replacements)
+    {
+        if(!messages.c(key))
+            return "Unknown message";
+        String msg = messages.getString(key);
+        for(int i=0;i<replacements.length;i++)
+        {
+            msg = msg.replace(String.format("{%d}", i), replacements[i]);
+        }
+        return msg;
     }
 
     public GameManager()

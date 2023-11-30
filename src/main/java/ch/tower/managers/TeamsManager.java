@@ -4,6 +4,7 @@ import ch.luca008.SpigotApi.Api.TeamAPI;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
 import net.minecraft.EnumChatFormat;
+import net.minecraft.world.scores.ScoreboardTeamBase;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -123,6 +124,7 @@ public class TeamsManager {
                 .setSortOrder(sortOrder)
                 .setFriendlyFire(false)
                 .setSeeInvisibleFriends(true)
+                .setCollisions(ScoreboardTeamBase.EnumTeamPush.b)
                 .create();
         if(SpigotApi.getTeamApi().registerTeam(apiTeam)){
             TeamInfo team = new TeamInfo(apiTeam, WorldManager.readLocation("Game."+teamName), WorldManager.readLocation("Lobby."+teamName));

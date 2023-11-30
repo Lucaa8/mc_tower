@@ -29,7 +29,8 @@ public class Main extends JavaPlugin {
            !copyStreamToFile("scoreboards.json", ScoreboardManager.SCOREBOARD_FILE) ||
            !copyStreamToFile("shop.json", ShopMenuManager.SHOP_FILE) ||
            !copyStreamToFile("default_items.json", ToolsMenu.DEFAULT_TOOLS_FILE) ||
-           !copyStreamToFile("armor.json", ToolsMenu.ARMOR_FILE))
+           !copyStreamToFile("armor.json", ToolsMenu.ARMOR_FILE) ||
+           !copyStreamToFile("plugin_messages.json", GameManager.MESSAGES_FILE))
         {
             System.err.println("Cannot generate all required resources...");
             getServer().getPluginManager().disablePlugin(this);

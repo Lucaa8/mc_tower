@@ -1,0 +1,10 @@
+{
+  "MSG_DEATH_ENTITY_ATTACK": "{0} §7has been killed by {1}",
+  "MSG_DEATH_VOID_1": "{0} §7fell in the void",
+  "MSG_DEATH_VOID_2": "{0} §7was thrust into the void by {1}",
+  "MSG_DEATH_EXPLOSION": "{0} §7found himself in an explosion",
+  "MSG_DEATH_FIRE": "{0} §7was burned",
+  "MSG_DEATH_FALL_1": "{0} §7collapsed onto the ground",
+  "MSG_DEATH_FALL_2": "{0} §7landed heavily on the ground after his skirmish with {1}",
+  "MSG_DEATH_DEFAULT": "{0} §7is dead"
+}

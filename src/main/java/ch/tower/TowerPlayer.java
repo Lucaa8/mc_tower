@@ -6,6 +6,7 @@ import ch.luca008.SpigotApi.Api.ScoreboardAPI;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.items.ArmorEquipment;
 import ch.tower.items.Item;
+import ch.tower.managers.GameManager;
 import ch.tower.managers.ScoreboardManager.PlaceholderHelper;
 import ch.tower.managers.ScoreboardManager;
 import ch.tower.managers.TeamsManager;
@@ -129,6 +130,9 @@ public class TowerPlayer
     //Can return the placeholder value for each player stat (like kills, etc...)
     //Can be public because final and unalterable (fields in PlayerHelper are also final)
     public final PlaceholderHelper.PlayerHelper boardHelder;
+
+    private TowerPlayer lastDamagedBy;
+    private long lastDamagedAt;
 
     private TowerPlayer(Player player)
     {
@@ -314,6 +318,21 @@ public class TowerPlayer
         {
             p.sendMessage("§cYour inventory was full so your " + (type.contains("_") ? type.substring(1) : type) + " couldn't be delivered. You will get it at your next respawn.");
         }
+    }
+
+    public void damage(@Nullable TowerPlayer attacker)
+    {
+        this.lastDamagedBy = attacker;
+        if(attacker!=null)
+            this.lastDamagedAt = System.currentTimeMillis();
+    }
+
+    @Nullable
+    public TowerPlayer getLastDamagedBy()
+    {
+        if(this.lastDamagedBy==null || (System.currentTimeMillis()-this.lastDamagedAt)>GameManager.ConfigField.LAST_ATTACKER_TIMER.get())
+            this.lastDamagedBy = null;
+        return this.lastDamagedBy;
     }
 
     @Nullable

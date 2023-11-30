@@ -4,13 +4,17 @@ import ch.luca008.SpigotApi.Api.NBTTagApi;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
+import ch.tower.managers.GameManager;
 import ch.tower.managers.TeamsManager;
 import ch.tower.shop.LuckShuffle;
 import org.bukkit.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
@@ -23,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import java.util.Collection;
 
@@ -108,34 +113,70 @@ public class GameEvents implements StateEvents
 
     //------------------- END OF THE LUCK POTION SECTION -------------------//
 
+
+    //------------------- START OF THE KILLS SECTION -------------------//
+
     @EventHandler
     public void onDeathOfPlayer(PlayerDeathEvent e)
     {
         //TODO: tester (bcp de problemes ici)
         Player player = e.getEntity();
-        EntityDamageEvent.DamageCause deathCause = player.getLastDamageCause().getCause();
-        if (deathCause == EntityDamageEvent.DamageCause.ENTITY_ATTACK)
+        TowerPlayer towerPlayer = TowerPlayer.getPlayer(player);
+
+        if(towerPlayer==null||towerPlayer.getTeam()==null)
+            return;
+
+        towerPlayer.addDeath();
+        String playerName = towerPlayer.getTeam().getColorCode()+player.getName();
+
+        EntityDamageEvent deathCause = player.getLastDamageCause();
+        if(deathCause == null)
         {
-            if(player.getLastDamageCause().getEntity() instanceof Player attacker)
+            e.setDeathMessage(GameManager.getMessage("MSG_DEATH_DEFAULT", playerName));
+            return;
+        }
+
+        switch (deathCause.getCause())
+        {
+            case ENTITY_ATTACK, VOID, FALL -> {
+                TowerPlayer attacker = towerPlayer.getLastDamagedBy();
+                if(attacker == null)
+                {
+                    if(deathCause.getCause() == DamageCause.VOID)
+                        e.setDeathMessage(GameManager.getMessage("MSG_DEATH_VOID_1", playerName));
+                    else if(deathCause.getCause() == DamageCause.FALL)
+                        e.setDeathMessage(GameManager.getMessage("MSG_DEATH_FALL_1", playerName));
+                } else {
+                    String attackerName = (attacker.getTeam() == null ? "§f" : attacker.getTeam().getColorCode()) + attacker.asOfflinePlayer().getName();
+                    attacker.addKill();
+                    String key = deathCause.getCause() == DamageCause.VOID ? "MSG_DEATH_VOID_2" : deathCause.getCause() == DamageCause.FALL ? "MSG_DEATH_FALL_2" : "MSG_DEATH_ENTITY_ATTACK";
+                    e.setDeathMessage(GameManager.getMessage(key, playerName, attackerName));
+                }
+            }
+            case ENTITY_EXPLOSION -> e.setDeathMessage(GameManager.getMessage("MSG_DEATH_EXPLOSION", playerName));
+            case FIRE -> e.setDeathMessage(GameManager.getMessage("MSG_DEATH_FIRE", playerName));
+            default -> e.setDeathMessage(GameManager.getMessage("MSG_DEATH_DEFAULT", playerName));
+        }
+
+    }
+
+    @EventHandler
+    public void onDamage(EntityDamageByEntityEvent e)
+    {
+        Entity damager = e.getDamager();
+        if(e.getEntity() instanceof Player victim && (damager instanceof Player || damager.getType() == EntityType.ARROW))
+        {
+            Player attacker = damager instanceof Player ? (Player)damager : (Player)((Projectile)damager).getShooter();
+            TowerPlayer towerVictim = TowerPlayer.getPlayer(victim);
+            TowerPlayer towerAttacker = TowerPlayer.getPlayer(attacker);
+            if(towerVictim != null && towerAttacker != null)
             {
-                TowerPlayer towerPlayer = TowerPlayer.getPlayer(player);
-                TowerPlayer towerAttacker = TowerPlayer.getPlayer(attacker);
-                towerPlayer.addDeath();
-                towerAttacker.addKill();
-                String message = TeamsManager.getPlayerTeam(player).getColorCode()
-                        + player.getName() + ChatColor.RESET + " has been killed by " + TeamsManager.getPlayerTeam(attacker).getColorCode() + attacker.getName();
-                e.setDeathMessage(message);
+                towerVictim.damage(towerAttacker);
             }
         }
-        if (deathCause == EntityDamageEvent.DamageCause.VOID)
-        {
-            String message = TeamsManager.getPlayerTeam(player).getColorCode()
-                    + player.getName() + ChatColor.RESET + " fell into the void.";
-            TowerPlayer towerPlayer = TowerPlayer.getPlayer(player);
-            towerPlayer.addDeath();
-            e.setDeathMessage(message);
-        }
     }
+
+    //------------------- END OF THE KILLS SECTION -------------------//
 
     @EventHandler
     public void onRespawnGiveStuffAndTeleport(PlayerRespawnEvent e)
