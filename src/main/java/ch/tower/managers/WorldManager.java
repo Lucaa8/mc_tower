@@ -6,12 +6,14 @@ import ch.tower.Main;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 
 public class WorldManager {
 
     public static final File SPAWN_FILE = new File(Main.getInstance().getDataFolder(), "spawns.json");
+    public static final File POOL_FILE = new File(Main.getInstance().getDataFolder(), "pools.json");
 
     private World spawn;
     private World tower;
@@ -101,6 +103,22 @@ public class WorldManager {
             System.err.println("Failed to load world " + worldName + "!");
         }
         return w;
+    }
+
+    public static double[][] readPoolLocations(String team){
+        JSONApi.JSONReader rTeam = SpigotApi.getJSONApi().readerFromFile(POOL_FILE).getJson(team);
+        return new double[][]{
+                {rTeam.getDouble("X1"), rTeam.getDouble("X2")},
+                {rTeam.getDouble("Y1"), rTeam.getDouble("Y2")},
+                {rTeam.getDouble("Z1"), rTeam.getDouble("Z2")}
+        };
+    }
+
+    @Nullable
+    public static World readPoolWorld()
+    {
+        JSONApi.JSONReader r = SpigotApi.getJSONApi().readerFromFile(POOL_FILE);
+        return Bukkit.getWorld(r.getString("Map"));
     }
 
     /**

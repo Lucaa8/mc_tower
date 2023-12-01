@@ -3,10 +3,12 @@ package ch.tower.managers;
 import ch.luca008.SpigotApi.Api.TeamAPI;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
+import ch.tower.TowerPlayer;
 import net.minecraft.EnumChatFormat;
 import net.minecraft.world.scores.ScoreboardTeamBase;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -26,6 +28,7 @@ public class TeamsManager {
 
         private final TeamInfo team;
         private final String code;
+        private int points;
         PlayerTeam(String code)
         {
             this.team = teams.get(this.name().toLowerCase());
@@ -96,6 +99,17 @@ public class TeamsManager {
             ScoreboardManager.BoardField.TEAM.update(player, ScoreboardManager.PlaceholderHelper.getTeamName(null));
             return true;
         }
+
+        public int addPointAndGet()
+        {
+            return ++points;
+        }
+
+        public int getPoints()
+        {
+            return points;
+        }
+
     }
 
     public static void unregisterTeams()
@@ -127,7 +141,21 @@ public class TeamsManager {
                 .setCollisions(ScoreboardTeamBase.EnumTeamPush.b)
                 .create();
         if(SpigotApi.getTeamApi().registerTeam(apiTeam)){
-            TeamInfo team = new TeamInfo(apiTeam, WorldManager.readLocation("Game."+teamName), WorldManager.readLocation("Lobby."+teamName));
+            Pool teamPool = null;
+            if(!teamName.equals("Spectator"))
+            {
+                World worldPool = WorldManager.readPoolWorld();
+                if(worldPool != null)
+                {
+                    double[][] pool = WorldManager.readPoolLocations(teamName);
+                    teamPool = new Pool(worldPool, pool[0], pool[1], pool[2]);
+                }
+                else
+                {
+                    System.err.println("FAILED TO RETRIEVE THE WORLD POOLS. PLEASE VERIFY YOUR pools.json. MAYBE CONSIDER DISABLING THE PLUGIN BECAUSE HES NOT IN A STABLE STATE.");
+                }
+            }
+            TeamInfo team = new TeamInfo(apiTeam, WorldManager.readLocation("Game."+teamName), WorldManager.readLocation("Lobby."+teamName), teamPool);
             teams.put(uniqueName, team);
         } else {
             System.err.println("THE API FAILED TO REGISTER THE TEAM " + uniqueName + ". MAYBE CONSIDER DISABLING THE PLUGIN BECAUSE HES NOT IN A STABLE STATE.");
@@ -149,7 +177,7 @@ public class TeamsManager {
         return null;
     }
 
-    public record TeamInfo(TeamAPI.Team apiTeam, Location spawn, Location lobbySpawn) {
+    public record TeamInfo(TeamAPI.Team apiTeam, Location spawn, Location lobbySpawn, Pool pool) {
 
         public List<Player> getPlayers()
         {
@@ -166,6 +194,22 @@ public class TeamsManager {
         @Override
         public int hashCode() {
             return Objects.hash(apiTeam);
+        }
+
+    }
+
+    public record Pool(World world, double[] x, double[] y, double[] z) {
+
+        public boolean isInside(Location location)
+        {
+            if(world != location.getWorld())
+                return false;
+
+            double playerX = location.getX();
+            double playerY = location.getY();
+            double playerZ = location.getZ();
+
+            return playerX > x[0] && playerX < x[1] && playerZ > z[0] && playerZ < z[1] && playerY > y[0] && playerY < y[1];
         }
 
     }

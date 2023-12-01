@@ -89,6 +89,11 @@ public class TowerPlayer
         }
     }
 
+    public static List<TowerPlayer> getPlayers()
+    {
+        return new ArrayList<>(players);
+    }
+
     public static class Levels implements Iterable<Map.Entry<String, Integer>>
     {
 

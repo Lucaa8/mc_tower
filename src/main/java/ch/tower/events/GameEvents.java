@@ -16,6 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -24,12 +25,15 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 public class GameEvents implements StateEvents
 {
@@ -189,6 +193,66 @@ public class GameEvents implements StateEvents
     }
 
     //------------------- END OF THE KILLS SECTION -------------------//
+
+    //------------------- START OF THE POINT POOL SECTION -------------------//
+
+    private TeamsManager.Pool redPool;
+    private TeamsManager.Pool bluePool;
+
+    @EventHandler
+    public void onMoveDetectsPool(PlayerMoveEvent e)
+    {
+        if(e.getTo() == null)
+            return;
+        if(e.getPlayer().getGameMode() == GameMode.SPECTATOR)
+            return;
+
+        if(bluePool != null && bluePool.isInside(e.getTo()))
+        {
+            checkAndScorePoint(e.getPlayer(), true);
+        }
+        else if(redPool != null && redPool.isInside(e.getTo()))
+        {
+            checkAndScorePoint(e.getPlayer(), false);
+        }
+    }
+
+    private void checkAndScorePoint(Player player, boolean bluePool)
+    {
+        TowerPlayer towerPlayer = TowerPlayer.getPlayer(player);
+        if(towerPlayer == null || towerPlayer.getTeam() == null)
+            return;
+        if(towerPlayer.getTeam() == TeamsManager.PlayerTeam.BLUE && !bluePool)
+        {
+            score(towerPlayer, TeamsManager.PlayerTeam.BLUE);
+        }
+        else if(towerPlayer.getTeam() == TeamsManager.PlayerTeam.RED && bluePool)
+        {
+            score(towerPlayer, TeamsManager.PlayerTeam.RED);
+        }
+
+    }
+
+    private void score(TowerPlayer player, TeamsManager.PlayerTeam team)
+    {
+        int points = team.addPointAndGet();
+        //TODO update scoreboard to display redpoints - bluepoints updated?
+        int goal = GameManager.ConfigField.GOAL_POINTS.get();
+        player.addPoint();
+        player.asPlayer().teleport(team.getSpawn());
+        player.asPlayer().setHealth(20d);
+        Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_POINT", team.getColorCode()+player.asOfflinePlayer().getName(), String.valueOf(points), String.valueOf(goal)));
+        for(Player p : Bukkit.getOnlinePlayers())
+        {
+            p.playSound(p.getLocation(), Sound.ENTITY_WITHER_DEATH, 0.2f, 1f);
+        }
+        if(points >= goal)
+        {
+            Main.getInstance().getManager().setState(GameManager.GameState.END);
+        }
+    }
+
+    //------------------- END OF THE POINT POOL SECTION -------------------//
 
     @EventHandler
     public void onRespawnGiveStuffAndTeleport(PlayerRespawnEvent e)
@@ -363,6 +427,7 @@ public class GameEvents implements StateEvents
     @Override
     public void onStateBegin()
     {
+        //TODO timer task
         TowerPlayer.registerPlayers();
         Bukkit.broadcast("The game begins. GL HF", Server.BROADCAST_CHANNEL_USERS);
         Collection<? extends Player> players = Main.getInstance().getServer().getOnlinePlayers();
@@ -377,11 +442,41 @@ public class GameEvents implements StateEvents
         }
         Main.getInstance().getManager().getNpcManager().load();
         Bukkit.getServer().getPluginManager().registerEvents(new InventoryEvent(), Main.getInstance());
+        redPool = TeamsManager.PlayerTeam.RED.getInfo().pool();
+        bluePool = TeamsManager.PlayerTeam.BLUE.getInfo().pool();
     }
 
     @Override
     public void onStateLeave()
     {
+        TeamsManager.PlayerTeam blue = TeamsManager.PlayerTeam.BLUE;
+        TeamsManager.PlayerTeam red = TeamsManager.PlayerTeam.RED;
+        String bluePoints = blue.getColorCode()+blue.getPoints();
+        String redPoints = red.getColorCode()+red.getPoints();
 
+        if(blue.getPoints()==red.getPoints())
+        {
+            Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_EX", bluePoints, redPoints));
+        }
+        else
+        {
+            boolean blueWon = blue.getPoints()>red.getPoints();
+            String winner = blueWon ? blue.getColorCode()+blue.getInfo().apiTeam().getDisplayName() : red.getColorCode()+red.getInfo().apiTeam().getDisplayName();
+            Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_WIN", winner, blueWon ? bluePoints : redPoints, blueWon ? redPoints : bluePoints));
+        }
+
+        Function<ToIntFunction<TowerPlayer>,List<Map.Entry<OfflinePlayer,Integer>>> sort = (func) -> TowerPlayer.getPlayers().stream()
+                .sorted(Comparator.comparingInt(func).reversed())
+                .filter(tp->tp.asOfflinePlayer().getName()!=null)
+                .map(tp-> Map.entry(tp.asOfflinePlayer(), func.applyAsInt(tp)))
+                .limit(3)
+                .toList();
+
+        Bukkit.broadcastMessage("---------Top Kills---------");
+        sort.apply(TowerPlayer::getKills).forEach(e->Bukkit.broadcastMessage("- " + e.getKey().getName() + " : " + e.getValue()));
+        Bukkit.broadcastMessage("---------Top Deaths---------");
+        sort.apply(TowerPlayer::getDeaths).forEach(e->Bukkit.broadcastMessage("- " + e.getKey().getName() + " : " + e.getValue()));
+        Bukkit.broadcastMessage("---------Top Points---------");
+        sort.apply(TowerPlayer::getPoints).forEach(e->Bukkit.broadcastMessage("- " + e.getKey().getName() + " : " + e.getValue()));
     }
 }

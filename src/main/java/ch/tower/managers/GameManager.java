@@ -100,6 +100,8 @@ public class GameManager {
         }
         TeamsManager.unregisterTeams();
         worldManager.unload();
+        Bukkit.shutdown();
+        //Bukkit.spigot().restart();
     }
 
     public void abandon(TowerPlayer player)
