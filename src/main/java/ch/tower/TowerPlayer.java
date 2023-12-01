@@ -19,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 import org.json.simple.JSONObject;
 
 import javax.annotation.Nullable;
@@ -79,6 +80,15 @@ public class TowerPlayer
         return null;
     }
 
+    public static void removePlayer(TowerPlayer player)
+    {
+        players.remove(player);
+        if(player.asOfflinePlayer().isOnline())
+        {
+            player.asPlayer().kickPlayer("§cYou have been removed from the match");
+        }
+    }
+
     public static class Levels implements Iterable<Map.Entry<String, Integer>>
     {
 
@@ -134,6 +144,9 @@ public class TowerPlayer
     private TowerPlayer lastDamagedBy;
     private long lastDamagedAt;
 
+    private String abandonTeam;
+    private BukkitTask abandonTask;
+
     private TowerPlayer(Player player)
     {
         this.player = Bukkit.getOfflinePlayer(player.getUniqueId());
@@ -149,6 +162,45 @@ public class TowerPlayer
     public Player asPlayer()
     {
         return Bukkit.getPlayer(player.getUniqueId());
+    }
+
+    @Nullable
+    public PlayerTeam getAbandoningTeam()
+    {
+        try {
+            return PlayerTeam.valueOf(this.abandonTeam);
+        } catch(IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    @Nullable
+    public PlayerTeam startAbandon()
+    {
+        PlayerTeam team = getTeam();
+        if(team != null)
+        {
+            int abandonSeconds = GameManager.ConfigField.ABANDON_AFTER.get();
+            this.abandonTeam = team.name();
+            this.abandonTask = Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), ()->Main.getInstance().getManager().abandon(this), abandonSeconds*20L); //Transform x seconds to ticks
+            String unit = abandonSeconds < 60 ? String.format("%d seconds", abandonSeconds) : String.format("%d minutes", (int)(abandonSeconds/60));
+            Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_ABANDON_1", team.getColorCode()+asOfflinePlayer().getName(), unit));
+        }
+        return team;
+    }
+
+    @Nullable
+    public PlayerTeam stopAbandon()
+    {
+        PlayerTeam team = getAbandoningTeam();
+        this.abandonTeam = null;
+        this.abandonTask.cancel();
+        this.abandonTask = null;
+        if(team != null)
+        {
+            Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_ABANDON_3", team.getColorCode()+asOfflinePlayer().getName()));
+        }
+        return team;
     }
 
     public int addPoint()
@@ -330,7 +382,7 @@ public class TowerPlayer
     @Nullable
     public TowerPlayer getLastDamagedBy()
     {
-        if(this.lastDamagedBy==null || (System.currentTimeMillis()-this.lastDamagedAt)>GameManager.ConfigField.LAST_ATTACKER_TIMER.get())
+        if(this.lastDamagedBy==null || (System.currentTimeMillis()-this.lastDamagedAt)>(GameManager.ConfigField.LAST_ATTACKER_TIMER.get()*1000L))
             this.lastDamagedBy = null;
         return this.lastDamagedBy;
     }
@@ -348,6 +400,18 @@ public class TowerPlayer
     public PlayerTeam getTeam()
     {
         return TeamsManager.getPlayerTeam(asPlayer());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TowerPlayer that)) return false;
+        return player.equals(that.player);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(player);
     }
 
 }

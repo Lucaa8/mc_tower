@@ -3,6 +3,7 @@ package ch.tower.managers;
 import ch.luca008.SpigotApi.Api.JSONApi;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
+import ch.tower.TowerPlayer;
 import ch.tower.events.EndEvents;
 import ch.tower.events.GameEvents;
 import ch.tower.events.StateEvents;
@@ -47,7 +48,7 @@ public class GameManager {
 
     public enum ConfigField
     {
-        MAX_PLAYERS, MIN_PLAYERS, TIMER_DURATION_WAIT, TIMER_DURATION_GAME, GOAL_POINTS, LAST_ATTACKER_TIMER;
+        MAX_PLAYERS, MIN_PLAYERS, TIMER_DURATION_WAIT, TIMER_DURATION_GAME, GOAL_POINTS, LAST_ATTACKER_TIMER, ABANDON_AFTER;
         public int get(){return configInfos.getInt(name());}
     }
 
@@ -99,6 +100,17 @@ public class GameManager {
         }
         TeamsManager.unregisterTeams();
         worldManager.unload();
+    }
+
+    public void abandon(TowerPlayer player)
+    {
+        TeamsManager.PlayerTeam team = player.getAbandoningTeam();
+        if(team != null)
+        {
+            Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_ABANDON_2", team.getColorCode()+player.asOfflinePlayer().getName()));
+            //TODO give advantage to this team?
+        }
+        TowerPlayer.removePlayer(player);
     }
 
     public GameState getState()

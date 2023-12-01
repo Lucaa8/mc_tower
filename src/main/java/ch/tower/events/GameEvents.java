@@ -119,12 +119,14 @@ public class GameEvents implements StateEvents
     @EventHandler
     public void onDeathOfPlayer(PlayerDeathEvent e)
     {
-        //TODO: tester (bcp de problemes ici)
         Player player = e.getEntity();
         TowerPlayer towerPlayer = TowerPlayer.getPlayer(player);
 
         if(towerPlayer==null||towerPlayer.getTeam()==null)
+        {
+            e.setDeathMessage(null);
             return;
+        }
 
         towerPlayer.addDeath();
         String playerName = towerPlayer.getTeam().getColorCode()+player.getName();
@@ -147,10 +149,20 @@ public class GameEvents implements StateEvents
                     else if(deathCause.getCause() == DamageCause.FALL)
                         e.setDeathMessage(GameManager.getMessage("MSG_DEATH_FALL_1", playerName));
                 } else {
-                    String attackerName = (attacker.getTeam() == null ? "§f" : attacker.getTeam().getColorCode()) + attacker.asOfflinePlayer().getName();
+                    TeamsManager.PlayerTeam team = attacker.getTeam();
+                    if(team == null)
+                    {
+                        team = attacker.getAbandoningTeam();
+                    }
+                    String attackerName = (team == null ? "§f" : team.getColorCode()) + attacker.asOfflinePlayer().getName();
                     attacker.addKill();
                     String key = deathCause.getCause() == DamageCause.VOID ? "MSG_DEATH_VOID_2" : deathCause.getCause() == DamageCause.FALL ? "MSG_DEATH_FALL_2" : "MSG_DEATH_ENTITY_ATTACK";
                     e.setDeathMessage(GameManager.getMessage(key, playerName, attackerName));
+                    Player pAttacker = attacker.asPlayer();
+                    if(pAttacker != null && pAttacker.isOnline())
+                    {
+                        pAttacker.playSound(pAttacker.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.3f, 1f);
+                    }
                 }
             }
             case ENTITY_EXPLOSION -> e.setDeathMessage(GameManager.getMessage("MSG_DEATH_EXPLOSION", playerName));
@@ -188,6 +200,10 @@ public class GameEvents implements StateEvents
             e.setRespawnLocation(player.getTeam().getSpawn());
             player.giveTools();
             player.giveFood();
+        }
+        else
+        {
+            e.setRespawnLocation(TeamsManager.PlayerTeam.SPECTATOR.getSpawn());
         }
     }
 
@@ -295,18 +311,27 @@ public class GameEvents implements StateEvents
     @EventHandler
     public void onJoin(PlayerJoinEvent e)
     {
-        //TODO: Tester pour spectateur et team rouge
         Player p = e.getPlayer();
-        if(TowerPlayer.getPlayer(p) == null)
+        TowerPlayer asTowerPlayer = TowerPlayer.getPlayer(p);
+        if(asTowerPlayer == null)
         {
             TeamsManager.PlayerTeam.SPECTATOR.addPlayer(p);
+            p.setGameMode(GameMode.SPECTATOR);
+            p.getInventory().clear();
             e.setJoinMessage("");
         }
         else
         {
-            TeamsManager.PlayerTeam.valueOf(e.getPlayer().getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "team"), PersistentDataType.STRING)).addPlayer(e.getPlayer());
-            String message = TeamsManager.getPlayerTeam(p).getColorCode() + p.getName() + ChatColor.RESET + " joined the game.";
-            e.setJoinMessage(message);
+            TeamsManager.PlayerTeam team = asTowerPlayer.stopAbandon();
+            if(team != null)
+            {
+                team.addPlayer(p);
+            }
+            else
+            {
+                p.kickPlayer("§cOops something went wrong while getting your team. It looks like you wont be able to rejoin this game.");
+            }
+            e.setJoinMessage(null);
         }
         p.teleport(TeamsManager.getPlayerTeam(p).getSpawn());
     }
@@ -314,17 +339,24 @@ public class GameEvents implements StateEvents
     @EventHandler(priority = EventPriority.LOWEST)
     public void onQuit(PlayerQuitEvent e)
     {
-        //TODO: tester
         Player p = e.getPlayer();
-        if(TowerPlayer.getPlayer(p) == null)
+        TowerPlayer asTowerPlayer = TowerPlayer.getPlayer(p);
+        if(asTowerPlayer == null)
         {
             e.setQuitMessage("");
         }
         else
         {
-            e.getPlayer().getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "team"), PersistentDataType.STRING, TeamsManager.getPlayerTeam(p).name());
-            String message = TeamsManager.getPlayerTeam(p).getColorCode() + p.getName() + ChatColor.RESET + " left the game.";
-            e.setQuitMessage(message);
+            TeamsManager.PlayerTeam team = asTowerPlayer.startAbandon();
+            e.setQuitMessage(null);
+            if(team != null)
+            {
+                if(team.getInfo().getPlayers().size() == 1)
+                {
+                    //TODO end game
+                    System.out.println("End game");
+                }
+            }
         }
     }
 
