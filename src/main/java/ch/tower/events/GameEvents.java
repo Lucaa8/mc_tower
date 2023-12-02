@@ -5,6 +5,7 @@ import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
 import ch.tower.managers.GameManager;
+import ch.tower.managers.ScoreboardManager;
 import ch.tower.managers.TeamsManager;
 import ch.tower.shop.LuckShuffle;
 import org.bukkit.*;
@@ -27,11 +28,13 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
@@ -48,6 +51,10 @@ public class GameEvents implements StateEvents
         }
         return instance;
     }
+
+    private BukkitTask timerTask;
+    private long startedAt;
+    private int maxTimerSeconds;
 
     //------------------- START OF THE HARMLESS FEATHER SECTION -------------------//
 
@@ -418,17 +425,22 @@ public class GameEvents implements StateEvents
             {
                 if(team.getInfo().getPlayers().size() == 1)
                 {
-                    //TODO end game
-                    System.out.println("End game");
+                    TeamsManager.PlayerTeam opposite = team == TeamsManager.PlayerTeam.BLUE ? TeamsManager.PlayerTeam.RED : TeamsManager.PlayerTeam.BLUE;
+                    String currentTeam = team.getColorCode()+team.getInfo().apiTeam().getDisplayName();
+                    String oppositeTeam = opposite.getColorCode()+opposite.getInfo().apiTeam().getDisplayName();
+                    Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_QUIT_LAST", currentTeam, oppositeTeam));
+                    isForfeit = true;
+                    Main.getInstance().getManager().setState(GameManager.GameState.END);
                 }
             }
         }
     }
 
+    private boolean isForfeit = false; //only used in onQuit and onStateLeave
+
     @Override
     public void onStateBegin()
     {
-        //TODO timer task
         TowerPlayer.registerPlayers();
         Bukkit.broadcast("The game begins. GL HF", Server.BROADCAST_CHANNEL_USERS);
         Collection<? extends Player> players = Main.getInstance().getServer().getOnlinePlayers();
@@ -445,39 +457,79 @@ public class GameEvents implements StateEvents
         Bukkit.getServer().getPluginManager().registerEvents(new InventoryEvent(), Main.getInstance());
         redPool = TeamsManager.PlayerTeam.RED.getInfo().pool();
         bluePool = TeamsManager.PlayerTeam.BLUE.getInfo().pool();
+        startedAt = System.currentTimeMillis();
+        maxTimerSeconds = GameManager.ConfigField.TIMER_DURATION_GAME.get();
+        timerTask = Bukkit.getScheduler().runTaskTimer(Main.getInstance(), ()->{
+            long current = System.currentTimeMillis();
+            int elapsedSec = (int) ((current - startedAt)/1000);
+            for(Player online : Bukkit.getOnlinePlayers())
+            {
+                ScoreboardManager.BoardField.TIMER.update(online, ScoreboardManager.PlaceholderHelper.getGameTimer(elapsedSec));
+            }
+            int remaining = Math.max(0, maxTimerSeconds - elapsedSec);
+            switch (remaining)
+            {
+                case 180, 120 -> Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_TIMER", (remaining/60)+" minutes"));
+                case 60 -> Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_TIMER", "1 minute"));
+                case 30,10,5 -> Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_TIMER", remaining+" seconds"));
+                case 0 -> Main.getInstance().getManager().setState(GameManager.GameState.END);
+            }
+        }, 40L, 20L);
     }
 
     @Override
     public void onStateLeave()
     {
+        timerTask.cancel();
+
         TeamsManager.PlayerTeam blue = TeamsManager.PlayerTeam.BLUE;
         TeamsManager.PlayerTeam red = TeamsManager.PlayerTeam.RED;
+
         String bluePoints = blue.getColorCode()+blue.getPoints();
         String redPoints = red.getColorCode()+red.getPoints();
 
-        if(blue.getPoints()==red.getPoints())
+        if(!isForfeit) //if the game ended either by a team which reached goal point or at the end of the timer
         {
-            Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_EX", bluePoints, redPoints));
-        }
-        else
-        {
-            boolean blueWon = blue.getPoints()>red.getPoints();
-            String winner = blueWon ? blue.getColorCode()+blue.getInfo().apiTeam().getDisplayName() : red.getColorCode()+red.getInfo().apiTeam().getDisplayName();
-            Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_WIN", winner, blueWon ? bluePoints : redPoints, blueWon ? redPoints : bluePoints));
+            if(blue.getPoints()==red.getPoints()) //possible if the timer went to 0 and the two teams have the same number of points
+            {
+                Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_EX", bluePoints, redPoints));
+            }
+            else
+            {
+                boolean blueWon = blue.getPoints()>red.getPoints();
+                String winner = blueWon ? blue.getColorCode()+blue.getInfo().apiTeam().getDisplayName() : red.getColorCode()+red.getInfo().apiTeam().getDisplayName();
+                Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_WIN", winner, blueWon ? bluePoints : redPoints, blueWon ? redPoints : bluePoints));
+            }
         }
 
-        Function<ToIntFunction<TowerPlayer>,List<Map.Entry<OfflinePlayer,Integer>>> sort = (func) -> TowerPlayer.getPlayers().stream()
+        AtomicInteger counter = new AtomicInteger();
+        Function<ToIntFunction<TowerPlayer>,String> sort = (func) -> TowerPlayer.getPlayers().stream()
+                .peek(x->counter.set(1))
                 .sorted(Comparator.comparingInt(func).reversed())
                 .filter(tp->tp.asOfflinePlayer().getName()!=null)
-                .map(tp-> Map.entry(tp.asOfflinePlayer(), func.applyAsInt(tp)))
+                .map(tp->String.format("§b#%d §f"+(counter.get()==1?"§l":"")+"%s §e%d", counter.getAndIncrement(), tp.asOfflinePlayer().getName(), func.applyAsInt(tp)))
                 .limit(3)
-                .toList();
+                .reduce("", (partialString, element) -> partialString + "\n" + element).substring(1);
 
-        Bukkit.broadcastMessage("---------Top Kills---------");
-        sort.apply(TowerPlayer::getKills).forEach(e->Bukkit.broadcastMessage("- " + e.getKey().getName() + " : " + e.getValue()));
-        Bukkit.broadcastMessage("---------Top Deaths---------");
-        sort.apply(TowerPlayer::getDeaths).forEach(e->Bukkit.broadcastMessage("- " + e.getKey().getName() + " : " + e.getValue()));
-        Bukkit.broadcastMessage("---------Top Points---------");
-        sort.apply(TowerPlayer::getPoints).forEach(e->Bukkit.broadcastMessage("- " + e.getKey().getName() + " : " + e.getValue()));
+        String headerFormat = "§6§l%20s\n";
+        String transition = "§f§m                            \n";
+
+        String fullMessage = "\n" +
+                String.format(headerFormat, "Top Kills") +
+                sort.apply(TowerPlayer::getKills) +
+                "\n" +
+                transition +
+                String.format(headerFormat, "Top Deaths") +
+                sort.apply(TowerPlayer::getDeaths) +
+                "\n" +
+                transition +
+                String.format(headerFormat, "Top Points") +
+                sort.apply(TowerPlayer::getPoints) +
+                "\n" +
+                transition;
+
+        Bukkit.broadcastMessage(fullMessage);
+
     }
+
 }

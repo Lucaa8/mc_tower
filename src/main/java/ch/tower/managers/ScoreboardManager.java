@@ -124,14 +124,12 @@ public class ScoreboardManager
             return new PlayerHelper(player);
         }
 
-        //TODO return red team points
         public static String getRedPoints(){
-            return "0";
+            return String.valueOf(TeamsManager.PlayerTeam.RED.getPoints());
         }
 
-        //TODO return blue team points
         public static String getBluePoints(){
-            return "0";
+            return String.valueOf(TeamsManager.PlayerTeam.BLUE.getPoints());
         }
 
         public static String getGoalPoints(){
@@ -150,8 +148,14 @@ public class ScoreboardManager
             return String.valueOf(GameManager.ConfigField.TIMER_DURATION_WAIT.get());
         }
 
-        public static String getGameTimer(){
-            return String.valueOf(GameManager.ConfigField.TIMER_DURATION_GAME.get());
+        public static String getGameTimer(int elapsedSecondsFromStart){
+            int remaining = Math.max(0, GameManager.ConfigField.TIMER_DURATION_GAME.get() - elapsedSecondsFromStart);
+            int hours = remaining / 3600;
+            int minutes = (remaining % 3600) / 60;
+            int seconds = remaining % 60;
+            return (hours > 0 ? String.format("%02dh", hours) : "") +
+                    (minutes > 0 || hours > 0 ? String.format("%02dm", minutes) : "") +
+                    String.format("%02ds", seconds);
         }
 
         @Nonnull
@@ -243,9 +247,9 @@ public class ScoreboardManager
             board.setPlaceholder(BoardField.POINTS_RED.name(), PlaceholderHelper.getRedPoints());
             board.setPlaceholder(BoardField.MAX_POINTS.name(), PlaceholderHelper.getGoalPoints());
             //We set the maximum by default. But GameEvents will update it the next second.
-            board.setPlaceholder(BoardField.TIMER.name(), PlaceholderHelper.getGameTimer());
+            board.setPlaceholder(BoardField.TIMER.name(), PlaceholderHelper.getGameTimer(0));
         }
-        //LoginEvent is cancelled in the end state so ne need to bulk update scoreboard placeholder.
+        //LoginEvent is cancelled in the end state so no need to bulk update scoreboard placeholder.
 
     }
 
