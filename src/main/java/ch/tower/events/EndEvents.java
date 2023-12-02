@@ -1,7 +1,9 @@
 package ch.tower.events;
 
 import ch.tower.Main;
+import ch.tower.managers.GameManager;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 
 public class EndEvents implements StateEvents
 {
@@ -22,9 +24,12 @@ public class EndEvents implements StateEvents
     @Override
     public void onStateBegin()
     {
-        Bukkit.getOnlinePlayers().forEach(Main.getInstance().getManager().getScoreboardManager()::updateBoard);
-        Bukkit.broadcastMessage("§cThe server will restart in 30 seconds. You will be kicked.");
-        Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Main.getInstance().getManager().stop(), 30*20L); //TODO restart with script?
+        Bukkit.getOnlinePlayers().stream()
+                .peek(Main.getInstance().getManager().getScoreboardManager()::updateBoard)
+                .peek(p->p.setGameMode(GameMode.CREATIVE)).close();
+        int timer = GameManager.ConfigField.TIMER_DURATION_END.get();
+        Bukkit.broadcastMessage("§cThe server will restart in "+timer+" seconds. You will be kicked.");
+        Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Main.getInstance().getManager().stop(), timer*20L); //TODO restart with script?
         //maybe save scores into database, etc..
     }
 
