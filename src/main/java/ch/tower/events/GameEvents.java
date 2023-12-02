@@ -167,6 +167,7 @@ public class GameEvents implements StateEvents
                     {
                         pAttacker.playSound(pAttacker.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.3f, 1f);
                     }
+                    towerPlayer.damage(null); //Reset last damager
                 }
             }
             case ENTITY_EXPLOSION -> e.setDeathMessage(GameManager.getMessage("MSG_DEATH_EXPLOSION", playerName));
