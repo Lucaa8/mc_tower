@@ -244,7 +244,6 @@ public class GameEvents implements StateEvents
     private void score(TowerPlayer player, TeamsManager.PlayerTeam team)
     {
         int points = team.addPointAndGet();
-        //TODO update scoreboard to display redpoints - bluepoints updated?
         int goal = GameManager.ConfigField.GOAL_POINTS.get();
         player.addPoint();
         player.asPlayer().teleport(team.getSpawn());
@@ -253,6 +252,10 @@ public class GameEvents implements StateEvents
         for(Player p : Bukkit.getOnlinePlayers())
         {
             p.playSound(p.getLocation(), Sound.ENTITY_WITHER_DEATH, 0.2f, 1f);
+            if(team == TeamsManager.PlayerTeam.BLUE)
+                ScoreboardManager.BoardField.POINTS_BLUE.update(p, String.valueOf(points));
+            else
+                ScoreboardManager.BoardField.POINTS_RED.update(p, String.valueOf(points));
         }
         if(points >= goal)
         {

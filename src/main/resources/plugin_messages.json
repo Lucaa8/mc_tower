@@ -10,7 +10,7 @@
   "MSG_GAME_ABANDON_1": "{0} §7left the game. He has §6{1} §7to return or he will forfeit and abandon his team",
   "MSG_GAME_ABANDON_2": "§7Since {0} §7didn't return in time, he's consequently leaving his team behind",
   "MSG_GAME_ABANDON_3": "{0} §7made it back in time! As a result, he's rejoining his team",
-  "MSG_GAME_QUIT_LAST": "§7Since every player from the {0} §7team has quit the game, the {1} §7team claims victory by forfeit",
+  "MSG_GAME_QUIT_LAST": "§fSince every player from the {0} §7team has quit the game, the {1} §7team claims victory by forfeit",
   "MSG_GAME_POINT": "{0} §7notched a point for his team! §f(§a{1}§f/§a{2}§f)",
   "MSG_GAME_WIN": "§fThe {0} team §fhas emerged victorious in the game! ({1} §f- {2}§f)",
   "MSG_GAME_EX": "§fToday, the two teams remain undivided! The clock ran down without declaring a winner. ({0} §f- {1}§f)",
