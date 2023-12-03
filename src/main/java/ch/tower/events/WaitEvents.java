@@ -54,6 +54,11 @@ public class WaitEvents implements StateEvents
             .setGlowing(true)
             .createItem().toItemStack(1);
 
+    private final ItemStack ww = new ItemBuilder()
+            .setMaterial(Material.WHITE_WOOL)
+            .setName(ChatColor.RED + "Leave your team")
+            .createItem().toItemStack(1);
+
     public void checkAndStartCountdown()
     {
         if (Main.getInstance().getServer().getOnlinePlayers().size() == GameManager.ConfigField.MIN_PLAYERS.get() && countdownTask == null)
@@ -232,6 +237,7 @@ public class WaitEvents implements StateEvents
 
         p.getInventory().addItem(bw);
         p.getInventory().addItem(rw);
+        p.getInventory().setItem(8, ww);
 
         e.setJoinMessage(p.getDisplayName() + " joined the game! (" + playersCount + "/" + maxPlayersCount +" players, " + GameManager.ConfigField.MIN_PLAYERS.get() + " needed to begin) ");
         checkAndStartCountdown();
@@ -261,7 +267,7 @@ public class WaitEvents implements StateEvents
     {
         Player p = e.getPlayer();
         ItemStack i = e.getItem();
-        TeamsManager.PlayerTeam team;
+        TeamsManager.PlayerTeam team = null;
         if(i == null)
         {
             return;
@@ -270,19 +276,24 @@ public class WaitEvents implements StateEvents
         {
             case BLUE_WOOL -> team = TeamsManager.PlayerTeam.BLUE;
             case RED_WOOL -> team = TeamsManager.PlayerTeam.RED;
-            default -> team = null;
         }
 
-        if(team != null && team != TeamsManager.getPlayerTeam(p))
+        TeamsManager.PlayerTeam current = TeamsManager.getPlayerTeam(p);
+        if(team == null && current != null)
         {
+            current.removePlayer(p);
+            Bukkit.broadcast(p.getDisplayName() + " left the " + current.getColorCode() + current.getInfo().apiTeam().getDisplayName() + ChatColor.RESET + " team.", Server.BROADCAST_CHANNEL_USERS);
+            p.teleport(TeamsManager.PlayerTeam.SPECTATOR.getSpawn());
+        }
+
+        if(team != null && team != current)
+        {
+            //TODO add check if team is alrady full (basically if team.getCount() >= MAX_PLAYERS/2)
             team.addPlayer(p);
             String name = team.getInfo().apiTeam().getDisplayName();
             p.sendTitle(team.getColorCode() + "You joined the " + name + " team", "", 10, 20, 10);
-            Location lobby = team.getSpawn();
-            p.teleport(lobby);
+            p.teleport(team.getSpawn());
             Bukkit.broadcast(p.getDisplayName() + " joined the " + team.getColorCode() + name + ChatColor.RESET + " team.", Server.BROADCAST_CHANNEL_USERS);
-            //TODO verifier si la team s'actualise sur le scoreboard avec cette ligne commentée (si oui, la supprimer)
-            //ScoreboardManager.BoardField.TEAM.update(p, PlaceholderHelper.getTeamName(team));
         }
     }
 
