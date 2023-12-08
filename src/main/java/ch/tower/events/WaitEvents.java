@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class WaitEvents implements StateEvents
 {
@@ -64,10 +65,11 @@ public class WaitEvents implements StateEvents
         if (Main.getInstance().getServer().getOnlinePlayers().size() == GameManager.ConfigField.MIN_PLAYERS.get() && countdownTask == null)
         {
             countdownTask = Bukkit.getScheduler().runTaskTimer(Main.getInstance(), this::displayCountdownThenStart, 1L, 20L);
-            Bukkit.broadcast("Game is starting soon", Server.BROADCAST_CHANNEL_USERS);
+            Bukkit.broadcastMessage(GameManager.getMessage("MSG_WAIT_GAME_STARTING"));
+            String title = GameManager.getMessage("MSG_WAIT_TITLE_STARTING", String.valueOf(countdown));
             for (Player player : Bukkit.getOnlinePlayers())
             {
-                player.sendTitle("Starting in " + countdown + " seconds", "", 5, 20, 5);
+                player.sendTitle(title, "", 5, 20, 5);
             }
         }
     }
@@ -81,10 +83,11 @@ public class WaitEvents implements StateEvents
             countdown = GameManager.ConfigField.TIMER_DURATION_WAIT.get();
             Bukkit.getOnlinePlayers().forEach(p->
             {
+                //Resets the player bar xp and scoreboard with the max count down
                 p.setLevel(countdown);
                 ScoreboardManager.BoardField.TIMER.update(p, String.valueOf(countdown));
-            }); //Resets the player bar xp and scoreboard with the max count down
-            Bukkit.broadcast("Game start is cancelled, a player left.", Server.BROADCAST_CHANNEL_USERS);
+            });
+            Bukkit.broadcastMessage(GameManager.getMessage("MSG_WAIT_GAME_ABORT"));
         }
     }
 
@@ -111,39 +114,42 @@ public class WaitEvents implements StateEvents
         }
     }
 
-    public void putPlayersInTeams()
-    {
-        //TODO: Test with multiple players
-        Collection<? extends Player> listPlayers = Main.getInstance().getServer().getOnlinePlayers();
-        int nbRed = 0;
-        int nbBlue = 0;
-        List<Player> playersWithoutTeam = new ArrayList<Player>(listPlayers);
-        Iterator<Player> it = playersWithoutTeam.iterator();
-        while (it.hasNext())
-        {
-            Player player = it.next();
-            TeamsManager.PlayerTeam team = TeamsManager.getPlayerTeam(player);
-            if(TeamsManager.getPlayerTeam(player) != null)
-            {
-                it.remove();
-                if(team == TeamsManager.PlayerTeam.RED) nbRed++;
-                if(team == TeamsManager.PlayerTeam.BLUE) nbBlue++;
+    private void balanceTeams(List<Player> redPlayers, List<Player> bluePlayers, List<Player> noTeamPlayers) {
+        int maxPerTeam = maxPlayersCount / 2;
+
+        String blue = TeamsManager.PlayerTeam.BLUE.getColorCode() + TeamsManager.PlayerTeam.BLUE.getInfo().apiTeam().getDisplayName();
+        String red = TeamsManager.PlayerTeam.RED.getColorCode() + TeamsManager.PlayerTeam.RED.getInfo().apiTeam().getDisplayName();
+
+        while (Math.abs(redPlayers.size() - bluePlayers.size()) > 1) {
+            if (redPlayers.size() > bluePlayers.size() && bluePlayers.size() < maxPerTeam) {
+                Player p = redPlayers.remove(redPlayers.size() - 1);
+                bluePlayers.add(p); //just to keep track of actual team sizes
+                TeamsManager.PlayerTeam.BLUE.addPlayer(p); //but this is this adding that makes the difference
+                Bukkit.broadcastMessage(GameManager.getMessage("MSG_WAIT_TEAM_CHANGE", p.getName(), red, blue));
+            } else if (bluePlayers.size() > redPlayers.size() && redPlayers.size() < maxPerTeam) {
+                Player p = bluePlayers.remove(bluePlayers.size() - 1);
+                redPlayers.add(p); //same as blue
+                TeamsManager.PlayerTeam.RED.addPlayer(p);
+                Bukkit.broadcastMessage(GameManager.getMessage("MSG_WAIT_TEAM_CHANGE", p.getName(), blue, red));
+            } else {
+                break; //security but cannot be reached in normal cases
             }
         }
-        Random rand = new Random();
-        while(playersWithoutTeam.size() > 0)
-        {
-            Player player = playersWithoutTeam.get(rand.nextInt(playersWithoutTeam.size()));
-            playersWithoutTeam.remove(player);
-            if(nbBlue - nbRed > 0)
-            {
-                TeamsManager.PlayerTeam.RED.addPlayer(player);
-                nbRed++;
-            }
-            else
-            {
-                TeamsManager.PlayerTeam.BLUE.addPlayer(player);
-                nbBlue++;
+
+        // add remaining no-team-players to teams
+        for (Player player : noTeamPlayers) {
+            if (redPlayers.size() < maxPerTeam || bluePlayers.size() < maxPerTeam) {
+                if (redPlayers.size() <= bluePlayers.size()) {
+                    redPlayers.add(player);
+                    TeamsManager.PlayerTeam.RED.addPlayer(player);
+                    Bukkit.broadcastMessage(GameManager.getMessage("MSG_WAIT_TEAM_FORCE_JOIN", player.getName(), red));
+                } else {
+                    bluePlayers.add(player);
+                    TeamsManager.PlayerTeam.BLUE.addPlayer(player);
+                    Bukkit.broadcastMessage(GameManager.getMessage("MSG_WAIT_TEAM_FORCE_JOIN", player.getName(), blue));
+                }
+            } else {
+                break; // the two teams are full, not gonna append in normal cases because the server wont accept a player count greater than maxPlayersCount
             }
         }
     }
@@ -204,7 +210,7 @@ public class WaitEvents implements StateEvents
         {
             s.append(t.getColorCode());
             s.append("[");
-            s.append(t.name());
+            s.append(t.getInfo().apiTeam().getDisplayName());
             s.append("] ");
             s.append(p.getDisplayName());
             s.append(ChatColor.RESET);
@@ -226,7 +232,7 @@ public class WaitEvents implements StateEvents
         Player p = e.getPlayer();
         if(playersCount >= maxPlayersCount)
         {
-            p.kickPlayer("The game is already full.");
+            p.kickPlayer(GameManager.getMessage("MSG_WAIT_GAME_FULL"));
             return;
         }
 
@@ -239,7 +245,7 @@ public class WaitEvents implements StateEvents
         p.getInventory().addItem(rw);
         p.getInventory().setItem(8, ww);
 
-        e.setJoinMessage(p.getDisplayName() + " joined the game! (" + playersCount + "/" + maxPlayersCount +" players, " + GameManager.ConfigField.MIN_PLAYERS.get() + " needed to begin) ");
+        e.setJoinMessage(GameManager.getMessage("MSG_WAIT_JOIN", p.getName(), String.valueOf(playersCount), String.valueOf(maxPlayersCount), String.valueOf(GameManager.ConfigField.MIN_PLAYERS.get())));
         checkAndStartCountdown();
         p.setLevel(countdown);
         p.setGameMode(GameMode.ADVENTURE);
@@ -253,12 +259,14 @@ public class WaitEvents implements StateEvents
     {
         Player p = e.getPlayer();
         TeamsManager.PlayerTeam pt = TeamsManager.getPlayerTeam(p);
+        String color = "§f";
         if(pt != null)
         {
             pt.removePlayer(p);
+            color = pt.getColorCode();
         }
         checkAndStopCountdown();
-        e.setQuitMessage(p.getDisplayName() + " left the game! (" + (Main.getInstance().getServer().getOnlinePlayers().size()-1) + "/" + maxPlayersCount +" players)");
+        e.setQuitMessage(GameManager.getMessage("MSG_WAIT_QUIT", color+p.getName(), String.valueOf((Main.getInstance().getServer().getOnlinePlayers().size()-1)), String.valueOf(maxPlayersCount)));
         updatePlayersOnlineBoard();
     }
 
@@ -282,42 +290,45 @@ public class WaitEvents implements StateEvents
         if(team == null && current != null)
         {
             current.removePlayer(p);
-            Bukkit.broadcast(p.getDisplayName() + " left the " + current.getColorCode() + current.getInfo().apiTeam().getDisplayName() + ChatColor.RESET + " team.", Server.BROADCAST_CHANNEL_USERS);
+            Bukkit.broadcastMessage(GameManager.getMessage("MSG_WAIT_TEAM_LEFT", p.getName(), current.getColorCode() + current.getInfo().apiTeam().getDisplayName()));
             p.teleport(TeamsManager.PlayerTeam.SPECTATOR.getSpawn());
         }
 
         if(team != null && team != current)
         {
-            //TODO add check if team is alrady full (basically if team.getCount() >= MAX_PLAYERS/2)
+            if(team.getInfo().getPlayers().size() >= maxPlayersCount/2)
+            {
+                p.sendMessage(GameManager.getMessage("MSG_WAIT_TEAM_FULL"));
+                return;
+            }
             team.addPlayer(p);
             String name = team.getInfo().apiTeam().getDisplayName();
-            p.sendTitle(team.getColorCode() + "You joined the " + name + " team", "", 10, 20, 10);
             p.teleport(team.getSpawn());
-            Bukkit.broadcast(p.getDisplayName() + " joined the " + team.getColorCode() + name + ChatColor.RESET + " team.", Server.BROADCAST_CHANNEL_USERS);
+            Bukkit.broadcastMessage(GameManager.getMessage("MSG_WAIT_TEAM_JOIN", p.getName(), team.getColorCode() + name));
         }
     }
 
     @Override
     public void onStateBegin()
     {
-        Bukkit.broadcast("Waiting for the beginning of the game", Server.BROADCAST_CHANNEL_USERS);
+        Bukkit.getConsoleSender().sendMessage("§aThe server is prepared to host players.");
     }
 
     @Override
     public void onStateLeave()
     {
-        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-        if(TeamsManager.PlayerTeam.BLUE.getInfo().getPlayers().size() == 0 || TeamsManager.PlayerTeam.RED.getInfo().getPlayers().size() == 0)
+        List<Player> redPlayers = new ArrayList<>(TeamsManager.PlayerTeam.RED.getInfo().getPlayers());
+        List<Player> bluePlayers = new ArrayList<>(TeamsManager.PlayerTeam.BLUE.getInfo().getPlayers());
+        List<Player> noTeamPlayers = Bukkit.getOnlinePlayers().stream()
+                .filter(p->!(redPlayers.contains(p)||bluePlayers.contains(p)))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        if(redPlayers.size() != bluePlayers.size() || noTeamPlayers.size() > 0) //on the case of 3 red and 4 blues, we'll enter this condition but the while loop of balanceTeams wont be true so we'll quit the function
         {
-            for (Player player : players)
-            {
-                TeamsManager.PlayerTeam playerTeam = TeamsManager.getPlayerTeam(player);
-                if(playerTeam != null) playerTeam.removePlayer(player);
-            }
-            Bukkit.broadcast("Since everyone was on the same team, the teams were modified", Server.BROADCAST_CHANNEL_USERS);
+            balanceTeams(redPlayers, bluePlayers, noTeamPlayers);
         }
-        putPlayersInTeams();
-        for (Player player : players)
+
+        for (Player player : Bukkit.getOnlinePlayers())
         {
             player.setLevel(0);
             player.setExp(0);
