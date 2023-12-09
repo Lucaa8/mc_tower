@@ -1,5 +1,6 @@
 package ch.tower;
 
+import ch.luca008.SpigotApi.Api.FileApi;
 import ch.tower.managers.*;
 import ch.tower.shop.categoryMenus.ToolsMenu;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -7,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.stream.Collectors;
 
 public class Main extends JavaPlugin {
 
@@ -23,15 +25,7 @@ public class Main extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        if(!copyStreamToFile("config.json", GameManager.CONFIG_FILE) ||
-           !copyStreamToFile("spawns.json", WorldManager.SPAWN_FILE) ||
-           !copyStreamToFile("npc.json", NPCManager.NPC_FILE) ||
-           !copyStreamToFile("scoreboards.json", ScoreboardManager.SCOREBOARD_FILE) ||
-           !copyStreamToFile("shop.json", ShopMenuManager.SHOP_FILE) ||
-           !copyStreamToFile("default_items.json", ToolsMenu.DEFAULT_TOOLS_FILE) ||
-           !copyStreamToFile("armor.json", ToolsMenu.ARMOR_FILE) ||
-           !copyStreamToFile("plugin_messages.json", GameManager.MESSAGES_FILE) ||
-           !copyStreamToFile("pools.json", WorldManager.POOL_FILE))
+        if(!generateFiles())
         {
             System.err.println("Cannot generate all required resources...");
             getServer().getPluginManager().disablePlugin(this);
@@ -59,19 +53,35 @@ public class Main extends JavaPlugin {
         return game;
     }
 
-    private boolean copyStreamToFile(String resourceName, File resourceFile)
+    private boolean exportInternFile(String resourceName, File resourceFile)
     {
+        boolean generated = true;
         if(!resourceFile.exists())
         {
-            System.out.println("Generating "+ resourceName +" file...");
             try {
-                Files.copy(getClassLoader().getResource(resourceName).openStream(), resourceFile.toPath());
+                System.out.println("Generating "+ resourceName +" file...");
+                generated = FileApi.exportFile(Main.class, resourceName, resourceFile);
             } catch (IOException e) {
                 System.err.println("Cannot generate " + resourceName + " file...");
                 e.printStackTrace();
-                return false;
+                generated = false;
             }
         }
-        return true;
+        return generated;
     }
+
+    private boolean generateFiles()
+    {
+        boolean ok = true;
+        for(String resource : FileApi.listFiles(Main.class).stream().filter(f -> f.startsWith("config/") && f.endsWith(".json")).toList())
+        {
+            if(!exportInternFile(resource, new File(Main.getInstance().getDataFolder(), resource.split("/")[1])))
+            {
+                ok = false;
+                break;
+            }
+        }
+        return ok;
+    }
+
 }
