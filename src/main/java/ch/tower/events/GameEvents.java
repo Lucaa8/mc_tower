@@ -7,9 +7,8 @@ import ch.tower.TowerPlayer;
 import ch.tower.managers.GameManager;
 import ch.tower.managers.ScoreboardManager;
 import ch.tower.managers.TeamsManager;
-import ch.tower.managers.WorldManager;
-import ch.tower.shop.LuckShuffle;
 import ch.tower.managers.WorldManager.WorldZone;
+import ch.tower.shop.LuckShuffle;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -37,7 +36,6 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
@@ -290,37 +288,30 @@ public class GameEvents implements StateEvents
     public void onChatByPlayer(AsyncPlayerChatEvent e)
     {
         e.setCancelled(true);
-        StringBuilder s = new StringBuilder("");
+        String message = "";
         Player p = e.getPlayer();
         TeamsManager.PlayerTeam t = TeamsManager.getPlayerTeam(p);
         if (t != null)
         {
-            s.append(t.getColorCode());
-            s.append("[");
-            s.append(t.name());
-            s.append("] ");
-            s.append(p.getDisplayName());
-            s.append(ChatColor.RESET);
-        } else
+            message += t.getColorCode() + "[" + t.getInfo().apiTeam().getDisplayName() + "] " + p.getName() + "§r";
+        }
+        else //cannot happen unless a bug manifested during the game
         {
-            s.append(p.getDisplayName());
+            p.sendMessage(GameManager.getMessage("MSG_GAME_CANNOT_SEND_MESSAGE"));
+            return;
         }
 
         if (e.getMessage().startsWith("!") && e.getMessage().length() != 1 && t != TeamsManager.PlayerTeam.SPECTATOR)
         {
-            s.append(" (Global)");
-            s.append(" : ");
-            s.append(e.getMessage().substring(1));
-            Bukkit.broadcast(s.toString(), Server.BROADCAST_CHANNEL_USERS);
+            message += " (Global) : " + e.getMessage().substring(1);
+            Bukkit.broadcastMessage(message);
         }
         else
         {
-            TeamsManager.PlayerTeam team = TeamsManager.getPlayerTeam(e.getPlayer());
-            s.append(" : ");
-            s.append(e.getMessage());
-            for(Player playerOfTeam: team.getInfo().getPlayers())
+            message += " : " + e.getMessage();
+            for(Player playerOfTeam: t.getInfo().getPlayers())
             {
-                playerOfTeam.sendMessage(s.toString());
+                playerOfTeam.sendMessage(message);
             }
         }
     }
@@ -467,7 +458,7 @@ public class GameEvents implements StateEvents
             }
             else
             {
-                p.kickPlayer("§cOops something went wrong while getting your team. It looks like you wont be able to rejoin this game.");
+                p.kickPlayer(GameManager.getMessage("MSG_GAME_ABANDON_4"));
             }
             e.setJoinMessage(null);
         }
@@ -508,7 +499,7 @@ public class GameEvents implements StateEvents
     public void onStateBegin()
     {
         TowerPlayer.registerPlayers();
-        Bukkit.broadcast("The game begins. GL HF", Server.BROADCAST_CHANNEL_USERS);
+        Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_START"));
         Collection<? extends Player> players = Main.getInstance().getServer().getOnlinePlayers();
         for (Player player : players)
         {
