@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>ch.tower</groupId>
+    <artifactId>mc_tower</artifactId>
+    <version>1.0.0</version>
+
+    <name>Tower</name>
+    <description>A simple tower mini-game on minecraft 1.20.1</description>
+
+    <properties>
+        <maven.compiler.source>19</maven.compiler.source>
+        <maven.compiler.target>19</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <mainClass>ch.tower.Main</mainClass>
+        <!-- Your custom system path access to the file server_mc/plugins -->
+        <!-- i.e: F:\Programme if your plugins folder is here F:\Programme\server_mc\plugins -->
+        <output>D:\Dev\Java\Intellij\mc_tower_servers</output>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>dev-mc</id>
+            <url>https://mvn.luca-dc.ch/repository/dev-mc/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <!-- Spigot 1.20 jar with NSM, Bukkit api, Mojang and all dependencies -->
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.20.1-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- My own spigot api for 1.20 -->
+        <dependency>
+            <groupId>ch.luca008</groupId>
+            <artifactId>SpigotApi</artifactId>
+            <version>1.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Helps to build plugin -->
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.5.1</version>
+            <type>maven-plugin</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.4.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                    <shadedClassifierName>shaded</shadedClassifierName>
+                    <outputDirectory>${output}\server_mc\plugins</outputDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <defaultGoal>clean package</defaultGoal>
+        <resources>
+            <!-- Configuration pour le plugin.yml avec filtrage activé -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>plugin.yml</include>
+                </includes>
+            </resource>
+            <!-- Configuration pour tous les fichiers dans le dossier config sans filtrage -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>config/*</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+
+</project>
