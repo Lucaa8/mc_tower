@@ -3,7 +3,7 @@ package ch.tower.managers;
 import ch.luca008.SpigotApi.Api.TeamAPI;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
-import ch.tower.TowerPlayer;
+import ch.tower.managers.WorldManager.WorldZone;
 import net.minecraft.EnumChatFormat;
 import net.minecraft.world.scores.ScoreboardTeamBase;
 import org.bukkit.Bukkit;
@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,16 +122,15 @@ public class TeamsManager {
         teams.clear();
     }
 
-    public static void registerTeams()
+    public static void registerTeams(World towerWorld)
     {
-        registerTeam("blue",      "Blue",       "Blue | ",      EnumChatFormat.j, 1);
-        registerTeam("red",       "Red",        "Red | ",       EnumChatFormat.m, 2);
-        registerTeam("spectator", "Spectators", "Spectator | ", EnumChatFormat.h, 3);
+        registerTeam(towerWorld, "blue",      "Blue",       "Blue | ",      EnumChatFormat.j, 1);
+        registerTeam(towerWorld, "red",       "Red",        "Red | ",       EnumChatFormat.m, 2);
+        registerTeam(towerWorld, "spectator", "Spectator", "Spectator | ", EnumChatFormat.h, 3);
     }
 
-    private static void registerTeam(String uniqueName, String displayName, String prefix, EnumChatFormat color, int sortOrder)
+    private static void registerTeam(World towerWorld, String uniqueName, String displayName, String prefix, EnumChatFormat color, int sortOrder)
     {
-        String teamName = uniqueName.substring(0,1).toUpperCase() + uniqueName.substring(1).toLowerCase();
         TeamAPI.Team apiTeam = new TeamAPI.TeamBuilder(uniqueName)
                 .setDisplayName(displayName)
                 .setPrefix(prefix)
@@ -141,21 +141,14 @@ public class TeamsManager {
                 .setCollisions(ScoreboardTeamBase.EnumTeamPush.b)
                 .create();
         if(SpigotApi.getTeamApi().registerTeam(apiTeam)){
-            Pool teamPool = null;
-            if(!teamName.equals("Spectator"))
+            WorldZone teamPool = null;
+            WorldZone spawnProtection = null;
+            if(!displayName.equals("Spectator"))
             {
-                World worldPool = WorldManager.readPoolWorld();
-                if(worldPool != null)
-                {
-                    double[][] pool = WorldManager.readPoolLocations(teamName);
-                    teamPool = new Pool(worldPool, pool[0], pool[1], pool[2]);
-                }
-                else
-                {
-                    System.err.println("FAILED TO RETRIEVE THE WORLD POOLS. PLEASE VERIFY YOUR pools.json. MAYBE CONSIDER DISABLING THE PLUGIN BECAUSE HES NOT IN A STABLE STATE.");
-                }
+                teamPool = WorldZone.readFromFile(WorldManager.POOL_FILE, displayName, towerWorld);
+                spawnProtection = WorldZone.readFromFile(WorldManager.SPAWN_FILE, "Game.SpawnsProtection."+displayName, towerWorld);
             }
-            TeamInfo team = new TeamInfo(apiTeam, WorldManager.readLocation("Game."+teamName), WorldManager.readLocation("Lobby."+teamName), teamPool);
+            TeamInfo team = new TeamInfo(apiTeam, WorldManager.readLocation("Game."+displayName), WorldManager.readLocation("Lobby."+displayName), teamPool, spawnProtection);
             teams.put(uniqueName, team);
         } else {
             System.err.println("THE API FAILED TO REGISTER THE TEAM " + uniqueName + ". MAYBE CONSIDER DISABLING THE PLUGIN BECAUSE HES NOT IN A STABLE STATE.");
@@ -177,7 +170,7 @@ public class TeamsManager {
         return null;
     }
 
-    public record TeamInfo(TeamAPI.Team apiTeam, Location spawn, Location lobbySpawn, Pool pool) {
+    public record TeamInfo(TeamAPI.Team apiTeam, Location spawn, Location lobbySpawn, @Nullable WorldZone pool, @Nullable WorldZone spawnProtection) {
 
         public List<Player> getPlayers()
         {
@@ -194,22 +187,6 @@ public class TeamsManager {
         @Override
         public int hashCode() {
             return Objects.hash(apiTeam);
-        }
-
-    }
-
-    public record Pool(World world, double[] x, double[] y, double[] z) {
-
-        public boolean isInside(Location location)
-        {
-            if(world != location.getWorld())
-                return false;
-
-            double playerX = location.getX();
-            double playerY = location.getY();
-            double playerZ = location.getZ();
-
-            return playerX > x[0] && playerX < x[1] && playerZ > z[0] && playerZ < z[1] && playerY > y[0] && playerY < y[1];
         }
 
     }

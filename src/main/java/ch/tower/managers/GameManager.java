@@ -70,7 +70,7 @@ public class GameManager {
         if(worldManager.load())
         {
             this.setState(GameState.WAIT);
-            TeamsManager.registerTeams();
+            TeamsManager.registerTeams(worldManager.getTowerWorld()); //obligé de le passer comme ça car imposible d'accàder à worldmanager depuis teamsmanager
             scoreboardManager = new ScoreboardManager();
             npcManager = new NPCManager();
             shopManager = new ShopMenuManager();
