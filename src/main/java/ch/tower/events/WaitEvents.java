@@ -203,26 +203,20 @@ public class WaitEvents implements StateEvents
     @EventHandler
     public void onChatByPlayer(AsyncPlayerChatEvent e)
     {
-        StringBuilder s = new StringBuilder("");
+        e.setCancelled(true);
+        String message = "";
         Player p = e.getPlayer();
         TeamsManager.PlayerTeam t = TeamsManager.getPlayerTeam(p);
         if(t != null)
         {
-            s.append(t.getColorCode());
-            s.append("[");
-            s.append(t.getInfo().apiTeam().getDisplayName());
-            s.append("] ");
-            s.append(p.getDisplayName());
-            s.append(ChatColor.RESET);
+            message += t.getColorCode() + "[" + t.getInfo().apiTeam().getDisplayName() + "] " + p.getName() + "§r";
         }
         else
         {
-            s.append(p.getDisplayName());
+            message += p.getName();
         }
-        s.append(" : ");
-        s.append(e.getMessage());
-        e.setCancelled(true);
-        Bukkit.broadcast(s.toString(), Server.BROADCAST_CHANNEL_USERS);
+        message += " : " + e.getMessage();
+        Bukkit.broadcastMessage(message);
     }
 
     @EventHandler
