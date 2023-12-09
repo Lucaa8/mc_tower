@@ -2,5 +2,4 @@
 /target/
 
 *vcs.xml
-*pom.xml
 *dependency-reduced-pom.xml
