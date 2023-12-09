@@ -7,17 +7,22 @@ import ch.tower.TowerPlayer;
 import ch.tower.managers.GameManager;
 import ch.tower.managers.ScoreboardManager;
 import ch.tower.managers.TeamsManager;
+import ch.tower.managers.WorldManager;
 import ch.tower.shop.LuckShuffle;
+import ch.tower.managers.WorldManager.WorldZone;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -32,8 +37,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
@@ -204,8 +208,8 @@ public class GameEvents implements StateEvents
 
     //------------------- START OF THE POINT POOL SECTION -------------------//
 
-    private TeamsManager.Pool redPool;
-    private TeamsManager.Pool bluePool;
+    private WorldZone redPool;
+    private WorldZone bluePool;
 
     @EventHandler
     public void onMoveDetectsPool(PlayerMoveEvent e)
@@ -383,6 +387,65 @@ public class GameEvents implements StateEvents
 
     //------------------- END OF SHOP/ITEMS SECTION -------------------//
 
+    //------------------- START OF SPAWN PROTECTION SECTION -------------------//
+
+    private WorldZone blueSpawnProtection;
+    private WorldZone redSpawnProtection;
+
+    private boolean isProtected(Location location)
+    {
+        return blueSpawnProtection.isInside(location) || redSpawnProtection.isInside(location);
+    }
+
+    @EventHandler
+    public void onPlaceBlockProtected(BlockPlaceEvent e)
+    {
+        e.setCancelled(isProtected(e.getBlockPlaced().getLocation()));
+    }
+
+    @EventHandler
+    public void onBreakBlockProtected(BlockBreakEvent e)
+    {
+        e.setCancelled(isProtected(e.getBlock().getLocation()));
+    }
+
+    @EventHandler
+    public void onExplodeBlockProtected(EntityExplodeEvent e)
+    {
+        e.blockList().removeIf(b -> isProtected(b.getLocation()));
+    }
+
+    @EventHandler
+    public void onAnvilBlockProtected(BlockPhysicsEvent e)
+    {
+        Block b = e.getBlock();
+        if(b.getType().hasGravity() && isProtected(b.getLocation())) {
+            b.setType(Material.AIR);
+        }
+    }
+
+    @EventHandler
+    public void onPistonEx(BlockPistonExtendEvent e) {
+        for(Block b : e.getBlocks()) {
+            if(isProtected(b.getLocation().add(e.getDirection().getDirection()))) {
+                e.setCancelled(true);
+                break;
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPistonRe(BlockPistonRetractEvent e) {
+        for(Block b : e.getBlocks()) {
+            if(isProtected(b.getLocation().add(e.getDirection().getDirection()))) {
+                e.setCancelled(true);
+                break;
+            }
+        }
+    }
+
+    //------------------- END OF SPAWN PROTECTION SECTION -------------------//
+
     @EventHandler
     public void onJoin(PlayerJoinEvent e)
     {
@@ -460,6 +523,8 @@ public class GameEvents implements StateEvents
         Bukkit.getServer().getPluginManager().registerEvents(new InventoryEvent(), Main.getInstance());
         redPool = TeamsManager.PlayerTeam.RED.getInfo().pool();
         bluePool = TeamsManager.PlayerTeam.BLUE.getInfo().pool();
+        redSpawnProtection = TeamsManager.PlayerTeam.RED.getInfo().spawnProtection();
+        blueSpawnProtection = TeamsManager.PlayerTeam.BLUE.getInfo().spawnProtection();
         startedAt = System.currentTimeMillis();
         maxTimerSeconds = GameManager.ConfigField.TIMER_DURATION_GAME.get();
         timerTask = Bukkit.getScheduler().runTaskTimer(Main.getInstance(), ()->{
