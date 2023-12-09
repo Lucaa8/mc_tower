@@ -1,14 +1,11 @@
 package ch.tower;
 
 import ch.luca008.SpigotApi.Api.FileApi;
-import ch.tower.managers.*;
-import ch.tower.shop.categoryMenus.ToolsMenu;
+import ch.tower.managers.GameManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.stream.Collectors;
 
 public class Main extends JavaPlugin {
 
