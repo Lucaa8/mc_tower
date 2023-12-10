@@ -232,9 +232,9 @@ public class ScoreboardManager
             board.setPlaceholder(BoardField.MAX_PLAYER_COUNT.name(), PlaceholderHelper.getMaxPlayerCount());
             //We set the maximum (in case the timer hasnt started yet). If the timer has started, WaitEvents will update it the next second.
             board.setPlaceholder(BoardField.TIMER.name(), PlaceholderHelper.getWaitTimer());
-        } else if(name.equals(GameManager.GameState.GAME.name())){
+        } else if(name.equals(GameManager.GameState.GAME.name()) || name.equals("SPECTATOR")){
             TowerPlayer tp = TowerPlayer.getPlayer(board.getPlayer());
-            if(tp != null){
+            if(tp != null){ //if tp is null then its a spectator and we do not update kills, money, etc..
                 PlaceholderHelper.PlayerHelper playerInfos = tp.boardHelder;
                 board.setPlaceholder(BoardField.TEAM.name(), playerInfos.getTeam());
                 board.setPlaceholder(BoardField.KILLS.name(), playerInfos.getKills());
