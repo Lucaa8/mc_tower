@@ -39,11 +39,8 @@
       "§fYour kills: §a{KILLS} §f(§a{ASSISTS} §fassists)",
       "§fYour deaths: §a{DEATHS}",
       "§2",
-      "§fMost kills: §a{MVP_KILLS} §f(§e{MVP_KILLS_COUNT}§f)",
-      "§fMost deaths: §c{MVP_DEATHS} §f(§e{MVP_DEATHS_COUNT}§f)",
-      "§3",
       "§fServer restarting in §e{TIMER}s",
-      "§4"
+      "§3"
     ]
   },
   "SPECTATOR": {
@@ -57,6 +54,17 @@
       "§2",
       "§fGame ending in §e{TIMER}",
       "§3"
+    ]
+  },
+  "SPECTATOR_END": {
+    "Title": "§eTower §r- §7Ended",
+    "Lines": [
+      "§0",
+      "§fWinner: {TEAM}",
+      "§fPoints: §c{POINTS_RED}§f - §9{POINTS_BLUE}",
+      "§1",
+      "§fServer restarting in §e{TIMER}s",
+      "§2"
     ]
   }
 }

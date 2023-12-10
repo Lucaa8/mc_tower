@@ -5,6 +5,7 @@ import ch.luca008.SpigotApi.Api.ScoreboardAPI;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
+import ch.tower.events.GameEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -53,11 +54,7 @@ public class ScoreboardManager
         KILLS,
         ASSISTS,
         DEATHS,
-        MONEY,
-        MVP_KILLS,
-        MVP_KILLS_COUNT,
-        MVP_DEATHS,
-        MVP_DEATHS_COUNT;
+        MONEY;
 
         public String toFormat()
         {
@@ -158,6 +155,10 @@ public class ScoreboardManager
                     String.format("%02ds", seconds);
         }
 
+        public static String getEndTimer() {
+            return String.valueOf(GameManager.ConfigField.TIMER_DURATION_END.get());
+        }
+
         @Nonnull
         public static String getTeamName(@Nullable TeamsManager.PlayerTeam team){
             return team == null ? "§aNone" : (team.getColorCode()+team.getInfo().apiTeam().getDisplayName());
@@ -203,16 +204,19 @@ public class ScoreboardManager
     private String shouldHaveScoreboard(Player player){
         Main m = Main.getInstance();
         String sb = "SPECTATOR";
-        if(m.getManager().getState() == GameManager.GameState.WAIT)
+        GameManager.GameState state = m.getManager().getState();
+        if(state == GameManager.GameState.WAIT)
         {
-            sb = GameManager.GameState.WAIT.name();
+            sb = state.name();
         }
         else
         {
             TowerPlayer tp = TowerPlayer.getPlayer(player);
             if(tp!=null)
             {
-                sb = m.getManager().getState().name();
+                sb = state.name();
+            } else if(state == GameManager.GameState.END) {
+                sb = "SPECTATOR_END";
             }
         }
         return sb;
@@ -248,9 +252,21 @@ public class ScoreboardManager
             board.setPlaceholder(BoardField.MAX_POINTS.name(), PlaceholderHelper.getGoalPoints());
             //We set the maximum by default. But GameEvents will update it the next second.
             board.setPlaceholder(BoardField.TIMER.name(), PlaceholderHelper.getGameTimer(0));
+        } else if(name.equals(GameManager.GameState.END.name()) || name.equals("SPECTATOR_END")) {
+            TowerPlayer tp = TowerPlayer.getPlayer(board.getPlayer());
+            if(tp != null){
+                PlaceholderHelper.PlayerHelper playerInfos = tp.boardHelder;
+                board.setPlaceholder(BoardField.KILLS.name(), playerInfos.getKills());
+                board.setPlaceholder(BoardField.ASSISTS.name(), playerInfos.getAssists());
+                board.setPlaceholder(BoardField.POINTS.name(), playerInfos.getPoints());
+                board.setPlaceholder(BoardField.DEATHS.name(), playerInfos.getDeaths());
+            }
+            board.setPlaceholder(BoardField.POINTS_BLUE.name(), PlaceholderHelper.getBluePoints());
+            board.setPlaceholder(BoardField.POINTS_RED.name(), PlaceholderHelper.getRedPoints());
+            board.setPlaceholder(BoardField.TIMER.name(), PlaceholderHelper.getEndTimer());
+            TeamsManager.PlayerTeam winner = ((GameEvents)GameManager.GameState.GAME.getStateInstance()).getWinner();
+            board.setPlaceholder(BoardField.TEAM.name(), PlaceholderHelper.getTeamName(winner));
         }
-        //LoginEvent is cancelled in the end state so no need to bulk update scoreboard placeholder.
-
     }
 
 }
