@@ -487,6 +487,7 @@ public class GameEvents implements StateEvents
                     String oppositeTeam = opposite.getColorCode()+opposite.getInfo().apiTeam().getDisplayName();
                     Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_QUIT_LAST", currentTeam, oppositeTeam));
                     isForfeit = true;
+                    winner = opposite;
                     Main.getInstance().getManager().setState(GameManager.GameState.END);
                 }
             }
@@ -494,6 +495,12 @@ public class GameEvents implements StateEvents
     }
 
     private boolean isForfeit = false; //only used in onQuit and onStateLeave
+    private TeamsManager.PlayerTeam winner; //stored at the end of this state (GameState.GAME) because we need it to update in the onStateBegin of GameState.END (Scoreboards)
+
+    public TeamsManager.PlayerTeam getWinner()
+    {
+        return this.winner;
+    }
 
     @Override
     public void onStateBegin()
@@ -556,6 +563,7 @@ public class GameEvents implements StateEvents
             else
             {
                 boolean blueWon = blue.getPoints()>red.getPoints();
+                winner = blueWon ? blue : red;
                 String winner = blueWon ? blue.getColorCode()+blue.getInfo().apiTeam().getDisplayName() : red.getColorCode()+red.getInfo().apiTeam().getDisplayName();
                 Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_WIN", winner, blueWon ? bluePoints : redPoints, blueWon ? redPoints : bluePoints));
             }

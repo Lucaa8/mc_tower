@@ -53,7 +53,7 @@ public class TeamsManager {
             {
                 return this.team.lobbySpawn;
             }
-            else if(gs == GameManager.GameState.GAME)
+            else if(gs == GameManager.GameState.GAME || gs == GameManager.GameState.END)
             {
                 return this.team.spawn;
             }

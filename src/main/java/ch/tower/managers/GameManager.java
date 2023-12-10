@@ -89,23 +89,24 @@ public class GameManager {
     //The order of operations here is important, do not move lines up and down or do not insert code between lines if you are not sure what you are doing.
     public void stop()
     {
-        npcManager.unregisterAll();
         //Needs to be done before we kick the players. That's because we need to tell the client to explicitly destroy the current active scoreboard before leaving the server.
         //If not destroyed, it can cause errors on proxies like BungeeCord (Switching Spigot servers while Scoreboard are synchronized on the Bungee)
         scoreboardManager.unregister();
         //Needed to be sure no players are still in the loaded maps that the server needs to delete.
+        String message = GameManager.getMessage("MSG_END_RESTART_KICK");
         for(Player player : Bukkit.getOnlinePlayers())
         {
-            player.kickPlayer("§cThe server will restart soon.");
+            player.kickPlayer(message);
         }
         TeamsManager.unregisterTeams();
         worldManager.unload();
-        Bukkit.shutdown();
-        //Bukkit.spigot().restart();
+        Bukkit.shutdown(); //TODO restart with script?
     }
 
     public void abandon(TowerPlayer player)
     {
+        if(state == GameState.END) //the abandon timer does not count if it is in the end state
+            return;
         TeamsManager.PlayerTeam team = player.getAbandoningTeam();
         if(team != null)
         {
