@@ -133,7 +133,6 @@ public class TeamsManager {
                 .setDisplayName("NPC")
                 .setPrefix("NPC | ")
                 .setColor(PacketsUtils.ChatColor.YELLOW)
-                .setCollisions(TeamsPackets.Collisions.ALWAYS) //So players cant hide inside NPCs
                 .create();
         if(!SpigotApi.getTeamApi().registerTeam(npcTeam))
         {

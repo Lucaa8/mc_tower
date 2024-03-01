@@ -197,6 +197,14 @@ public class GameEvents implements StateEvents
             TowerPlayer towerAttacker = TowerPlayer.getPlayer(attacker);
             if(towerVictim != null && towerAttacker != null)
             {
+
+                //Disable friendly fire manually as the teams are only client side. A tester
+                if(!GameManager.ConfigField.FRIENDLY_FIRE.getBool()&&towerVictim.getTeam()!=null&&towerVictim.getTeam().equals(towerAttacker.getTeam()))
+                {
+                    e.setCancelled(true);
+                    return;
+                }
+
                 towerVictim.damage(towerAttacker);
             }
         }
