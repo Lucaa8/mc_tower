@@ -3,7 +3,7 @@ package ch.tower.shop.categoryMenus;
 import ch.luca008.SpigotApi.Api.JSONApi;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
-import ch.tower.items.Item;
+import ch.tower.items.TowerItem;
 import ch.tower.shop.ShopMenu;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -27,7 +27,7 @@ public class FoodMenu extends ShopMenu {
     public Inventory createInventory(TowerPlayer player)
     {
         Inventory inv = super.createInventory(player);
-        for(Item i : super.content)
+        for(TowerItem i : super.content)
         {
             ItemStack is = prepareItem(i, true);
             ItemMeta im = is.getItemMeta();
@@ -58,7 +58,7 @@ public class FoodMenu extends ShopMenu {
     }
 
     @Override
-    public double clicked(TowerPlayer player, Item item, ClickType click)
+    public double clicked(TowerPlayer player, TowerItem item, ClickType click)
     {
         double price = super.clicked(player, item, click);
         if(price >= 0.0)
@@ -81,9 +81,9 @@ public class FoodMenu extends ShopMenu {
     }
 
     @Nullable
-    public Item getItemForLevel(int level)
+    public TowerItem getItemForLevel(int level)
     {
-        for(Item item : super.content)
+        for(TowerItem item : super.content)
         {
             if(item.getUid().startsWith(""+level))
             {

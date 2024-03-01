@@ -2,7 +2,7 @@ package ch.tower.shop.categoryMenus;
 
 import ch.luca008.SpigotApi.Api.JSONApi;
 import ch.tower.TowerPlayer;
-import ch.tower.items.Item;
+import ch.tower.items.TowerItem;
 import ch.tower.managers.TeamsManager;
 import ch.tower.shop.ShopMenu;
 import org.bukkit.Material;
@@ -20,32 +20,32 @@ public class BlocksMenu extends ShopMenu
     public Inventory createInventory(TowerPlayer player)
     {
         Inventory inv = super.createInventory(player);
-        for(Item i : super.content)
+        for(TowerItem i : super.content)
         {
-            Item toAdd = cloneColouredGlass(i, player.getTeam());
+            TowerItem toAdd = cloneColouredGlass(i, player.getTeam());
             inv.setItem(toAdd.getSlot(), prepareItem(toAdd, true));
         }
         return inv;
     }
 
     @Override
-    public double clicked(TowerPlayer player, Item item, ClickType click)
+    public double clicked(TowerPlayer player, TowerItem item, ClickType click)
     {
         double price = super.clicked(player, item, click);
         if(price >= 0.0)
         {
             player.takeMoney(price);
-            Item toGive = cloneColouredGlass(item, player.getTeam());
-            toGive.giveOrDopWithoutNBT(player.asPlayer(), toGive.getCount());
+            TowerItem toGive = cloneColouredGlass(item, player.getTeam());
+            toGive.giveOrDropWithoutNBT(player.asPlayer(), toGive.getCount());
         }
         return -1.0;
     }
 
-    private Item cloneColouredGlass(Item whiteGlass, TeamsManager.PlayerTeam team)
+    private TowerItem cloneColouredGlass(TowerItem whiteGlass, TeamsManager.PlayerTeam team)
     {
         if(whiteGlass.getUid().equals("glass"))
         {
-            Item clone = whiteGlass.clone();
+            TowerItem clone = whiteGlass.clone();
             clone.setMaterial(team==TeamsManager.PlayerTeam.BLUE?Material.BLUE_STAINED_GLASS:Material.RED_STAINED_GLASS);
             return clone;
         }

@@ -3,12 +3,13 @@ package ch.tower.shop.categoryMenus;
 import ch.luca008.SpigotApi.Api.JSONApi;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
-import ch.tower.items.Item;
+import ch.tower.items.TowerItem;
 import ch.tower.shop.ShopMenu;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 public class ToolsMenu extends ShopMenu {
@@ -29,7 +30,7 @@ public class ToolsMenu extends ShopMenu {
         for(Map.Entry<String, Integer> entry : player.getLevels())
         {
             String itemUid = (entry.getValue()+1)+entry.getKey();
-            Item toAdd = getItem(itemUid);
+            TowerItem toAdd = getItem(itemUid);
             if(toAdd == null)
             {
                 toAdd = getItem("max_"+itemUid.split("_")[1]);
@@ -41,7 +42,7 @@ public class ToolsMenu extends ShopMenu {
             }
         }
 
-        for(Item i : super.content)
+        for(TowerItem i : super.content)
         {
             if(inv.getItem(i.getSlot())==null)
             {
@@ -53,7 +54,7 @@ public class ToolsMenu extends ShopMenu {
     }
 
     @Override
-    public double clicked(TowerPlayer player, Item item, ClickType click)
+    public double clicked(TowerPlayer player, TowerItem item, ClickType click)
     {
         double price = super.clicked(player, item, click);
         if(price >= 0.0 && !item.getUid().startsWith("max_"))
@@ -69,9 +70,13 @@ public class ToolsMenu extends ShopMenu {
             {
                 if(item.getLore() != null && item.getLore().size() > 3)
                 {
-                    Item cloned = item.clone();
-                    cloned.getLore().add(2, "§e§oTemporary Item");
-                    cloned.getLore().add(3, "");
+                    TowerItem cloned = item.clone();
+                    List<String> lore = cloned.getLore();
+                    if(lore != null){
+                        lore.add(2, "§e§oTemporary Item");
+                        lore.add(3, "");
+                        cloned.setLore(lore);
+                    }
                     giveItem(player.asPlayer(), prepareItem(cloned, false));
                 }
                 else

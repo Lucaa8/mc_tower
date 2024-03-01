@@ -5,7 +5,7 @@ import ch.luca008.SpigotApi.Api.NBTTagApi;
 import ch.luca008.SpigotApi.Api.ScoreboardAPI;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.items.ArmorEquipment;
-import ch.tower.items.Item;
+import ch.tower.items.TowerItem;
 import ch.tower.managers.GameManager;
 import ch.tower.managers.ScoreboardManager.PlaceholderHelper;
 import ch.tower.managers.ScoreboardManager;
@@ -19,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.profile.PlayerProfile;
 import org.bukkit.scheduler.BukkitTask;
 import org.json.simple.JSONObject;
 
@@ -35,11 +36,8 @@ public class TowerPlayer
         for(Object o : r.getArray("Items"))
         {
             JSONObject j = (JSONObject)o;
-            Item item = Item.fromJson((JSONObject)j.get("Item"));
-            if(item!=null)
-            {
-                defaultTools.put("-1_"+(String)j.get("Type"), item.toItemStack(item.getCount()));
-            }
+            TowerItem item = TowerItem.fromJson((JSONObject)j.get("Item"));
+            defaultTools.put("-1_"+j.get("Type"), item.toItemStack(item.getCount()));
         }
     }
 
@@ -60,7 +58,8 @@ public class TowerPlayer
             else
             {
                 //The player isn't in a team when the game is starting: we kick it and then he can rejoin a little bit later as a spectator (gamestate GAME)
-                Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(), "§4Come back later as a spectator.", new Date(System.currentTimeMillis()+10000), "Server");
+                BanList<PlayerProfile> list = Bukkit.getBanList(BanList.Type.PROFILE);
+                list.addBan(player.getPlayerProfile(), "§4Come back later as a spectator.", new Date(System.currentTimeMillis()+10000), "Server");
                 player.kickPlayer("§4Come back later as a spectator.");
             }
         }
@@ -337,7 +336,7 @@ public class TowerPlayer
             }
             else
             {
-                Item i = tools.getItem(itemUid);
+                TowerItem i = tools.getItem(itemUid);
                 if(i != null)
                 {
                     ItemStack item = tools.prepareItem(i, false);
@@ -351,7 +350,7 @@ public class TowerPlayer
     {
         FoodMenu food = (FoodMenu) Main.getInstance().getManager().getShopManager().getShop("utilities_food");
         if(food==null) return; //never the case but better be safe than sorry
-        Item current = food.getItemForLevel(getLevels().getFoodLevel());
+        TowerItem current = food.getItemForLevel(getLevels().getFoodLevel());
         if(current==null) return;
         ItemStack item = current.toItemStack(current.getCount());
         replaceTool("_food", SpigotApi.getNBTTagApi().getNBT(item).setTag("UUID", "current_food").getBukkitItem());

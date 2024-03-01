@@ -1,11 +1,12 @@
 package ch.tower.managers;
 
 import ch.luca008.SpigotApi.Api.TeamAPI;
+import ch.luca008.SpigotApi.Packets.PacketsUtils;
+import ch.luca008.SpigotApi.Packets.TeamsPackets;
 import ch.luca008.SpigotApi.SpigotApi;
+import ch.luca008.SpigotApi.Utils.Logger;
 import ch.tower.Main;
 import ch.tower.managers.WorldManager.WorldZone;
-import net.minecraft.EnumChatFormat;
-import net.minecraft.world.scores.ScoreboardTeamBase;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -120,25 +121,34 @@ public class TeamsManager {
             SpigotApi.getTeamApi().unregisterTeam(team.apiTeam());
         }
         teams.clear();
+        SpigotApi.getTeamApi().unregisterTeam("npc");
     }
 
     public static void registerTeams(World towerWorld)
     {
-        registerTeam(towerWorld, "blue",      "Blue",       "Blue | ",      EnumChatFormat.j, 1);
-        registerTeam(towerWorld, "red",       "Red",        "Red | ",       EnumChatFormat.m, 2);
-        registerTeam(towerWorld, "spectator", "Spectator", "Spectator | ", EnumChatFormat.h, 3);
+        registerTeam(towerWorld, "blue",      "Blue",       "Blue | ",     PacketsUtils.ChatColor.BLUE, 1);
+        registerTeam(towerWorld, "red",       "Red",        "Red | ",      PacketsUtils.ChatColor.RED,  2);
+        registerTeam(towerWorld, "spectator", "Spectator", "Spectator | ", PacketsUtils.ChatColor.GRAY, 3);
+        TeamAPI.Team npcTeam = new TeamAPI.TeamBuilder("npc")
+                .setDisplayName("NPC")
+                .setPrefix("NPC | ")
+                .setColor(PacketsUtils.ChatColor.YELLOW)
+                .setCollisions(TeamsPackets.Collisions.ALWAYS) //So players cant hide inside NPCs
+                .create();
+        if(!SpigotApi.getTeamApi().registerTeam(npcTeam))
+        {
+            Logger.error("THE API FAILED TO REGISTER THE npc TEAM. MAYBE CONSIDER DISABLING THE PLUGIN BECAUSE HES NOT IN A STABLE STATE.", TeamsManager.class.getName());
+        }
     }
 
-    private static void registerTeam(World towerWorld, String uniqueName, String displayName, String prefix, EnumChatFormat color, int sortOrder)
+    private static void registerTeam(World towerWorld, String uniqueName, String displayName, String prefix, PacketsUtils.ChatColor color, int sortOrder)
     {
         TeamAPI.Team apiTeam = new TeamAPI.TeamBuilder(uniqueName)
                 .setDisplayName(displayName)
                 .setPrefix(prefix)
                 .setColor(color)
                 .setSortOrder(sortOrder)
-                .setFriendlyFire(false)
-                .setSeeInvisibleFriends(true)
-                .setCollisions(ScoreboardTeamBase.EnumTeamPush.b)
+                .setCollisions(TeamsPackets.Collisions.NEVER)
                 .create();
         if(SpigotApi.getTeamApi().registerTeam(apiTeam)){
             WorldZone teamPool = null;
@@ -151,7 +161,7 @@ public class TeamsManager {
             TeamInfo team = new TeamInfo(apiTeam, WorldManager.readLocation("Game."+displayName), WorldManager.readLocation("Lobby."+displayName), teamPool, spawnProtection);
             teams.put(uniqueName, team);
         } else {
-            System.err.println("THE API FAILED TO REGISTER THE TEAM " + uniqueName + ". MAYBE CONSIDER DISABLING THE PLUGIN BECAUSE HES NOT IN A STABLE STATE.");
+            Logger.error("THE API FAILED TO REGISTER THE TEAM " + uniqueName + ". MAYBE CONSIDER DISABLING THE PLUGIN BECAUSE HES NOT IN A STABLE STATE.", TeamsManager.class.getName());
         }
     }
 

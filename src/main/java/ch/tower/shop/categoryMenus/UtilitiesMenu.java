@@ -3,7 +3,7 @@ package ch.tower.shop.categoryMenus;
 import ch.luca008.SpigotApi.Api.JSONApi;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
-import ch.tower.items.Item;
+import ch.tower.items.TowerItem;
 import ch.tower.shop.ShopMenu;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -19,16 +19,16 @@ public class UtilitiesMenu extends ShopMenu {
     public Inventory createInventory(TowerPlayer player)
     {
         Inventory inv = super.createInventory(player);
-        for(Item i : super.content)
+        for(TowerItem i : super.content)
         {
-            Item toAdd = i;
+            TowerItem toAdd = i;
             inv.setItem(toAdd.getSlot(), toAdd.toItemStack(toAdd.getCount()));
         }
         return inv;
     }
 
     @Override
-    public double clicked(TowerPlayer player, Item item, ClickType click)
+    public double clicked(TowerPlayer player, TowerItem item, ClickType click)
     {
         if(player != null && item != null)
         {

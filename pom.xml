@@ -40,7 +40,7 @@
         <dependency>
             <groupId>ch.luca008</groupId>
             <artifactId>SpigotApi</artifactId>
-            <version>latest</version>
+            <version>test-2.1</version>
             <scope>provided</scope>
         </dependency>
         <!-- Helps to build plugin -->

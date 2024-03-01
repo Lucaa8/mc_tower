@@ -3,7 +3,7 @@ package ch.tower.shop;
 import ch.luca008.SpigotApi.Api.JSONApi;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.TowerPlayer;
-import ch.tower.items.Item;
+import ch.tower.items.TowerItem;
 import ch.tower.shop.categoryMenus.BlocksMenu;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
@@ -14,7 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 public interface Shop {
     Inventory createInventory(TowerPlayer player);
 
-    double clicked(TowerPlayer player, Item item, ClickType click);
+    double clicked(TowerPlayer player, TowerItem item, ClickType click);
 
     static Shop loadShop(JSONObject json)
     {
