@@ -1,13 +1,13 @@
 package ch.tower.items;
 
 import ch.luca008.SpigotApi.Api.JSONApi;
+import ch.luca008.SpigotApi.Item.Meta.LeatherArmor;
+import ch.luca008.SpigotApi.Packets.PacketsUtils;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
-import ch.tower.items.meta.LeatherArmor;
 import ch.tower.shop.ShopMenu;
 import ch.tower.shop.categoryMenus.ToolsMenu;
-import net.minecraft.EnumChatFormat;
 import org.bukkit.Color;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class ArmorEquipment {
 
-    private static Map<String, Map<EquipmentSlot, Item>> armorsSets = new HashMap<>();
+    private static Map<String, Map<EquipmentSlot, TowerItem>> armorsSets = new HashMap<>();
 
     static {
         JSONApi.JSONReader r = SpigotApi.getJSONApi().readerFromFile(ToolsMenu.ARMOR_FILE);
@@ -28,11 +28,11 @@ public class ArmorEquipment {
             JSONApi.JSONReader level = SpigotApi.getJSONApi().getReader((JSONObject)o);
             String key = level.getString("Level")+"_armor";
             JSONApi.JSONReader contentPieces = level.getJson("Content");
-            Map<EquipmentSlot, Item> content = new HashMap<>(){{
-                put(EquipmentSlot.HEAD,  Item.fromJson(contentPieces.getJson("Helmet").asJson()));
-                put(EquipmentSlot.CHEST, Item.fromJson(contentPieces.getJson("Chestplate").asJson()));
-                put(EquipmentSlot.LEGS,  Item.fromJson(contentPieces.getJson("Leggings").asJson()));
-                put(EquipmentSlot.FEET,  Item.fromJson(contentPieces.getJson("Boots").asJson()));
+            Map<EquipmentSlot, TowerItem> content = new HashMap<>(){{
+                put(EquipmentSlot.HEAD,  TowerItem.fromJson(contentPieces.getJson("Helmet").asJson()));
+                put(EquipmentSlot.CHEST, TowerItem.fromJson(contentPieces.getJson("Chestplate").asJson()));
+                put(EquipmentSlot.LEGS,  TowerItem.fromJson(contentPieces.getJson("Leggings").asJson()));
+                put(EquipmentSlot.FEET,  TowerItem.fromJson(contentPieces.getJson("Boots").asJson()));
             }};
             armorsSets.put(key, content);
         }
@@ -45,12 +45,12 @@ public class ArmorEquipment {
             Player p = player.asPlayer();
             ShopMenu tools = Main.getInstance().getManager().getShopManager().getShop("tools");
             if(tools==null) return; //never the case but better be safe than sorry
-            for(Map.Entry<EquipmentSlot, Item> armorPiece : armorsSets.get(level).entrySet())
+            for(Map.Entry<EquipmentSlot, TowerItem> armorPiece : armorsSets.get(level).entrySet())
             {
-                Item cloned = armorPiece.getValue().clone();
+                TowerItem cloned = armorPiece.getValue().clone();
                 if(!cloned.hasMeta())
                 {
-                    cloned.setMeta(new LeatherArmor(player.getTeam().getInfo().apiTeam().getColor() == EnumChatFormat.j ? Color.BLUE : Color.RED));
+                    cloned.setMeta(new LeatherArmor(player.getTeam().getInfo().apiTeam().getColor() == PacketsUtils.ChatColor.BLUE ? Color.BLUE : Color.RED));
                 }
                 ItemStack item = tools.prepareItem(cloned, false);
                 p.getInventory().setItem(armorPiece.getKey(), SpigotApi.getNBTTagApi().getNBT(item).setTag("UUID", "current_armor").getBukkitItem());

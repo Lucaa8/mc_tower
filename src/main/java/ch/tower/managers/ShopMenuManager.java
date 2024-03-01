@@ -5,7 +5,7 @@ import ch.luca008.SpigotApi.Api.NPCApi;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
-import ch.tower.items.Item;
+import ch.tower.items.TowerItem;
 import ch.tower.shop.Shop;
 import ch.tower.shop.ShopMenu;
 import org.bukkit.entity.Player;
@@ -35,9 +35,9 @@ public class ShopMenuManager {
                 .toList();
     }
 
-    public void openShop(NPCApi.NPC npc, Player player)
+    public void openShop(NPCApi.NPC npc, Player player, ClickType click)
     {
-        String shop = npc.name.toLowerCase();
+        String shop = npc.getName().toLowerCase();
         if(shop.endsWith("§f"))
             shop = shop.substring(0, shop.length()-4);
         openShop(shop, TowerPlayer.getPlayer(player));
@@ -72,7 +72,7 @@ public class ShopMenuManager {
         {
             if(sm.getId().equals(shop))
             {
-                Item clicked = sm.getItem(item);
+                TowerItem clicked = sm.getItem(item);
                 if(clicked != null || item.equals("back"))
                 {
                     sm.clicked(TowerPlayer.getPlayer(player), clicked, click);

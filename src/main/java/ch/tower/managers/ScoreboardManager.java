@@ -177,7 +177,7 @@ public class ScoreboardManager
             ScoreboardAPI.LinesBuilder linesBuilder = new ScoreboardAPI.LinesBuilder();
             for(int i=0;i<lines.size();i++)
             {
-                linesBuilder.add(i, (String) lines.get(i));
+                linesBuilder.add("line"+i, i, (String) lines.get(i));
             }
             SpigotApi.getScoreboardApi().registerScoreboard(sb, r_sb.getString("Title"), linesBuilder.getLines());
         }

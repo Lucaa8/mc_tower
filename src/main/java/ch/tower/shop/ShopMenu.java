@@ -1,12 +1,13 @@
 package ch.tower.shop;
 
 import ch.luca008.SpigotApi.Api.JSONApi;
+import ch.luca008.SpigotApi.Item.Enchant;
+import ch.luca008.SpigotApi.Item.ItemBuilder;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
-import ch.tower.items.Enchant;
-import ch.tower.items.Item;
-import ch.tower.items.ItemBuilder;
+import ch.tower.items.EnchantUtils;
+import ch.tower.items.TowerItem;
 import ch.tower.managers.TeamsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -46,7 +47,7 @@ public abstract class ShopMenu implements Shop {
     protected String id;
     protected String name;
     protected int size;
-    protected List<Item> content;
+    protected List<TowerItem> content;
     private List<ItemPrice> prices;
     protected int backSlot;
 
@@ -69,7 +70,7 @@ public abstract class ShopMenu implements Shop {
         this.backSlot = back != -1 ? this.size-(10-back) : -1;
         this.content = ((List<Object>)shop.getArray("Content")).stream()
                 .filter(JSONObject.class::isInstance)
-                .map(JSONObject.class::cast).map(Item::fromJson).collect(Collectors.toList());
+                .map(JSONObject.class::cast).map(TowerItem::fromJson).collect(Collectors.toList());
         this.prices = ((List<Object>)json.getArray("Prices")).stream()
                 .filter(JSONObject.class::isInstance).map(JSONObject.class::cast).map(SpigotApi.getJSONApi()::getReader)
                 .map(r->new ItemPrice(r.getString("Item"), r.c("Price-One") ? r.getDouble("Price-One") : -1.0, r.c("Price-Definitive") ? r.getDouble("Price-Definitive") : -1.0))
@@ -77,9 +78,9 @@ public abstract class ShopMenu implements Shop {
     }
 
     @Nullable
-    public Item getItem(String id)
+    public TowerItem getItem(String id)
     {
-        for(Item i : this.content)
+        for(TowerItem i : this.content)
         {
             if(i.getUid().equals(id))
                 return i;
@@ -146,7 +147,7 @@ public abstract class ShopMenu implements Shop {
     }
 
     @Override
-    public double clicked(TowerPlayer player, Item item, ClickType click)
+    public double clicked(TowerPlayer player, TowerItem item, ClickType click)
     {
         if(player != null && item != null)
         {
@@ -182,7 +183,7 @@ public abstract class ShopMenu implements Shop {
         }
     }
 
-    public ItemStack prepareItem(Item item, boolean addPrices)
+    public ItemStack prepareItem(TowerItem item, boolean addPrices)
     {
         ItemPrice price = getPrice(item.getUid());
         ItemStack is = item.toItemStack(item.getCount());
@@ -245,7 +246,7 @@ public abstract class ShopMenu implements Shop {
         List<String> lore = item.getItemMeta().hasLore() ? item.getItemMeta().getLore() : new ArrayList<>();
         for(Enchant ench : enchantList)
         {
-            addLine(lore, index++, ench.asMinecraftEnchantment());
+            addLine(lore, index++, EnchantUtils.asMinecraftEnchantment(ench));
         }
         addLine(lore, index, "");
         ItemMeta im = item.getItemMeta();

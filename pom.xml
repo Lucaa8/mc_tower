@@ -9,7 +9,7 @@
     <version>1.0.0</version>
 
     <name>Tower</name>
-    <description>A simple tower mini-game on minecraft 1.20.1</description>
+    <description>A simple tower mini-game on minecraft 1.20.4</description>
 
     <properties>
         <maven.compiler.source>19</maven.compiler.source>
@@ -29,18 +29,18 @@
     </repositories>
 
     <dependencies>
-        <!-- Spigot 1.20 jar with NSM, Bukkit api, Mojang and all dependencies -->
+        <!-- Spigot 1.20.4 jar -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.20.1-R0.1-SNAPSHOT</version>
+            <version>1.20.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <!-- My own spigot api for 1.20 -->
+        <!-- My own spigot api for 1.20.x -->
         <dependency>
             <groupId>ch.luca008</groupId>
             <artifactId>SpigotApi</artifactId>
-            <version>1.1</version>
+            <version>test-2.1</version>
             <scope>provided</scope>
         </dependency>
         <!-- Helps to build plugin -->
@@ -57,7 +57,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.4.1</version>
+                <version>3.5.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>

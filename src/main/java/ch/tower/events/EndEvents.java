@@ -1,5 +1,6 @@
 package ch.tower.events;
 
+import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
 import ch.tower.managers.GameManager;
 import ch.tower.managers.ScoreboardManager;
@@ -85,7 +86,7 @@ public class EndEvents implements StateEvents
                 Main.getInstance().getManager().stop();
             }
         }, 20L, 20L);
-        Main.getInstance().getManager().getNpcManager().unregisterAll();
+        SpigotApi.getNpcApi().unregisterAll(true);
         //maybe save scores into database, etc.. async
     }
 
