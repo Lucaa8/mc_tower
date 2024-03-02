@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FoodMenu extends ShopMenu {
@@ -46,6 +47,13 @@ public class FoodMenu extends ShopMenu {
             else if(playerLevel > itemLevel)
             {
                 im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                List<String> lore = im.getLore();
+                if(lore != null)
+                {
+                    lore = new ArrayList<>(lore);
+                    lore.set(2, "§cYou already purchased this.");
+                    im.setLore(lore);
+                }
                 is.setItemMeta(im);
                 is.addUnsafeEnchantment(Enchantment.LUCK, 1);
             }
