@@ -37,6 +37,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
@@ -129,6 +130,19 @@ public class GameEvents implements StateEvents
 
     //------------------- START OF THE KILLS SECTION -------------------//
 
+    private final double immuneOnDeath = GameManager.ConfigField.TIMER_IMMUNE_ON_DEATH.getDecimal();
+
+    @EventHandler
+    public void onRespawnSetImmune(PlayerRespawnEvent e)
+    {
+        TowerPlayer player = TowerPlayer.getPlayer(e.getPlayer());
+        if(player != null)
+        {
+            //this method set invulnerable the player and waits immuneOnDeath*20 ticks before removing the invulnerability
+            player.setImmune(immuneOnDeath);
+        }
+    }
+
     @EventHandler
     public void onDeathOfPlayer(PlayerDeathEvent e)
     {
@@ -169,6 +183,7 @@ public class GameEvents implements StateEvents
                     }
                     String attackerName = (team == null ? "§f" : team.getColorCode()) + attacker.asOfflinePlayer().getName();
                     attacker.addKill();
+                    attacker.displayBarText("§fKilled " + playerName, 40);
                     String key = deathCause.getCause() == DamageCause.VOID ? "MSG_DEATH_VOID_2" : deathCause.getCause() == DamageCause.FALL ? "MSG_DEATH_FALL_2" : "MSG_DEATH_ENTITY_ATTACK";
                     e.setDeathMessage(GameManager.getMessage(key, playerName, attackerName));
                     Player pAttacker = attacker.asPlayer();
@@ -206,6 +221,7 @@ public class GameEvents implements StateEvents
                 }
 
                 towerVictim.damage(towerAttacker);
+                towerAttacker.addDamage(e.getFinalDamage());
             }
         }
     }
@@ -578,11 +594,11 @@ public class GameEvents implements StateEvents
         }
 
         AtomicInteger counter = new AtomicInteger();
-        Function<ToIntFunction<TowerPlayer>,String> sort = (func) -> TowerPlayer.getPlayers().stream()
+        BiFunction<ToIntFunction<TowerPlayer>,String,String> sort = (func, suffix) -> TowerPlayer.getPlayers().stream()
                 .peek(x->counter.set(1))
                 .sorted(Comparator.comparingInt(func).reversed())
                 .filter(tp->tp.asOfflinePlayer().getName()!=null)
-                .map(tp->String.format("§b#%d §f"+(counter.get()==1?"§l":"")+"%s §e%d", counter.getAndIncrement(), tp.asOfflinePlayer().getName(), func.applyAsInt(tp)))
+                .map(tp->String.format("§b#%d §f"+(counter.get()==1?"§l":"")+"%s §e%d %s", counter.getAndIncrement(), tp.asOfflinePlayer().getName(), func.applyAsInt(tp), suffix))
                 .limit(3)
                 .reduce("", (partialString, element) -> partialString + "\n" + element).substring(1);
 
@@ -591,15 +607,19 @@ public class GameEvents implements StateEvents
 
         String fullMessage = "\n" +
                 String.format(headerFormat, "Top Kills") +
-                sort.apply(TowerPlayer::getKills) +
+                sort.apply(TowerPlayer::getKills, "") +
+                "\n" +
+                transition +
+                String.format(headerFormat, "Top Damage") +
+                sort.apply((p)-> (int) p.getDamage(), "♥") +
                 "\n" +
                 transition +
                 String.format(headerFormat, "Top Deaths") +
-                sort.apply(TowerPlayer::getDeaths) +
+                sort.apply(TowerPlayer::getDeaths, "") +
                 "\n" +
                 transition +
                 String.format(headerFormat, "Top Points") +
-                sort.apply(TowerPlayer::getPoints) +
+                sort.apply(TowerPlayer::getPoints, "") +
                 "\n" +
                 transition;
 

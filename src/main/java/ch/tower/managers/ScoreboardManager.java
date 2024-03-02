@@ -51,6 +51,7 @@ public class ScoreboardManager
         POINTS_BLUE,
         MAX_POINTS,
         POINTS, //Unique player points
+        DAMAGE,
         KILLS,
         ASSISTS,
         DEATHS,
@@ -74,12 +75,14 @@ public class ScoreboardManager
     public static class PlaceholderHelper {
 
 
-        private final static DecimalFormat df;
+        private final static DecimalFormat dfMoney;
+        private final static DecimalFormat dfDamage;
 
         static {
             DecimalFormatSymbols symbols = new DecimalFormatSymbols();
             symbols.setGroupingSeparator('\'');
-            df = new DecimalFormat("#,###.##", symbols);
+            dfMoney = new DecimalFormat("#,###.##", symbols);
+            dfDamage = new DecimalFormat("#,###", symbols);
         }
 
         public static class PlayerHelper {
@@ -92,6 +95,11 @@ public class ScoreboardManager
 
             public String getTeam(){
                 return PlaceholderHelper.getTeamName(player.getTeam());
+            }
+
+            public String getDamage()
+            {
+                return dfDamage.format(player.getDamage())+"♥";
             }
 
             public String getPoints(){
@@ -111,7 +119,7 @@ public class ScoreboardManager
             }
 
             public String getMoney(){
-                return df.format(player.getMoney())+"$";
+                return dfMoney.format(player.getMoney())+"$";
             }
 
         }
@@ -241,6 +249,7 @@ public class ScoreboardManager
             if(tp != null){ //if tp is null then its a spectator and we do not update kills, money, etc..
                 PlaceholderHelper.PlayerHelper playerInfos = tp.boardHelder;
                 board.setPlaceholder(BoardField.TEAM.name(), playerInfos.getTeam());
+                board.setPlaceholder(BoardField.DAMAGE.name(), playerInfos.getDamage());
                 board.setPlaceholder(BoardField.KILLS.name(), playerInfos.getKills());
                 board.setPlaceholder(BoardField.ASSISTS.name(), playerInfos.getAssists());
                 board.setPlaceholder(BoardField.POINTS.name(), playerInfos.getPoints());
@@ -257,6 +266,7 @@ public class ScoreboardManager
             if(tp != null){
                 PlaceholderHelper.PlayerHelper playerInfos = tp.boardHelder;
                 board.setPlaceholder(BoardField.KILLS.name(), playerInfos.getKills());
+                board.setPlaceholder(BoardField.DAMAGE.name(), playerInfos.getDamage());
                 board.setPlaceholder(BoardField.ASSISTS.name(), playerInfos.getAssists());
                 board.setPlaceholder(BoardField.POINTS.name(), playerInfos.getPoints());
                 board.setPlaceholder(BoardField.DEATHS.name(), playerInfos.getDeaths());
