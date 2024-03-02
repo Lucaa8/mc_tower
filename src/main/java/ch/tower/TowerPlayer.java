@@ -14,6 +14,8 @@ import ch.tower.managers.TeamsManager.PlayerTeam;
 import ch.tower.shop.ShopMenu;
 import ch.tower.shop.categoryMenus.FoodMenu;
 import ch.tower.shop.categoryMenus.ToolsMenu;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -133,6 +135,7 @@ public class TowerPlayer
     }
 
     private final OfflinePlayer player;
+    private double damage = 0d;
     private int points = 0;
     private int kills = 0;
     private int assists = 0;
@@ -147,6 +150,7 @@ public class TowerPlayer
 
     private TowerPlayer lastDamagedBy;
     private long lastDamagedAt;
+    private boolean isImmune = false; //OnDeath, players are immune x seconds to avoid spawn killing
 
     private String abandonTeam;
     private BukkitTask abandonTask;
@@ -166,6 +170,25 @@ public class TowerPlayer
     public Player asPlayer()
     {
         return Bukkit.getPlayer(player.getUniqueId());
+    }
+
+    public void displayBarText(String text, long ticks)
+    {
+        Player p = asPlayer();
+
+        if(p != null && p.isOnline())
+        {
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(text));
+
+            Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->{
+                if(p.isOnline())
+                {
+                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
+                }
+            }, ticks);
+
+        }
+
     }
 
     @Nullable
@@ -207,6 +230,29 @@ public class TowerPlayer
         return team;
     }
 
+    public void setImmune(double immuneTime)
+    {
+        this.isImmune = true;
+        Player p = asPlayer();
+        if(p != null && p.isOnline())
+        {
+            p.setInvulnerable(true);
+            displayBarText("§4§lImmune during " + immuneTime + " seconds.", (long)immuneTime*20);
+        }
+        Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->{
+            this.isImmune = false;
+            if(p != null && p.isOnline())
+            {
+                p.setInvulnerable(false);
+            }
+        }, (long)immuneTime*20);
+    }
+
+    public boolean isImmune()
+    {
+        return this.isImmune;
+    }
+
     public int addPoint()
     {
         points++;
@@ -217,6 +263,18 @@ public class TowerPlayer
     public int getPoints()
     {
         return points;
+    }
+
+    public double addDamage(double damage)
+    {
+        this.damage += damage;
+        ScoreboardManager.BoardField.DAMAGE.update(asPlayer(), boardHelder.getDamage());
+        return this.damage;
+    }
+
+    public double getDamage()
+    {
+        return damage;
     }
 
     public int addKill()
