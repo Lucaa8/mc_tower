@@ -16,6 +16,8 @@
   "MSG_DEATH_EXPLOSION": "{0} §7found himself in an explosion",
   "MSG_DEATH_FIRE_TICK_1": "{0} §7was burned",
   "MSG_DEATH_FIRE_TICK_2": "{0} §7experienced {1}§7's barbecue up close",
+  "MSG_DEATH_MAGIC_1": "{0} §7was alchemized into the afterlife",
+  "MSG_DEATH_MAGIC_2": "{0} §7was alchemized into the afterlife by {1}",
   "MSG_DEATH_FALL_1": "{0} §7collapsed onto the ground",
   "MSG_DEATH_FALL_2": "{0} §7landed heavily on the ground after his skirmish with {1}",
   "MSG_DEATH_PROJECTILE_1": "{0} §7received a fatal arrow",
