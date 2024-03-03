@@ -149,6 +149,7 @@ public class TowerPlayer
     public final PlaceholderHelper.PlayerHelper boardHelder;
 
     private TowerPlayer lastDamagedBy;
+    private TowerPlayer lastBurntBy;
     private long lastDamagedAt;
     private boolean isImmune = false; //OnDeath, players are immune x seconds to avoid spawn killing
 
@@ -432,6 +433,17 @@ public class TowerPlayer
         {
             p.sendMessage("§cYour inventory was full so your " + (type.contains("_") ? type.substring(1) : type) + " couldn't be delivered. You will get it at your next respawn.");
         }
+    }
+
+    public void damageFire(@Nullable TowerPlayer attacker)
+    {
+        this.lastBurntBy = attacker;
+    }
+
+    @Nullable
+    public TowerPlayer getLastBurntBy()
+    {
+        return this.lastBurntBy;
     }
 
     public void damage(@Nullable TowerPlayer attacker)

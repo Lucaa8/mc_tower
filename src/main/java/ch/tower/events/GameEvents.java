@@ -11,6 +11,7 @@ import ch.tower.managers.WorldManager.WorldZone;
 import ch.tower.shop.LuckShuffle;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -18,11 +19,8 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.*;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -165,16 +163,16 @@ public class GameEvents implements StateEvents
             return;
         }
 
+        String key = "MSG_DEATH_"+deathCause.getCause().name()+"_";
         switch (deathCause.getCause())
         {
-            case ENTITY_ATTACK, VOID, FALL -> {
-                TowerPlayer attacker = towerPlayer.getLastDamagedBy();
+            case ENTITY_ATTACK, VOID, FALL, PROJECTILE, FIRE_TICK -> {
+                TowerPlayer attacker = deathCause.getCause() == DamageCause.FIRE_TICK ? towerPlayer.getLastBurntBy() : towerPlayer.getLastDamagedBy();
                 if(attacker == null)
                 {
-                    if(deathCause.getCause() == DamageCause.VOID)
-                        e.setDeathMessage(GameManager.getMessage("MSG_DEATH_VOID_1", playerName));
-                    else if(deathCause.getCause() == DamageCause.FALL)
-                        e.setDeathMessage(GameManager.getMessage("MSG_DEATH_FALL_1", playerName));
+                    String message = GameManager.getMessage(key+"1", playerName);
+                    if(!message.equals("Unknown message"))
+                        e.setDeathMessage(message);
                 } else {
                     TeamsManager.PlayerTeam team = attacker.getTeam();
                     if(team == null)
@@ -184,18 +182,24 @@ public class GameEvents implements StateEvents
                     String attackerName = (team == null ? "§f" : team.getColorCode()) + attacker.asOfflinePlayer().getName();
                     attacker.addKill();
                     attacker.displayBarText("§fKilled " + playerName, 40);
-                    String key = deathCause.getCause() == DamageCause.VOID ? "MSG_DEATH_VOID_2" : deathCause.getCause() == DamageCause.FALL ? "MSG_DEATH_FALL_2" : "MSG_DEATH_ENTITY_ATTACK";
-                    e.setDeathMessage(GameManager.getMessage(key, playerName, attackerName));
+                    if(deathCause.getCause() == DamageCause.ENTITY_ATTACK)
+                        key = "MSG_DEATH_ENTITY_ATTACK";
+                    else
+                        key += "2";
+                    String message = GameManager.getMessage(key, playerName, attackerName);
+                    if(!message.equals("Unknown message"))
+                        e.setDeathMessage(message);
                     Player pAttacker = attacker.asPlayer();
                     if(pAttacker != null && pAttacker.isOnline())
                     {
                         pAttacker.playSound(pAttacker.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.3f, 1f);
                     }
                     towerPlayer.damage(null); //Reset last damager
+                    towerPlayer.damageFire(null); //Already done in the onBurnDamage event, but extra security in case of bugs. So the attacker cant deal fire damage the whole game.
                 }
             }
             case ENTITY_EXPLOSION -> e.setDeathMessage(GameManager.getMessage("MSG_DEATH_EXPLOSION", playerName));
-            case FIRE -> e.setDeathMessage(GameManager.getMessage("MSG_DEATH_FIRE", playerName));
+            case FIRE -> e.setDeathMessage(GameManager.getMessage("MSG_DEATH_FIRE_TICK_1", playerName));
             default -> e.setDeathMessage(GameManager.getMessage("MSG_DEATH_DEFAULT", playerName));
         }
 
@@ -220,8 +224,36 @@ public class GameEvents implements StateEvents
                     return;
                 }
 
+                ItemStack itemAttacker = attacker.getInventory().getItemInMainHand();
+                if(itemAttacker.containsEnchantment(Enchantment.FIRE_ASPECT) || itemAttacker.containsEnchantment(Enchantment.ARROW_FIRE))
+                {
+                    towerVictim.damageFire(towerAttacker);
+                }
+
                 towerVictim.damage(towerAttacker);
                 towerAttacker.addDamage(e.getFinalDamage());
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBurnDamage(EntityDamageEvent e)
+    {
+        if(e.getCause() == DamageCause.FIRE_TICK && e.getEntity() instanceof Player v)
+        {
+            TowerPlayer victim = TowerPlayer.getPlayer(v);
+            if(victim != null)
+            {
+                TowerPlayer attacker = victim.getLastBurntBy();
+                if(attacker != null)
+                {
+                    attacker.addDamage(e.getFinalDamage());
+                    if(v.getFireTicks() <= 20) //maybe improve this system, if the player is set on fire by another player and then walks inside fire, the attacker will keep getting the damage.
+                    {
+                        //Remove the attacker at the end of the effect + 0.5 sec to be sure the attacker is still present while the onDeath is called
+                        Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->victim.damageFire(null), v.getFireTicks()+10L);
+                    }
+                }
             }
         }
     }
