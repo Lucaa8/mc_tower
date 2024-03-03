@@ -790,17 +790,13 @@
             "Material": "POTION",
             "Lore": [
               "§d- Regeneration (1:00)",
-              "§d- Regeneration II (0:17)",
               "§c- Instant Health II",
               "§4- Strength (1:30)",
               "§6- Fire Resistance (3:00)",
               "§a- Jump Boost (1:00)",
-              "§2- Luck ? (?:??)",
               "§3- Speed (3:00)",
               "§7- Beer",
               "§8- Splash Slowness (1:00)",
-              "§2- Splash Poison (0:30)",
-              "§2- Splash Poison II (0:12)",
               "§9- Splash Weakness (1:30)",
               "§5- Splash Instant Damage"
             ],
@@ -940,7 +936,7 @@
         "Content": [
           {
             "Id": "1_regeneration",
-            "Slot": 1,
+            "Slot": 2,
             "Material": "POTION",
             "Count": 1,
             "ItemMeta": {
@@ -969,37 +965,7 @@
             "Name": "§fPotion of Regeneration"
           },
           {
-            "Id": "2_regeneration_ii",
-            "Slot": 2,
-            "Material": "POTION",
-            "Count": 1,
-            "ItemMeta": {
-              "Meta": {
-                "CustomEffects": [
-                  {
-                    "Type": "REGENERATION",
-                    "Duration": 340,
-                    "Amplifier": 1,
-                    "Particles": true
-                  }
-                ],
-                "Color": {
-                  "r": 255,
-                  "b": 255,
-                  "g": 0
-                },
-                "BaseEffect": {
-                  "Type": "UNCRAFTABLE",
-                  "Extended": false,
-                  "Upgraded": false
-                }
-              },
-              "MetaType": "Potion"
-            },
-            "Name": "§fPotion of Regeneration II"
-          },
-          {
-            "Id": "3_healing",
+            "Id": "2_healing",
             "Slot": 3,
             "Material": "POTION",
             "Count": 1,
@@ -1029,7 +995,7 @@
             "Name": "§fPotion of Healing"
           },
           {
-            "Id": "4_strength",
+            "Id": "3_strength",
             "Slot": 4,
             "Material": "POTION",
             "Count": 1,
@@ -1059,7 +1025,7 @@
             "Name": "§fPotion of Strength"
           },
           {
-            "Id": "5_fire_resistance",
+            "Id": "4_fire_resistance",
             "Slot": 5,
             "Material": "POTION",
             "Count": 1,
@@ -1089,7 +1055,7 @@
             "Name": "§fPotion of Fire Resistance"
           },
           {
-            "Id": "6_leaping",
+            "Id": "5_leaping",
             "Slot": 6,
             "Material": "POTION",
             "Count": 1,
@@ -1119,48 +1085,8 @@
             "Name": "§fPotion of Leaping"
           },
           {
-            "Id": "7_luck",
-            "Lore": [
-              "§9Luck (?:??)",
-              "",
-              "§cTrust me...or not?",
-              "",
-              "§5When applied:",
-              "§9§kloooser"
-            ],
-            "Slot": 7,
-            "Material": "POTION",
-            "Flags": [
-              "HIDE_POTION_EFFECTS",
-              "HIDE_ENCHANTS"
-            ],
-            "Count": 1,
-            "ItemMeta": {
-              "Meta": {
-                "Color": {
-                  "r": 0,
-                  "b": 0,
-                  "g": 128
-                },
-                "BaseEffect": {
-                  "Type": "UNCRAFTABLE",
-                  "Extended": false,
-                  "Upgraded": false
-                }
-              },
-              "MetaType": "Potion"
-            },
-            "Name": "§fPotion of Luck ?",
-            "Enchants": [
-              {
-                "Level": 1,
-                "Key": "luck_of_the_sea"
-              }
-            ]
-          },
-          {
-            "Id": "8_swiftness",
-            "Slot": 8,
+            "Id": "6_swiftness",
+            "Slot": 9,
             "Material": "POTION",
             "Count": 1,
             "ItemMeta": {
@@ -1189,8 +1115,8 @@
             "Name": "§fPotion of Swiftness"
           },
           {
-            "Id": "9_beer",
-            "Slot": 9,
+            "Id": "7_beer",
+            "Slot": 10,
             "Material": "POTION",
             "Flags": [
               "HIDE_ENCHANTS"
@@ -1214,7 +1140,7 @@
                   {
                     "Type": "INCREASE_DAMAGE",
                     "Duration": 500,
-                    "Amplifier": 2,
+                    "Amplifier": 1,
                     "Particles": true
                   }
                 ],
@@ -1240,8 +1166,8 @@
             ]
           },
           {
-            "Id": "10_slowness",
-            "Slot": 10,
+            "Id": "8_slowness",
+            "Slot": 11,
             "Material": "SPLASH_POTION",
             "Count": 1,
             "ItemMeta": {
@@ -1270,68 +1196,8 @@
             "Name": "§fSplash Potion of Slowness"
           },
           {
-            "Id": "11_poison",
-            "Slot": 11,
-            "Material": "SPLASH_POTION",
-            "Count": 1,
-            "ItemMeta": {
-              "Meta": {
-                "CustomEffects": [
-                  {
-                    "Type": "POISON",
-                    "Duration": 600,
-                    "Amplifier": 0,
-                    "Particles": true
-                  }
-                ],
-                "Color": {
-                  "r": 79,
-                  "b": 50,
-                  "g": 150
-                },
-                "BaseEffect": {
-                  "Type": "UNCRAFTABLE",
-                  "Extended": false,
-                  "Upgraded": false
-                }
-              },
-              "MetaType": "Potion"
-            },
-            "Name": "§fSplash Potion of Poison"
-          },
-          {
-            "Id": "12_poison_ii",
+            "Id": "9_weakness",
             "Slot": 12,
-            "Material": "SPLASH_POTION",
-            "Count": 1,
-            "ItemMeta": {
-              "Meta": {
-                "CustomEffects": [
-                  {
-                    "Type": "POISON",
-                    "Duration": 240,
-                    "Amplifier": 1,
-                    "Particles": true
-                  }
-                ],
-                "Color": {
-                  "r": 79,
-                  "b": 50,
-                  "g": 150
-                },
-                "BaseEffect": {
-                  "Type": "UNCRAFTABLE",
-                  "Extended": false,
-                  "Upgraded": false
-                }
-              },
-              "MetaType": "Potion"
-            },
-            "Name": "§fSplash Potion of Poison II"
-          },
-          {
-            "Id": "13_weakness",
-            "Slot": 13,
             "Material": "SPLASH_POTION",
             "Count": 1,
             "ItemMeta": {
@@ -1360,8 +1226,8 @@
             "Name": "§fSplash Potion of Weakness"
           },
           {
-            "Id": "14_harming",
-            "Slot": 14,
+            "Id": "10_harming",
+            "Slot": 13,
             "Material": "SPLASH_POTION",
             "Count": 1,
             "ItemMeta": {
@@ -1785,55 +1651,39 @@
         "Price-One": 6.0
       },
       {
-        "Item": "2_regeneration_ii",
-        "Price-One": 8.0
-      },
-      {
-        "Item": "3_healing",
+        "Item": "2_healing",
         "Price-One": 4.0
       },
       {
-        "Item": "4_strength",
+        "Item": "3_strength",
         "Price-One": 12.0
       },
       {
-        "Item": "5_fire_resistance",
+        "Item": "4_fire_resistance",
         "Price-One": 4.0
       },
       {
-        "Item": "6_leaping",
+        "Item": "5_leaping",
         "Price-One": 9.0
       },
       {
-        "Item": "7_luck",
-        "Price-One": 12.3
-      },
-      {
-        "Item": "8_swiftness",
+        "Item": "6_swiftness",
         "Price-One": 5.0
       },
       {
-        "Item": "9_beer",
+        "Item": "7_beer",
         "Price-One": 15.0
       },
       {
-        "Item": "10_slowness",
+        "Item": "8_slowness",
         "Price-One": 17.0
       },
       {
-        "Item": "11_poison",
-        "Price-One": 8.0
-      },
-      {
-        "Item": "12_poison_ii",
-        "Price-One": 11.0
-      },
-      {
-        "Item": "13_weakness",
+        "Item": "9_weakness",
         "Price-One": 7.0
       },
       {
-        "Item": "14_harming",
+        "Item": "10_harming",
         "Price-One": 4.0
       }
     ],
@@ -1889,8 +1739,5 @@
         "Price-Definitive": 100.0
       }
     ]
-  },
-  "Luck-Shuffle": {
-
   }
 }

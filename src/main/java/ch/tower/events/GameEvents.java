@@ -8,19 +8,18 @@ import ch.tower.managers.GameManager;
 import ch.tower.managers.ScoreboardManager;
 import ch.tower.managers.TeamsManager;
 import ch.tower.managers.WorldManager.WorldZone;
-import ch.tower.shop.LuckShuffle;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.*;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -28,15 +27,13 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
 public class GameEvents implements StateEvents
@@ -73,6 +70,7 @@ public class GameEvents implements StateEvents
                 //but in our case its 24% of 15.00 = 3.6 so the pre-final damage => 15.00 - 3.6 = 11.4
                 //THEN we apply the 15% reduction on the pre-final damage: 15% of 11.4 = 1.71 so the FINAL damage is 11.4 - 1.71 = 9.69 (The damage is bigger than the 39% reduction)
                 //The difference isn't big here but a big fall damage can be 25-30 and the player can barely survive due to the -24% AND the -15% after that
+                //Df=Di×(1−0.24)×(1−0.15)
                 double ratio = e.getFinalDamage() * 15.0 /100.0;
                 e.setDamage(e.getFinalDamage()-ratio);
             }
@@ -92,10 +90,11 @@ public class GameEvents implements StateEvents
 
     //------------------- END OF THE HARMLESS FEATHER SECTION -------------------//
 
-    //------------------- START OF THE LUCK POTION SECTION -------------------//
+    //------------------- START OF THE POTION SECTION -------------------//
 
+    //Removes the glass bottle after the player consumed the potion
     @EventHandler
-    public void onLuckPotionConsume(PlayerItemConsumeEvent e)
+    public void onPotionConsume(PlayerItemConsumeEvent e)
     {
         if(e.getItem().getType() == Material.POTION)
         {
@@ -109,22 +108,10 @@ public class GameEvents implements StateEvents
                     p.getInventory().setItem(e.getHand(), new ItemStack(Material.AIR));
                 }
             }, 1L);
-            NBTTagApi.NBTItem nbt = SpigotApi.getNBTTagApi().getNBT(e.getItem());
-            if(nbt.hasTag("UUID") && nbt.getString("UUID").equals("7_luck"))
-            {
-                p.playSound(p, Sound.AMBIENT_CAVE, 1.0f, 1.0f);
-                p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 1, true, false));
-                Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->
-                {
-                    if(!p.isOnline())return;
-                    LuckShuffle.apply(TowerPlayer.getPlayer(p));
-                }, 80L);
-            }
         }
     }
 
-    //------------------- END OF THE LUCK POTION SECTION -------------------//
-
+    //------------------- END OF THE POTION SECTION -------------------//
 
     //------------------- START OF THE KILLS SECTION -------------------//
 
@@ -166,7 +153,7 @@ public class GameEvents implements StateEvents
         String key = "MSG_DEATH_"+deathCause.getCause().name()+"_";
         switch (deathCause.getCause())
         {
-            case ENTITY_ATTACK, VOID, FALL, PROJECTILE, FIRE_TICK -> {
+            case ENTITY_ATTACK, VOID, FALL, PROJECTILE, FIRE_TICK, MAGIC -> {
                 TowerPlayer attacker = deathCause.getCause() == DamageCause.FIRE_TICK ? towerPlayer.getLastBurntBy() : towerPlayer.getLastDamagedBy();
                 if(attacker == null)
                 {
@@ -205,13 +192,25 @@ public class GameEvents implements StateEvents
 
     }
 
+    private Player getDamager(Entity damager)
+    {
+        if(damager instanceof Player p)
+        {
+            return p;
+        }
+        else if(damager instanceof Projectile s)
+        {
+            return (Player) s.getShooter();
+        }
+        return null;
+    }
+
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent e)
     {
-        Entity damager = e.getDamager();
-        if(e.getEntity() instanceof Player victim && (damager instanceof Player || damager.getType() == EntityType.ARROW))
+        Player attacker = getDamager(e.getDamager());
+        if(attacker != null && e.getEntity() instanceof Player victim)
         {
-            Player attacker = damager instanceof Player ? (Player)damager : (Player)((Projectile)damager).getShooter();
             TowerPlayer towerVictim = TowerPlayer.getPlayer(victim);
             TowerPlayer towerAttacker = TowerPlayer.getPlayer(attacker);
             if(towerVictim != null && towerAttacker != null)

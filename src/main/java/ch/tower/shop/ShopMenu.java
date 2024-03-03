@@ -4,6 +4,7 @@ import ch.luca008.SpigotApi.Api.JSONApi;
 import ch.luca008.SpigotApi.Item.Enchant;
 import ch.luca008.SpigotApi.Item.ItemBuilder;
 import ch.luca008.SpigotApi.SpigotApi;
+import ch.luca008.SpigotApi.Utils.Logger;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
 import ch.tower.items.EnchantUtils;
@@ -200,13 +201,17 @@ public abstract class ShopMenu implements Shop {
 
     protected void addPrices(ItemStack item, ItemPrice price)
     {
-        if(item==null || item.getItemMeta()==null || price==null)
+        if(item==null || item.getItemMeta()==null)
             return;
+        if(price==null)
+        {
+            Logger.error("Tried to add price on item " + item + " but no price was found in the shop.yml Price section.", ShopMenu.class.getName());
+            return;
+        }
         List<String> lore = item.getItemMeta().hasLore() ? item.getItemMeta().getLore() : new ArrayList<>();
         boolean isPotion = item.getType() == Material.POTION || item.getType() == Material.SPLASH_POTION;
-        boolean isLuck = isPotion && item.hasItemMeta() && item.getItemMeta().hasLore();
-        int index = isLuck ? item.getItemMeta().getLore().size() : 2;
-        if(index == 2 && item.hasItemMeta() && item.getItemMeta().hasLore() && item.getItemMeta().getLore().get(0).equals(""))
+        int index = 2;
+        if(item.hasItemMeta() && item.getItemMeta().hasLore() && item.getItemMeta().getLore().get(0).equals(""))
         {
             index--;
         }
