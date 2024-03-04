@@ -61,8 +61,10 @@ public class ScoreboardManager
         {
             return String.format("{%s}", name());
         }
-        public void update(Player player, String value)
+        public void update(@Nullable Player player, String value)
         {
+            if(player == null)
+                return;
             ScoreboardAPI.PlayerScoreboard board = SpigotApi.getScoreboardApi().getScoreboard(player);
             if(board != null){
                 board.setPlaceholder(name(), value);

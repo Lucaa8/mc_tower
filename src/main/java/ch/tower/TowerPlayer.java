@@ -25,11 +25,48 @@ import org.bukkit.profile.PlayerProfile;
 import org.bukkit.scheduler.BukkitTask;
 import org.json.simple.JSONObject;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TowerPlayer
 {
+
+    public record Damage(TowerPlayer damagedBy, long damagedAt)
+    {
+
+        public Damage(TowerPlayer damagedByNow)
+        {
+            this(damagedByNow, System.currentTimeMillis());
+        }
+
+        public boolean isDamageStillValid()
+        {
+            return (System.currentTimeMillis()-this.damagedAt)<(GameManager.ConfigField.LAST_ATTACKER_TIMER.get()*1000L);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Damage damage)) return false;
+            return damagedAt == damage.damagedAt && damagedBy.equals(damage.damagedBy);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(damagedBy, damagedAt);
+        }
+
+        @Override
+        public String toString() {
+            return "Damage{" +
+                    "damagedBy=" + damagedBy.player +
+                    ", damagedAt=" + damagedAt +
+                    '}';
+        }
+
+    }
 
     public static Map<String, ItemStack> defaultTools = new HashMap<>();
 
@@ -148,9 +185,8 @@ public class TowerPlayer
     //Can be public because final and unalterable (fields in PlayerHelper are also final)
     public final PlaceholderHelper.PlayerHelper boardHelder;
 
-    private TowerPlayer lastDamagedBy;
+    private final List<Damage> lastDamagedBy = new ArrayList<>(4);
     private TowerPlayer lastBurntBy;
-    private long lastDamagedAt;
     private boolean isImmune = false; //OnDeath, players are immune x seconds to avoid spawn killing
 
     private String abandonTeam;
@@ -446,19 +482,59 @@ public class TowerPlayer
         return this.lastBurntBy;
     }
 
+    /**
+     * @param attacker must be null ONLY clear the list when this player is dead (reset the last damaged and assists)
+     */
     public void damage(@Nullable TowerPlayer attacker)
     {
-        this.lastDamagedBy = attacker;
-        if(attacker!=null)
-            this.lastDamagedAt = System.currentTimeMillis();
+        if(attacker == null)
+        {
+            this.lastDamagedBy.clear();
+            return;
+        }
+        Damage existing = null;
+        for(Damage d : this.lastDamagedBy)
+        {
+            if(d.damagedBy.player.getUniqueId().equals(attacker.player.getUniqueId()))
+            {
+                existing = d;
+            }
+        }
+        if(existing != null)
+            this.lastDamagedBy.remove(existing);
+        this.lastDamagedBy.add(0, new Damage(attacker)); //set the attacker (last damager) in position 0.
     }
 
     @Nullable
     public TowerPlayer getLastDamagedBy()
     {
-        if(this.lastDamagedBy==null || (System.currentTimeMillis()-this.lastDamagedAt)>(GameManager.ConfigField.LAST_ATTACKER_TIMER.get()*1000L))
-            this.lastDamagedBy = null;
-        return this.lastDamagedBy;
+        if(this.lastDamagedBy.size() == 0)
+            return null;
+        Damage d = this.lastDamagedBy.get(0); //the last damager will always be added at tne position 0.
+        if(!d.isDamageStillValid())
+        {
+            this.lastDamagedBy.clear(); //If the last damager is invalid then all the OLDER assists wont be valid too so we can clear the list.
+            return null;
+        }
+        return d.damagedBy();
+    }
+
+    @Nonnull
+    public List<TowerPlayer> getLastAssistedBy(boolean addBurnDamage)
+    {
+        if(this.lastDamagedBy.size() <= 1) //the position 0 of the array is the last damager (the actual killer if called onDeath)
+            return new ArrayList<>();
+        List<TowerPlayer> assists = this.lastDamagedBy.stream().skip(1).filter(Damage::isDamageStillValid).map(Damage::damagedBy).collect(Collectors.toCollection(ArrayList::new));
+        if(addBurnDamage && lastBurntBy != null && !assists.contains(lastBurntBy))
+        {
+            assists.add(lastBurntBy);
+        }
+        //assists.forEach(p-> System.out.println(p.player));
+        for(TowerPlayer p : assists)
+        {
+            System.out.println(p.player);
+        } //lastBurntBy pose probleme, lorsque plusieurs ticks de feu sont appliqués par plusieurs joueurs, la variable est inconsistente.
+        return assists;
     }
 
     @Nullable
