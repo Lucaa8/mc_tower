@@ -31,6 +31,7 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitTask;
 
 import javax.annotation.Nullable;
+import java.sql.SQLOutput;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -132,7 +133,7 @@ public class GameEvents implements StateEvents
 
     private String getKillMessage(DamageCause cause, String victim, @Nullable String attacker)
     {
-        String key = "MSG_DEATH_"+cause.name()+(cause==DamageCause.FIRE?"_TICK_":"")+"_"+(attacker==null?"1":"2");
+        String key = "MSG_DEATH_"+cause.name()+(cause==DamageCause.FIRE?"_TICK":"")+"_"+(attacker==null?"1":"2");
         String message = attacker == null ? GameManager.getMessage(key, victim) : GameManager.getMessage(key, victim, attacker);
         if(message.equals("Unknown message"))
         {
@@ -168,7 +169,7 @@ public class GameEvents implements StateEvents
             Player pAssist = assist.asPlayer();
             if(pAssist != null && pAssist.isOnline())
             {
-                pAssist.playSound(pAssist.getLocation(), Sound.ENTITY_EXPERIENCE_BOTTLE_THROW, 0.3f, 1f); //chose better sound
+                pAssist.playSound(pAssist.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 0.6f, 1f); //chose better sound
             }
         }
     }
@@ -204,6 +205,8 @@ public class GameEvents implements StateEvents
                 if(attacker != null) {
                     String attackerName = addKill(attacker, playerName);
                     List<TowerPlayer> assists = towerPlayer.getLastAssistedBy(false);
+                    //The killer can be in the assist list because he hit that player 2 sec before (with fire aspect) and another player hit it too between the fire aspect hit and the deadly fire tick
+                    assists.remove(attacker);
                     //Transform the last damager to an assist because he did the last damage to the dead player before the fire tick kill him.
                     TowerPlayer lastDamager = towerPlayer.getLastDamagedBy();
                     if(lastDamager != null && !attacker.equals(lastDamager))
@@ -288,6 +291,7 @@ public class GameEvents implements StateEvents
                     if(v.getFireTicks() <= 20) //maybe improve this system, if the player is set on fire by another player and then walks inside fire, the attacker will keep getting the damage.
                     {
                         //Remove the attacker at the end of the effect + 0.5 sec to be sure the attacker is still present while the onDeath is called
+                        //FAILS if a player set on fire the victim during the scheduler : he wont get damage nor assist because damageFire(null) reset it
                         Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->victim.damageFire(null), v.getFireTicks()+10L);
                     }
                 }

@@ -525,15 +525,10 @@ public class TowerPlayer
         if(this.lastDamagedBy.size() <= 1) //the position 0 of the array is the last damager (the actual killer if called onDeath)
             return new ArrayList<>();
         List<TowerPlayer> assists = this.lastDamagedBy.stream().skip(1).filter(Damage::isDamageStillValid).map(Damage::damagedBy).collect(Collectors.toCollection(ArrayList::new));
-        if(addBurnDamage && lastBurntBy != null && !assists.contains(lastBurntBy))
+        if(addBurnDamage && lastBurntBy != null && !lastBurntBy.equals(getLastDamagedBy()) && !assists.contains(lastBurntBy))
         {
             assists.add(lastBurntBy);
         }
-        //assists.forEach(p-> System.out.println(p.player));
-        for(TowerPlayer p : assists)
-        {
-            System.out.println(p.player);
-        } //lastBurntBy pose probleme, lorsque plusieurs ticks de feu sont appliqués par plusieurs joueurs, la variable est inconsistente.
         return assists;
     }
 
@@ -564,4 +559,19 @@ public class TowerPlayer
         return Objects.hash(player);
     }
 
+    @Override
+    public String toString() {
+        return "TowerPlayer{" +
+                "player=" + player +
+                ", damage=" + damage +
+                ", points=" + points +
+                ", kills=" + kills +
+                ", assists=" + assists +
+                ", deaths=" + deaths +
+                ", money=" + money +
+                ", lastDamagedBy=" + lastDamagedBy +
+                ", lastBurntBy=" + lastBurntBy +
+                ", isImmune=" + isImmune +
+                '}';
+    }
 }
