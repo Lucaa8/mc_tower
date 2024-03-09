@@ -57,6 +57,7 @@ public class GameManager {
     public static String getMessage(String key, String...replacements)
     {
         if(!messages.c(key))
+            //If you change that, please check with ctrl+shift+f if this String is used (e.g. in GameEvents#getKillMessage)
             return "Unknown message";
         String msg = messages.getString(key);
         for(int i=0;i<replacements.length;i++)

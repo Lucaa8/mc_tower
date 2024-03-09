@@ -25,11 +25,48 @@ import org.bukkit.profile.PlayerProfile;
 import org.bukkit.scheduler.BukkitTask;
 import org.json.simple.JSONObject;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TowerPlayer
 {
+
+    public record Damage(TowerPlayer damagedBy, long damagedAt)
+    {
+
+        public Damage(TowerPlayer damagedByNow)
+        {
+            this(damagedByNow, System.currentTimeMillis());
+        }
+
+        public boolean isDamageStillValid()
+        {
+            return (System.currentTimeMillis()-this.damagedAt)<(GameManager.ConfigField.LAST_ATTACKER_TIMER.get()*1000L);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Damage damage)) return false;
+            return damagedAt == damage.damagedAt && damagedBy.equals(damage.damagedBy);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(damagedBy, damagedAt);
+        }
+
+        @Override
+        public String toString() {
+            return "Damage{" +
+                    "damagedBy=" + damagedBy.player +
+                    ", damagedAt=" + damagedAt +
+                    '}';
+        }
+
+    }
 
     public static Map<String, ItemStack> defaultTools = new HashMap<>();
 
@@ -148,9 +185,9 @@ public class TowerPlayer
     //Can be public because final and unalterable (fields in PlayerHelper are also final)
     public final PlaceholderHelper.PlayerHelper boardHelder;
 
-    private TowerPlayer lastDamagedBy;
+    private final List<Damage> lastDamagedBy = new ArrayList<>(4);
     private TowerPlayer lastBurntBy;
-    private long lastDamagedAt;
+    private int burnTicksLeft = 0;
     private boolean isImmune = false; //OnDeath, players are immune x seconds to avoid spawn killing
 
     private String abandonTeam;
@@ -435,30 +472,86 @@ public class TowerPlayer
         }
     }
 
-    public void damageFire(@Nullable TowerPlayer attacker)
+    public void damageFire(@Nullable TowerPlayer attacker, int duration)
     {
         this.lastBurntBy = attacker;
+        this.burnTicksLeft = duration;
+    }
+
+    public void tickFire()
+    {
+        this.burnTicksLeft -= 1;
+        if(this.burnTicksLeft < 1)
+        {
+            //less than 20 ticks of fire, it means the player will stop burning soon and the EntityDamageEvent wont be called.
+            //We need to tell the TowerPlayer#getLastBurntBy method that this player stopped burning but in the same time we need to return one last time the last burn attacker for the DeathEvent
+            //Look at the getLastBurntBy method, when 1 tick left (or less) we return the last burn attacker and then reset it.
+            this.burnTicksLeft = 1;
+        }
     }
 
     @Nullable
     public TowerPlayer getLastBurntBy()
     {
-        return this.lastBurntBy;
+        //See TowerPlayer#tickFire to understand why 1
+        if(burnTicksLeft > 1)
+            return this.lastBurntBy;
+        //Save the OfflinePlayer instance if existing to get back the TowerPlayer after lastBurntBy has been set to null (will work only once, for DeathEvent on last tick)
+        OfflinePlayer lastBurnt = this.lastBurntBy != null ? this.lastBurntBy.asOfflinePlayer() : null;
+        this.burnTicksLeft = 0;
+        this.lastBurntBy = null;
+        return TowerPlayer.getPlayer(lastBurnt);
     }
 
+    /**
+     * @param attacker must be null ONLY clear the list when this player is dead (reset the last damaged and assists)
+     */
     public void damage(@Nullable TowerPlayer attacker)
     {
-        this.lastDamagedBy = attacker;
-        if(attacker!=null)
-            this.lastDamagedAt = System.currentTimeMillis();
+        if(attacker == null)
+        {
+            this.lastDamagedBy.clear();
+            return;
+        }
+        Damage existing = null;
+        for(Damage d : this.lastDamagedBy)
+        {
+            if(d.damagedBy.player.getUniqueId().equals(attacker.player.getUniqueId()))
+            {
+                existing = d;
+            }
+        }
+        if(existing != null)
+            this.lastDamagedBy.remove(existing);
+        this.lastDamagedBy.add(0, new Damage(attacker)); //set the attacker (last damager) in position 0.
     }
 
     @Nullable
     public TowerPlayer getLastDamagedBy()
     {
-        if(this.lastDamagedBy==null || (System.currentTimeMillis()-this.lastDamagedAt)>(GameManager.ConfigField.LAST_ATTACKER_TIMER.get()*1000L))
-            this.lastDamagedBy = null;
-        return this.lastDamagedBy;
+        if(this.lastDamagedBy.size() == 0)
+            return null;
+        Damage d = this.lastDamagedBy.get(0); //the last damager will always be added at tne position 0.
+        if(!d.isDamageStillValid())
+        {
+            this.lastDamagedBy.clear(); //If the last damager is invalid then all the OLDER assists wont be valid too so we can clear the list.
+            return null;
+        }
+        return d.damagedBy();
+    }
+
+    @Nonnull
+    public List<TowerPlayer> getLastAssistedBy(boolean addBurnDamage)
+    {
+        if(this.lastDamagedBy.size() <= 1) //the position 0 of the array is the last damager (the actual killer if called onDeath)
+            return new ArrayList<>();
+        List<TowerPlayer> assists = this.lastDamagedBy.stream().skip(1).filter(Damage::isDamageStillValid).map(Damage::damagedBy).collect(Collectors.toCollection(ArrayList::new));
+        TowerPlayer lastBurn = getLastBurntBy();
+        if(addBurnDamage && lastBurn != null && !lastBurn.equals(getLastDamagedBy()) && !assists.contains(lastBurn))
+        {
+            assists.add(lastBurn);
+        }
+        return assists;
     }
 
     @Nullable
@@ -488,4 +581,19 @@ public class TowerPlayer
         return Objects.hash(player);
     }
 
+    @Override
+    public String toString() {
+        return "TowerPlayer{" +
+                "player=" + player +
+                ", damage=" + damage +
+                ", points=" + points +
+                ", kills=" + kills +
+                ", assists=" + assists +
+                ", deaths=" + deaths +
+                ", money=" + money +
+                ", lastDamagedBy=" + lastDamagedBy +
+                ", lastBurntBy=" + lastBurntBy +
+                ", isImmune=" + isImmune +
+                '}';
+    }
 }

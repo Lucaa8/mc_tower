@@ -15,11 +15,8 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.*;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -27,11 +24,17 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitTask;
 
+import javax.annotation.Nullable;
+import java.sql.SQLOutput;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.function.ToIntFunction;
@@ -128,6 +131,49 @@ public class GameEvents implements StateEvents
         }
     }
 
+    private String getKillMessage(DamageCause cause, String victim, @Nullable String attacker)
+    {
+        String key = "MSG_DEATH_"+cause.name()+(cause==DamageCause.FIRE?"_TICK":"")+"_"+(attacker==null?"1":"2");
+        String message = attacker == null ? GameManager.getMessage(key, victim) : GameManager.getMessage(key, victim, attacker);
+        if(message.equals("Unknown message"))
+        {
+            return GameManager.getMessage("MSG_DEATH_DEFAULT", victim);
+        }
+        return message;
+    }
+
+    private String addKill(TowerPlayer attacker, String victimName)
+    {
+        TeamsManager.PlayerTeam team = attacker.getTeam();
+        if(team == null)
+        {
+            team = attacker.getAbandoningTeam();
+        }
+        attacker.addKill();
+        attacker.displayBarText("§fKilled " + victimName, 40);
+        Player pAttacker = attacker.asPlayer();
+        if(pAttacker != null && pAttacker.isOnline())
+        {
+            pAttacker.playSound(pAttacker.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.3f, 1f);
+        }
+        //attackerName, formatted the same for both FIRE_TICK and others
+        return (team == null ? "§f" : team.getColorCode()) + attacker.asOfflinePlayer().getName();
+    }
+
+    private void addAssist(List<TowerPlayer> players, String victimName)
+    {
+        for(TowerPlayer assist : players)
+        {
+            assist.addAssist();
+            assist.displayBarText("§fAssist on " + victimName, 40);
+            Player pAssist = assist.asPlayer();
+            if(pAssist != null && pAssist.isOnline())
+            {
+                pAssist.playSound(pAssist.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 0.6f, 1f); //chose better sound
+            }
+        }
+    }
+
     @EventHandler
     public void onDeathOfPlayer(PlayerDeathEvent e)
     {
@@ -150,45 +196,40 @@ public class GameEvents implements StateEvents
             return;
         }
 
-        String key = "MSG_DEATH_"+deathCause.getCause().name()+"_";
+        e.setDeathMessage(getKillMessage(deathCause.getCause(), playerName, null));
+
         switch (deathCause.getCause())
         {
-            case ENTITY_ATTACK, VOID, FALL, PROJECTILE, FIRE_TICK, MAGIC -> {
-                TowerPlayer attacker = deathCause.getCause() == DamageCause.FIRE_TICK ? towerPlayer.getLastBurntBy() : towerPlayer.getLastDamagedBy();
-                if(attacker == null)
-                {
-                    String message = GameManager.getMessage(key+"1", playerName);
-                    if(!message.equals("Unknown message"))
-                        e.setDeathMessage(message);
-                } else {
-                    TeamsManager.PlayerTeam team = attacker.getTeam();
-                    if(team == null)
+            case FIRE_TICK -> {
+                TowerPlayer attacker = towerPlayer.getLastBurntBy();
+                if(attacker != null) {
+                    String attackerName = addKill(attacker, playerName);
+                    List<TowerPlayer> assists = towerPlayer.getLastAssistedBy(false);
+                    //The killer can be in the assist list because he hit that player 2 sec before (with fire aspect) and another player hit it too between the fire aspect hit and the deadly fire tick
+                    assists.remove(attacker);
+                    //Transform the last damager to an assist because he did the last damage to the dead player before the fire tick kill him.
+                    TowerPlayer lastDamager = towerPlayer.getLastDamagedBy();
+                    if(lastDamager != null && !attacker.equals(lastDamager))
                     {
-                        team = attacker.getAbandoningTeam();
+                        assists.add(0, lastDamager);
                     }
-                    String attackerName = (team == null ? "§f" : team.getColorCode()) + attacker.asOfflinePlayer().getName();
-                    attacker.addKill();
-                    attacker.displayBarText("§fKilled " + playerName, 40);
-                    if(deathCause.getCause() == DamageCause.ENTITY_ATTACK)
-                        key = "MSG_DEATH_ENTITY_ATTACK";
-                    else
-                        key += "2";
-                    String message = GameManager.getMessage(key, playerName, attackerName);
-                    if(!message.equals("Unknown message"))
-                        e.setDeathMessage(message);
-                    Player pAttacker = attacker.asPlayer();
-                    if(pAttacker != null && pAttacker.isOnline())
-                    {
-                        pAttacker.playSound(pAttacker.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.3f, 1f);
-                    }
-                    towerPlayer.damage(null); //Reset last damager
-                    towerPlayer.damageFire(null); //Already done in the onBurnDamage event, but extra security in case of bugs. So the attacker cant deal fire damage the whole game.
+                    addAssist(assists, playerName);
+                    e.setDeathMessage(getKillMessage(deathCause.getCause(), playerName, attackerName));
                 }
             }
-            case ENTITY_EXPLOSION -> e.setDeathMessage(GameManager.getMessage("MSG_DEATH_EXPLOSION", playerName));
-            case FIRE -> e.setDeathMessage(GameManager.getMessage("MSG_DEATH_FIRE_TICK_1", playerName));
-            default -> e.setDeathMessage(GameManager.getMessage("MSG_DEATH_DEFAULT", playerName));
+            case ENTITY_ATTACK, VOID, FALL, PROJECTILE, MAGIC -> {
+                TowerPlayer attacker = towerPlayer.getLastDamagedBy();
+                if(attacker != null)
+                {
+                    String attackerName = addKill(attacker, playerName);
+                    addAssist(towerPlayer.getLastAssistedBy(true), playerName);
+                    e.setDeathMessage(getKillMessage(deathCause.getCause(), playerName, attackerName));
+                }
+            }
         }
+
+        towerPlayer.damage(null); //Reset last damager
+        towerPlayer.damageFire(null, 0); //Reset the last burn damager
 
     }
 
@@ -223,12 +264,6 @@ public class GameEvents implements StateEvents
                     return;
                 }
 
-                ItemStack itemAttacker = attacker.getInventory().getItemInMainHand();
-                if(itemAttacker.containsEnchantment(Enchantment.FIRE_ASPECT) || itemAttacker.containsEnchantment(Enchantment.ARROW_FIRE))
-                {
-                    towerVictim.damageFire(towerAttacker);
-                }
-
                 towerVictim.damage(towerAttacker);
                 towerAttacker.addDamage(e.getFinalDamage());
             }
@@ -238,21 +273,70 @@ public class GameEvents implements StateEvents
     @EventHandler
     public void onBurnDamage(EntityDamageEvent e)
     {
-        if(e.getCause() == DamageCause.FIRE_TICK && e.getEntity() instanceof Player v)
+        if(e.getCause() != DamageCause.FIRE_TICK || !(e.getEntity() instanceof Player v))
+            return;
+
+        TowerPlayer victim = TowerPlayer.getPlayer(v);
+        if(victim == null)
+            return;
+
+        TowerPlayer attacker = victim.getLastBurntBy(); //call before tickFire() because of the reset of burn damager when calling getLastBurntBy if burnTicksLeft == 1
+        victim.tickFire();
+
+        if(attacker != null)
         {
-            TowerPlayer victim = TowerPlayer.getPlayer(v);
-            if(victim != null)
+            attacker.addDamage(e.getFinalDamage());
+        }
+
+    }
+
+    @EventHandler
+    public void onApplyBurnDamage(EntityCombustByEntityEvent e)
+    {
+        if(e.getEntity() instanceof Player victim && e.getCombuster() instanceof Player attacker)
+        {
+            TowerPlayer tpVictim = TowerPlayer.getPlayer(victim);
+            if(tpVictim != null)
             {
-                TowerPlayer attacker = victim.getLastBurntBy();
-                if(attacker != null)
+                TowerPlayer tpAttacker = TowerPlayer.getPlayer(attacker);
+                if(tpAttacker != null)
                 {
-                    attacker.addDamage(e.getFinalDamage());
-                    if(v.getFireTicks() <= 20) //maybe improve this system, if the player is set on fire by another player and then walks inside fire, the attacker will keep getting the damage.
-                    {
-                        //Remove the attacker at the end of the effect + 0.5 sec to be sure the attacker is still present while the onDeath is called
-                        Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->victim.damageFire(null), v.getFireTicks()+10L);
-                    }
+                    tpVictim.damageFire(tpAttacker, e.getDuration());
                 }
+            }
+        }
+    }
+
+    //Player has stopped burning (other than fade fire ticks)
+    @EventHandler
+    public void onFireResistancePotionConsume(PlayerItemConsumeEvent e)
+    {
+        if(e.getItem().getType() == Material.POTION && e.getItem().getItemMeta() instanceof PotionMeta pm)
+        {
+            List<PotionEffect> effects = pm.getBasePotionType().getPotionEffects();
+            if(effects.size() == 1 && effects.get(0).getType()==PotionEffectType.FIRE_RESISTANCE)
+            {
+                TowerPlayer tp = TowerPlayer.getPlayer(e.getPlayer());
+                if(tp != null)
+                {
+                    tp.damageFire(null, 0);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onMoveInsideWater(PlayerMoveEvent e)
+    {
+        if(e.getTo() == null)
+            return;
+
+        if(e.getFrom().getBlock().getType() != Material.WATER && e.getTo().getBlock().getType() == Material.WATER && e.getPlayer().getFireTicks() > 0)
+        {
+            TowerPlayer tp = TowerPlayer.getPlayer(e.getPlayer());
+            if(tp != null)
+            {
+                tp.damageFire(null, 0);
             }
         }
     }
@@ -305,6 +389,8 @@ public class GameEvents implements StateEvents
         player.addPoint();
         player.asPlayer().teleport(team.getSpawn());
         player.asPlayer().setHealth(20d);
+        player.asPlayer().setFireTicks(0);
+        player.damageFire(null, 0);
         Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_POINT", team.getColorCode()+player.asOfflinePlayer().getName(), String.valueOf(points), String.valueOf(goal)));
         for(Player p : Bukkit.getOnlinePlayers())
         {
