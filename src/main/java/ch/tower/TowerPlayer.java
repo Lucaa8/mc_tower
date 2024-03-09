@@ -187,6 +187,7 @@ public class TowerPlayer
 
     private final List<Damage> lastDamagedBy = new ArrayList<>(4);
     private TowerPlayer lastBurntBy;
+    private int burnTicksLeft = 0;
     private boolean isImmune = false; //OnDeath, players are immune x seconds to avoid spawn killing
 
     private String abandonTeam;
@@ -471,15 +472,35 @@ public class TowerPlayer
         }
     }
 
-    public void damageFire(@Nullable TowerPlayer attacker)
+    public void damageFire(@Nullable TowerPlayer attacker, int duration)
     {
         this.lastBurntBy = attacker;
+        this.burnTicksLeft = duration;
+    }
+
+    public void tickFire()
+    {
+        this.burnTicksLeft -= 1;
+        if(this.burnTicksLeft < 1)
+        {
+            //less than 20 ticks of fire, it means the player will stop burning soon and the EntityDamageEvent wont be called.
+            //We need to tell the TowerPlayer#getLastBurntBy method that this player stopped burning but in the same time we need to return one last time the last burn attacker for the DeathEvent
+            //Look at the getLastBurntBy method, when 1 tick left (or less) we return the last burn attacker and then reset it.
+            this.burnTicksLeft = 1;
+        }
     }
 
     @Nullable
     public TowerPlayer getLastBurntBy()
     {
-        return this.lastBurntBy;
+        //See TowerPlayer#tickFire to understand why 1
+        if(burnTicksLeft > 1)
+            return this.lastBurntBy;
+        //Save the OfflinePlayer instance if existing to get back the TowerPlayer after lastBurntBy has been set to null (will work only once, for DeathEvent on last tick)
+        OfflinePlayer lastBurnt = this.lastBurntBy != null ? this.lastBurntBy.asOfflinePlayer() : null;
+        this.burnTicksLeft = 0;
+        this.lastBurntBy = null;
+        return TowerPlayer.getPlayer(lastBurnt);
     }
 
     /**
@@ -525,9 +546,10 @@ public class TowerPlayer
         if(this.lastDamagedBy.size() <= 1) //the position 0 of the array is the last damager (the actual killer if called onDeath)
             return new ArrayList<>();
         List<TowerPlayer> assists = this.lastDamagedBy.stream().skip(1).filter(Damage::isDamageStillValid).map(Damage::damagedBy).collect(Collectors.toCollection(ArrayList::new));
-        if(addBurnDamage && lastBurntBy != null && !lastBurntBy.equals(getLastDamagedBy()) && !assists.contains(lastBurntBy))
+        TowerPlayer lastBurn = getLastBurntBy();
+        if(addBurnDamage && lastBurn != null && !lastBurn.equals(getLastDamagedBy()) && !assists.contains(lastBurn))
         {
-            assists.add(lastBurntBy);
+            assists.add(lastBurn);
         }
         return assists;
     }
