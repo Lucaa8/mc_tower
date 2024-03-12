@@ -4,13 +4,14 @@ import ch.luca008.SpigotApi.Api.NBTTagApi;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
+import ch.tower.listeners.GameKillEvent;
+import ch.tower.listeners.GamePointEvent;
 import ch.tower.managers.GameManager;
 import ch.tower.managers.ScoreboardManager;
 import ch.tower.managers.TeamsManager;
 import ch.tower.managers.WorldManager.WorldZone;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -27,11 +28,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitTask;
 
 import javax.annotation.Nullable;
-import java.sql.SQLOutput;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -198,13 +198,15 @@ public class GameEvents implements StateEvents
 
         e.setDeathMessage(getKillMessage(deathCause.getCause(), playerName, null));
 
+        TowerPlayer attacker = null;
+        List<TowerPlayer> assists = new ArrayList<>();
         switch (deathCause.getCause())
         {
             case FIRE_TICK -> {
-                TowerPlayer attacker = towerPlayer.getLastBurntBy();
+                attacker = towerPlayer.getLastBurntBy();
                 if(attacker != null) {
                     String attackerName = addKill(attacker, playerName);
-                    List<TowerPlayer> assists = towerPlayer.getLastAssistedBy(false);
+                    assists = towerPlayer.getLastAssistedBy(false);
                     //The killer can be in the assist list because he hit that player 2 sec before (with fire aspect) and another player hit it too between the fire aspect hit and the deadly fire tick
                     assists.remove(attacker);
                     //Transform the last damager to an assist because he did the last damage to the dead player before the fire tick kill him.
@@ -218,15 +220,18 @@ public class GameEvents implements StateEvents
                 }
             }
             case ENTITY_ATTACK, VOID, FALL, PROJECTILE, MAGIC -> {
-                TowerPlayer attacker = towerPlayer.getLastDamagedBy();
+                attacker = towerPlayer.getLastDamagedBy();
                 if(attacker != null)
                 {
                     String attackerName = addKill(attacker, playerName);
-                    addAssist(towerPlayer.getLastAssistedBy(true), playerName);
+                    assists = towerPlayer.getLastAssistedBy(true);
+                    addAssist(assists, playerName);
                     e.setDeathMessage(getKillMessage(deathCause.getCause(), playerName, attackerName));
                 }
             }
         }
+
+        Bukkit.getPluginManager().callEvent(new GameKillEvent(towerPlayer, attacker, assists, deathCause.getCause()));
 
         towerPlayer.damage(null); //Reset last damager
         towerPlayer.damageFire(null, 0); //Reset the last burn damager
@@ -384,8 +389,10 @@ public class GameEvents implements StateEvents
 
     private void score(TowerPlayer player, TeamsManager.PlayerTeam team)
     {
+        int oldPoints = team.getPoints();
         int points = team.addPointAndGet();
         int goal = GameManager.ConfigField.GOAL_POINTS.get();
+        Bukkit.getPluginManager().callEvent(new GamePointEvent(team, player, oldPoints, points, goal)); //cannot be cancelled
         player.addPoint();
         player.asPlayer().teleport(team.getSpawn());
         player.asPlayer().setHealth(20d);

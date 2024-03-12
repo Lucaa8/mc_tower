@@ -243,6 +243,9 @@ public class WaitEvents implements StateEvents
         checkAndStartCountdown();
         p.setLevel(countdown);
         p.setGameMode(GameMode.ADVENTURE);
+        p.getActivePotionEffects().forEach(effect->p.removePotionEffect(effect.getType()));
+        p.setHealth(20);
+        p.setFoodLevel(20);
 
         ScoreboardManager.BoardField.TEAM.update(p, PlaceholderHelper.getTeamName(null));
         updatePlayersOnlineBoard();
