@@ -4,6 +4,7 @@ import ch.luca008.SpigotApi.Api.NBTTagApi;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
+import ch.tower.items.WeaponStatistics;
 import ch.tower.listeners.GameKillEvent;
 import ch.tower.listeners.GamePointEvent;
 import ch.tower.managers.GameManager;
@@ -15,6 +16,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -270,7 +272,7 @@ public class GameEvents implements StateEvents
                 }
 
                 towerVictim.damage(towerAttacker);
-                towerAttacker.addDamage(e.getFinalDamage());
+                towerAttacker.addDamageWithWeapon(e);
             }
         }
     }
@@ -650,6 +652,9 @@ public class GameEvents implements StateEvents
         return this.winner;
     }
 
+    //register every arrow shot by players to link them to projectile damage on EntityDamageByEntityEvent
+    private final WeaponStatistics.ShootListener bowShooterListener = new WeaponStatistics.ShootListener();
+
     @Override
     public void onStateBegin()
     {
@@ -665,6 +670,7 @@ public class GameEvents implements StateEvents
             p.giveTools();
             p.giveFood();
         }
+        bowShooterListener.start();
         Main.getInstance().getManager().getNpcManager().load();
         Bukkit.getServer().getPluginManager().registerEvents(new InventoryEvent(), Main.getInstance());
         redPool = TeamsManager.PlayerTeam.RED.getInfo().pool();
@@ -695,6 +701,7 @@ public class GameEvents implements StateEvents
     public void onStateLeave()
     {
         timerTask.cancel();
+        bowShooterListener.stop();
 
         TeamsManager.PlayerTeam blue = TeamsManager.PlayerTeam.BLUE;
         TeamsManager.PlayerTeam red = TeamsManager.PlayerTeam.RED;

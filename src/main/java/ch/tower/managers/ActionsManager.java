@@ -1,6 +1,7 @@
 package ch.tower.managers;
 
 import ch.tower.Main;
+import ch.tower.listeners.GameDamageEvent;
 import ch.tower.listeners.GameKillEvent;
 import ch.tower.listeners.GamePointEvent;
 import org.bukkit.Bukkit;
@@ -16,6 +17,12 @@ public class ActionsManager implements Listener {
     public ActionsManager()
     {
         Bukkit.getPluginManager().registerEvents(this, Main.getInstance());
+    }
+
+    @EventHandler
+    public void onDamage(GameDamageEvent e)
+    {
+
     }
 
     @EventHandler

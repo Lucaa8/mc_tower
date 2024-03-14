@@ -6,6 +6,7 @@ import ch.luca008.SpigotApi.Api.ScoreboardAPI;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.items.ArmorEquipment;
 import ch.tower.items.TowerItem;
+import ch.tower.items.WeaponStatistics;
 import ch.tower.managers.GameManager;
 import ch.tower.managers.ScoreboardManager.PlaceholderHelper;
 import ch.tower.managers.ScoreboardManager;
@@ -20,6 +21,7 @@ import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.scheduler.BukkitTask;
@@ -172,6 +174,7 @@ public class TowerPlayer
     }
 
     private final OfflinePlayer player;
+    private final WeaponStatistics weaponDamage = new WeaponStatistics();
     private double damage = 0d;
     private int points = 0;
     private int kills = 0;
@@ -301,6 +304,15 @@ public class TowerPlayer
     public int getPoints()
     {
         return points;
+    }
+
+    public double addDamageWithWeapon(EntityDamageByEntityEvent e)
+    {
+        weaponDamage.addDamageWith(e);
+        //weaponDamage.getDamage().forEach((k,v)-> System.out.println(v + " damage with " + k));
+        //Call GameDamageEvent?
+        //fix bug with current_item (add another ID on the item ?)
+        return addDamage(e.getFinalDamage());
     }
 
     public double addDamage(double damage)
