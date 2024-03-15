@@ -27,14 +27,16 @@ public class GameDamageEvent extends Event {
 
     private final TowerPlayer attacker;
     private final TowerPlayer victim;
-    private final DamageType type;
     private final double amount;
+    private final double oldDamage;
+    private final double newDamage;
 
-    public GameDamageEvent(TowerPlayer attacker, TowerPlayer victim, DamageType type, double amount) {
+    public GameDamageEvent(TowerPlayer attacker, TowerPlayer victim, double amount, double oldDamage, double newDamage) {
         this.attacker = attacker;
         this.victim = victim;
-        this.type = type;
         this.amount = amount;
+        this.oldDamage = oldDamage;
+        this.newDamage = newDamage;
     }
 
     public TowerPlayer getAttacker() {
@@ -45,12 +47,17 @@ public class GameDamageEvent extends Event {
         return victim;
     }
 
-    public DamageType getType() {
-        return type;
-    }
-
     public double getAmount() {
         return amount;
     }
 
+    public double getOldDamage()
+    {
+        return oldDamage;
+    }
+
+    public double getNewDamage()
+    {
+        return newDamage;
+    }
 }

@@ -7,6 +7,7 @@ import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.items.ArmorEquipment;
 import ch.tower.items.TowerItem;
 import ch.tower.items.WeaponStatistics;
+import ch.tower.listeners.GameDamageEvent;
 import ch.tower.managers.GameManager;
 import ch.tower.managers.ScoreboardManager.PlaceholderHelper;
 import ch.tower.managers.ScoreboardManager;
@@ -309,8 +310,6 @@ public class TowerPlayer
     public double addDamageWithWeapon(EntityDamageByEntityEvent e)
     {
         weaponDamage.addDamageWith(e);
-        //weaponDamage.getDamage().forEach((k,v)-> System.out.println(v + " damage with " + k));
-        //Call GameDamageEvent?
         //fix bug with current_item (add another ID on the item ?)
         return addDamage(e.getFinalDamage());
     }
@@ -439,7 +438,7 @@ public class TowerPlayer
                 if(defaultTools.containsKey(itemUid))
                 {
                     ItemStack item = defaultTools.get(itemUid);
-                    replaceTool(entry.getKey(), item);
+                    replaceTool(entry.getKey(), item, itemUid);
                 }
             }
             else
@@ -448,7 +447,7 @@ public class TowerPlayer
                 if(i != null)
                 {
                     ItemStack item = tools.prepareItem(i, false);
-                    replaceTool(entry.getKey(), SpigotApi.getNBTTagApi().getNBT(item).setTag("UUID", "current"+entry.getKey()).getBukkitItem());
+                    replaceTool(entry.getKey(), SpigotApi.getNBTTagApi().getNBT(item).setTag("UUID", "current"+entry.getKey()).getBukkitItem(), itemUid);
                 }
             }
         }
@@ -461,14 +460,23 @@ public class TowerPlayer
         TowerItem current = food.getItemForLevel(getLevels().getFoodLevel());
         if(current==null) return;
         ItemStack item = current.toItemStack(current.getCount());
-        replaceTool("_food", SpigotApi.getNBTTagApi().getNBT(item).setTag("UUID", "current_food").getBukkitItem());
+        replaceTool("_food", SpigotApi.getNBTTagApi().getNBT(item).setTag("UUID", "current_food").getBukkitItem(), null);
     }
 
-    private void replaceTool(String type, ItemStack newItem)
+    private void replaceTool(String type, ItemStack newItem, String realId)
     {
         String uid = "current"+type;
         Player p = asPlayer();
         int index = 0;
+        if(realId != null) //null if food (or others), non-null if tools (axe, sword.. damageable items)
+        {
+            //for some weapons (definitive upgrades levels) the item's uuid become "current_sword", "current_axe", etc..
+            //this is to distinct temporary buy vs definitive buy (to know when to drop item on death for example)
+            //with this, it becomes impossible to track damage statistics for each weapon. I need somehow a way to keep track of which tool is used.
+            //this is why I add "WeaponID" which is the real id (e.g. 0_sword, 1_axe, ... and not current_sword)
+            newItem = SpigotApi.getNBTTagApi().getNBT(newItem).setTag("WeaponID", realId).getBukkitItem();
+        }
+
         for(ItemStack i : p.getInventory())
         {
             index++;

@@ -42,6 +42,7 @@ public class GameManager {
     private final ScoreboardManager scoreboardManager;
     private final NPCManager npcManager;
     private final ShopMenuManager shopManager;
+    private final ActionsManager actionsManager;
 
     private static final JSONApi.JSONReader configInfos = SpigotApi.getJSONApi().readerFromFile(CONFIG_FILE);
     private static final JSONApi.JSONReader messages = SpigotApi.getJSONApi().readerFromFile(MESSAGES_FILE);
@@ -77,6 +78,7 @@ public class GameManager {
             scoreboardManager = new ScoreboardManager();
             npcManager = new NPCManager();
             shopManager = new ShopMenuManager();
+            actionsManager = new ActionsManager();
         }
         else
         {
@@ -84,6 +86,7 @@ public class GameManager {
             scoreboardManager = null;
             npcManager = null;
             shopManager = null;
+            actionsManager = null;
             System.err.println("Something went wrong while loading the maps.");
             Main.getInstance().getServer().getPluginManager().disablePlugin(Main.getInstance());
         }
@@ -150,6 +153,11 @@ public class GameManager {
     public ShopMenuManager getShopManager()
     {
         return shopManager;
+    }
+
+    public ActionsManager getActionsManager()
+    {
+        return actionsManager;
     }
 
 }

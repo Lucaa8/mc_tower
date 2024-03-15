@@ -98,6 +98,10 @@ public class WeaponStatistics {
             return "hand";
 
         NBTTagApi.NBTItem nbt = SpigotApi.getNBTTagApi().getNBT(item);
+        if(nbt.hasTag("WeaponID")) //current_sword, current_axe, etc... but with their real id (0_sword, 1_sword, ...)
+        {
+            return nbt.getString("WeaponID");
+        }
         if(!nbt.hasTag("UUID"))
         {
             return "other";

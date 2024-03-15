@@ -5,6 +5,7 @@ import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
 import ch.tower.items.WeaponStatistics;
+import ch.tower.listeners.GameDamageEvent;
 import ch.tower.listeners.GameKillEvent;
 import ch.tower.listeners.GamePointEvent;
 import ch.tower.managers.GameManager;
@@ -240,6 +241,12 @@ public class GameEvents implements StateEvents
 
     }
 
+    private void callDamageEvent(TowerPlayer attacker, TowerPlayer victim, double amount, double oldDamage, double newDamage)
+    {
+        GameDamageEvent onDamage = new GameDamageEvent(attacker, victim, amount, oldDamage, newDamage);
+        Bukkit.getPluginManager().callEvent(onDamage);
+    }
+
     private Player getDamager(Entity damager)
     {
         if(damager instanceof Player p)
@@ -264,7 +271,7 @@ public class GameEvents implements StateEvents
             if(towerVictim != null && towerAttacker != null)
             {
 
-                //Disable friendly fire manually as the teams are only client side. A tester
+                //Disable friendly fire manually as the teams are only client side.
                 if(!GameManager.ConfigField.FRIENDLY_FIRE.getBool()&&towerVictim.getTeam()!=null&&towerVictim.getTeam().equals(towerAttacker.getTeam()))
                 {
                     e.setCancelled(true);
@@ -272,7 +279,9 @@ public class GameEvents implements StateEvents
                 }
 
                 towerVictim.damage(towerAttacker);
-                towerAttacker.addDamageWithWeapon(e);
+                double oldDamage = towerAttacker.getDamage();
+                double newDamage = towerAttacker.addDamageWithWeapon(e);
+                callDamageEvent(towerAttacker, towerVictim, e.getFinalDamage(), oldDamage, newDamage);
             }
         }
     }
@@ -292,7 +301,9 @@ public class GameEvents implements StateEvents
 
         if(attacker != null)
         {
-            attacker.addDamage(e.getFinalDamage());
+            double oldDamage = attacker.getDamage();
+            double newDamage = attacker.addDamage(e.getFinalDamage());
+            callDamageEvent(attacker, victim, e.getFinalDamage(), oldDamage, newDamage);
         }
 
     }
@@ -358,7 +369,9 @@ public class GameEvents implements StateEvents
     @EventHandler
     public void onMoveDetectsPool(PlayerMoveEvent e)
     {
-        if(e.getTo() == null)
+        //checks if the player actually moved or if it only changed direction with his eyes (pitch/yaw), in such case he cant go from outside to inside the pool
+        //and I remove a lot of checking which takes time.
+        if(e.getTo() == null || e.getTo().distance(e.getFrom()) < 0.001)
             return;
         if(e.getPlayer().getGameMode() == GameMode.SPECTATOR)
             return;
@@ -679,6 +692,7 @@ public class GameEvents implements StateEvents
         blueSpawnProtection = TeamsManager.PlayerTeam.BLUE.getInfo().spawnProtection();
         startedAt = System.currentTimeMillis();
         maxTimerSeconds = GameManager.ConfigField.TIMER_DURATION_GAME.get();
+        Main.getInstance().getManager().getActionsManager().startListening();
         timerTask = Bukkit.getScheduler().runTaskTimer(Main.getInstance(), ()->{
             long current = System.currentTimeMillis();
             int elapsedSec = (int) ((current - startedAt)/1000);
@@ -700,6 +714,7 @@ public class GameEvents implements StateEvents
     @Override
     public void onStateLeave()
     {
+        Main.getInstance().getManager().getActionsManager().stopListening();
         timerTask.cancel();
         bowShooterListener.stop();
 

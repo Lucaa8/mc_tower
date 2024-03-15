@@ -68,7 +68,7 @@ public class ToolsMenu extends ShopMenu {
             }
             else
             {
-                if(item.getLore() != null && item.getLore().size() > 3)
+                if(item.getLore() != null && item.getLore().size() > 3) //checks if already at max level
                 {
                     TowerItem cloned = item.clone();
                     List<String> lore = cloned.getLore();
