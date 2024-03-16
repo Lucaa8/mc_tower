@@ -6,6 +6,7 @@ import ch.luca008.SpigotApi.Packets.TeamsPackets;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.luca008.SpigotApi.Utils.Logger;
 import ch.tower.Main;
+import ch.tower.TowerPlayer;
 import ch.tower.managers.WorldManager.WorldZone;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -184,6 +185,15 @@ public class TeamsManager {
         public List<Player> getPlayers()
         {
             return apiTeam.getEntries().stream().filter(Objects::nonNull).map(Bukkit::getPlayer).filter(Objects::nonNull).toList();
+        }
+
+        /**
+         * If you try this on the spectator team, you'll get an empty list as they are not TowerPlayers.
+         * @return A list of all valid TowerPlayer of this Team. A TowerPlayer can be offline so please check if TowerPlayer#asPlayer() is null before using or use TeamInfo#getPlayers
+         */
+        public List<TowerPlayer> getTowerPlayers()
+        {
+            return getPlayers().stream().map(TowerPlayer::getPlayer).filter(Objects::nonNull).toList();
         }
 
         @Override

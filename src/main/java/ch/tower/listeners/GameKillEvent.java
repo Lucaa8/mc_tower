@@ -1,6 +1,7 @@
 package ch.tower.listeners;
 
 import ch.tower.TowerPlayer;
+import ch.tower.managers.TeamsManager;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -40,6 +41,16 @@ public class GameKillEvent extends Event {
     @Nonnull
     public TowerPlayer getVictim() {
         return victim;
+    }
+
+    @Nonnull
+    public String getVictimDisplayName()
+    {
+        TeamsManager.PlayerTeam team = victim.getTeam();
+        String name = victim.asOfflinePlayer().getName();
+        if(team == null)
+            return "§f"+name;
+        return team.getColorCode() + name;
     }
 
     @Nullable

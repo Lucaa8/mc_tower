@@ -153,7 +153,6 @@ public class GameEvents implements StateEvents
             team = attacker.getAbandoningTeam();
         }
         attacker.addKill();
-        attacker.displayBarText("§fKilled " + victimName, 40);
         Player pAttacker = attacker.asPlayer();
         if(pAttacker != null && pAttacker.isOnline())
         {
@@ -163,12 +162,11 @@ public class GameEvents implements StateEvents
         return (team == null ? "§f" : team.getColorCode()) + attacker.asOfflinePlayer().getName();
     }
 
-    private void addAssist(List<TowerPlayer> players, String victimName)
+    private void addAssist(List<TowerPlayer> players)
     {
         for(TowerPlayer assist : players)
         {
             assist.addAssist();
-            assist.displayBarText("§fAssist on " + victimName, 40);
             Player pAssist = assist.asPlayer();
             if(pAssist != null && pAssist.isOnline())
             {
@@ -218,7 +216,7 @@ public class GameEvents implements StateEvents
                     {
                         assists.add(0, lastDamager);
                     }
-                    addAssist(assists, playerName);
+                    addAssist(assists);
                     e.setDeathMessage(getKillMessage(deathCause.getCause(), playerName, attackerName));
                 }
             }
@@ -228,7 +226,7 @@ public class GameEvents implements StateEvents
                 {
                     String attackerName = addKill(attacker, playerName);
                     assists = towerPlayer.getLastAssistedBy(true);
-                    addAssist(assists, playerName);
+                    addAssist(assists);
                     e.setDeathMessage(getKillMessage(deathCause.getCause(), playerName, attackerName));
                 }
             }

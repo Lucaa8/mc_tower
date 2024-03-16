@@ -181,7 +181,7 @@ public class TowerPlayer
     private int kills = 0;
     private int assists = 0;
     private int deaths = 0;
-    private double money = 30d;
+    private double money = 0d;
 
     private final Levels levels;
 
@@ -214,19 +214,27 @@ public class TowerPlayer
         return Bukkit.getPlayer(player.getUniqueId());
     }
 
+    private BukkitTask cancelDisplayBarTextTask = null;
     public void displayBarText(String text, long ticks)
     {
         Player p = asPlayer();
 
         if(p != null && p.isOnline())
         {
+            //Avoid clearing the next action bar too fast, remove the last scheduled reset and recreate one with the new given ticks
+            if(cancelDisplayBarTextTask != null)
+            {
+                cancelDisplayBarTextTask.cancel();
+            }
+
             p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(text));
 
-            Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->{
+            cancelDisplayBarTextTask = Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->{
                 if(p.isOnline())
                 {
                     p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
                 }
+                cancelDisplayBarTextTask = null;
             }, ticks);
 
         }

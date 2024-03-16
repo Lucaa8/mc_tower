@@ -8,7 +8,6 @@ import ch.tower.listeners.GameDamageEvent;
 import ch.tower.listeners.GameKillEvent;
 import ch.tower.listeners.GamePointEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -58,15 +57,11 @@ public class ActionsManager implements Listener {
     public void startListening()
     {
         Bukkit.getPluginManager().registerEvents(this, Main.getInstance());
-        timeSpentTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), this::onTimeSpent, 40L, 20L*actions.playIntervalSeconds());
+        timeSpentTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), this::onTimeSpent, (20L*actions.playIntervalSeconds())+40L, 20L*actions.playIntervalSeconds());
         for(TowerPlayer player : TowerPlayer.getPlayers())
         {
             player.giveMoney(actions.startMoney());
-            Player p = player.asPlayer();
-            if(p!=null&&p.isOnline())
-            {
-                p.sendMessage(GameManager.getMessage("MSG_GAME_ACTION_START_MONEY", ""+actions.startMoney()));
-            }
+            player.displayBarText("§fYou received §b" + actions.startMoney() + "$ §fas starting money.", 80);
         }
     }
 
@@ -79,33 +74,75 @@ public class ActionsManager implements Listener {
     @EventHandler
     public void onDamage(GameDamageEvent e)
     {
-        System.out.println("Old: " + e.getOldDamage() + ", Amount: " + e.getAmount() + ", New: " + e.getNewDamage());
-        System.out.println("Damage value: " + actions.damageValue());
-        System.out.println();
+        e.getAttacker().giveMoney(actions.damageValue()*e.getAmount());
     }
 
     @EventHandler
     public void onKill(GameKillEvent e)
     {
-        System.out.println("Kill value: " + actions.killKillValue());
-        System.out.println("Assist value: " + actions.killAssistValue());
-        System.out.println("Kill part. value: " + actions.killParticipationValue());
-        System.out.println();
+
+        String victimName = e.getVictimDisplayName();
+        TowerPlayer attacker = e.getAttacker();
+        if(attacker != null)
+        {
+            attacker.giveMoney(actions.killKillValue());
+            attacker.displayBarText("§fKilled " + victimName + "§f (§a+"+actions.killKillValue()+"$§f)", 40);
+        }
+
+        double assistMoney = actions.killAssistValue();
+        for(TowerPlayer assist : e.getAssists())
+        {
+            assist.giveMoney(assistMoney);
+            assist.displayBarText("§fAssist on " + victimName + "§f (§a+"+assistMoney+"$§f)", 40);
+        }
+
+        //To test
+        TeamsManager.PlayerTeam team = attacker != null ? attacker.getTeam() : null;
+        if(team == null)
+            return;
+        double participationMoney = actions.killParticipationValue();
+        for(TowerPlayer player : team.getInfo().getTowerPlayers())
+        {
+            if(player.equals(attacker) || e.getAssists().contains(player))
+                continue;
+            player.giveMoney(participationMoney);
+            player.displayBarText("§fParticipation on " + victimName + "§f (§a+"+participationMoney+"$§f)", 40);
+        }
+
     }
 
     @EventHandler
     public void onPoint(GamePointEvent e)
     {
-        System.out.println("Point value: " + actions.pointPointValue());
-        System.out.println("Point part.: " + actions.killParticipationValue());
-        System.out.println();
+
+        double pointMoney = actions.pointPointValue();
+        double pointPartMoney = actions.pointParticipationValue();
+
+        TowerPlayer scorer = e.getPlayer();
+        scorer.giveMoney(pointMoney);
+        scorer.displayBarText("§fYou scored! (§a+"+pointMoney+"$§f)", 60);
+
+        //To test
+        for(TowerPlayer player : e.getTeam().getInfo().getTowerPlayers())
+        {
+            if(!player.equals(scorer))
+            {
+                player.giveMoney(pointPartMoney);
+                scorer.displayBarText("§fYour team scored §7("+scorer.asOfflinePlayer().getName()+")§f! (§a+"+pointPartMoney+"$§f)", 60);
+            }
+        }
+
     }
 
     public void onTimeSpent()
     {
+        double money = actions.playValue();
+        int secondsSpent = actions.playIntervalSeconds();
+        String msg = secondsSpent < 60 ? secondsSpent + " second(s)" : secondsSpent == 60 ? "1 minute" : secondsSpent/60 + " minutes";
         for(TowerPlayer player : TowerPlayer.getPlayers())
         {
-
+            player.giveMoney(money);
+            player.displayBarText("§fPlayed " + msg + " (§a+"+money+"$§f)", 60);
         }
     }
 
