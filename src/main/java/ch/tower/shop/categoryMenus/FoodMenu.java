@@ -61,7 +61,6 @@ public class FoodMenu extends ShopMenu {
             //is.setItemMeta(im);
             inv.setItem(i.getSlot(), is);
         }
-        //player.getLevels().addFoodLevel();
         return inv;
     }
 

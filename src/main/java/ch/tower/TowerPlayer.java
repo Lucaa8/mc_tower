@@ -6,6 +6,8 @@ import ch.luca008.SpigotApi.Api.ScoreboardAPI;
 import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.items.ArmorEquipment;
 import ch.tower.items.TowerItem;
+import ch.tower.items.WeaponStatistics;
+import ch.tower.listeners.GameDamageEvent;
 import ch.tower.managers.GameManager;
 import ch.tower.managers.ScoreboardManager.PlaceholderHelper;
 import ch.tower.managers.ScoreboardManager;
@@ -20,6 +22,7 @@ import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.scheduler.BukkitTask;
@@ -172,12 +175,13 @@ public class TowerPlayer
     }
 
     private final OfflinePlayer player;
+    private final WeaponStatistics weaponDamage = new WeaponStatistics();
     private double damage = 0d;
     private int points = 0;
     private int kills = 0;
     private int assists = 0;
     private int deaths = 0;
-    private double money = 30d;
+    private double money = 0d;
 
     private final Levels levels;
 
@@ -210,19 +214,27 @@ public class TowerPlayer
         return Bukkit.getPlayer(player.getUniqueId());
     }
 
+    private BukkitTask cancelDisplayBarTextTask = null;
     public void displayBarText(String text, long ticks)
     {
         Player p = asPlayer();
 
         if(p != null && p.isOnline())
         {
+            //Avoid clearing the next action bar too fast, remove the last scheduled reset and recreate one with the new given ticks
+            if(cancelDisplayBarTextTask != null)
+            {
+                cancelDisplayBarTextTask.cancel();
+            }
+
             p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(text));
 
-            Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->{
+            cancelDisplayBarTextTask = Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->{
                 if(p.isOnline())
                 {
                     p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
                 }
+                cancelDisplayBarTextTask = null;
             }, ticks);
 
         }
@@ -301,6 +313,13 @@ public class TowerPlayer
     public int getPoints()
     {
         return points;
+    }
+
+    public double addDamageWithWeapon(EntityDamageByEntityEvent e)
+    {
+        weaponDamage.addDamageWith(e);
+        //fix bug with current_item (add another ID on the item ?)
+        return addDamage(e.getFinalDamage());
     }
 
     public double addDamage(double damage)
@@ -427,7 +446,7 @@ public class TowerPlayer
                 if(defaultTools.containsKey(itemUid))
                 {
                     ItemStack item = defaultTools.get(itemUid);
-                    replaceTool(entry.getKey(), item);
+                    replaceTool(entry.getKey(), item, itemUid);
                 }
             }
             else
@@ -436,7 +455,7 @@ public class TowerPlayer
                 if(i != null)
                 {
                     ItemStack item = tools.prepareItem(i, false);
-                    replaceTool(entry.getKey(), SpigotApi.getNBTTagApi().getNBT(item).setTag("UUID", "current"+entry.getKey()).getBukkitItem());
+                    replaceTool(entry.getKey(), SpigotApi.getNBTTagApi().getNBT(item).setTag("UUID", "current"+entry.getKey()).getBukkitItem(), itemUid);
                 }
             }
         }
@@ -449,14 +468,23 @@ public class TowerPlayer
         TowerItem current = food.getItemForLevel(getLevels().getFoodLevel());
         if(current==null) return;
         ItemStack item = current.toItemStack(current.getCount());
-        replaceTool("_food", SpigotApi.getNBTTagApi().getNBT(item).setTag("UUID", "current_food").getBukkitItem());
+        replaceTool("_food", SpigotApi.getNBTTagApi().getNBT(item).setTag("UUID", "current_food").getBukkitItem(), null);
     }
 
-    private void replaceTool(String type, ItemStack newItem)
+    private void replaceTool(String type, ItemStack newItem, String realId)
     {
         String uid = "current"+type;
         Player p = asPlayer();
         int index = 0;
+        if(realId != null) //null if food (or others), non-null if tools (axe, sword.. damageable items)
+        {
+            //for some weapons (definitive upgrades levels) the item's uuid become "current_sword", "current_axe", etc..
+            //this is to distinct temporary buy vs definitive buy (to know when to drop item on death for example)
+            //with this, it becomes impossible to track damage statistics for each weapon. I need somehow a way to keep track of which tool is used.
+            //this is why I add "WeaponID" which is the real id (e.g. 0_sword, 1_axe, ... and not current_sword)
+            newItem = SpigotApi.getNBTTagApi().getNBT(newItem).setTag("WeaponID", realId).getBukkitItem();
+        }
+
         for(ItemStack i : p.getInventory())
         {
             index++;
