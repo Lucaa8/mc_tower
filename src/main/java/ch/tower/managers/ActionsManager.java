@@ -58,10 +58,11 @@ public class ActionsManager implements Listener {
     {
         Bukkit.getPluginManager().registerEvents(this, Main.getInstance());
         timeSpentTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), this::onTimeSpent, (20L*actions.playIntervalSeconds())+40L, 20L*actions.playIntervalSeconds());
+        String startMsg = GameManager.getMessage("MSG_GAME_ACTION_START", actions.startMoney()+"");
         for(TowerPlayer player : TowerPlayer.getPlayers())
         {
             player.giveMoney(actions.startMoney());
-            player.displayBarText("§fYou received §b" + actions.startMoney() + "$ §fas starting money.", 80);
+            player.displayBarText(startMsg, 80);
         }
     }
 
@@ -86,27 +87,28 @@ public class ActionsManager implements Listener {
         if(attacker != null)
         {
             attacker.giveMoney(actions.killKillValue());
-            attacker.displayBarText("§fKilled " + victimName + "§f (§a+"+actions.killKillValue()+"$§f)", 40);
+            attacker.displayBarText(GameManager.getMessage("MSG_GAME_ACTION_KILL", victimName, actions.killKillValue()+""), 40);
         }
 
         double assistMoney = actions.killAssistValue();
+        String assistMsg = GameManager.getMessage("MSG_GAME_ACTION_ASSIST", victimName, assistMoney+"");
         for(TowerPlayer assist : e.getAssists())
         {
             assist.giveMoney(assistMoney);
-            assist.displayBarText("§fAssist on " + victimName + "§f (§a+"+assistMoney+"$§f)", 40);
+            assist.displayBarText(assistMsg, 40);
         }
 
-        //To test
         TeamsManager.PlayerTeam team = attacker != null ? attacker.getTeam() : null;
         if(team == null)
             return;
         double participationMoney = actions.killParticipationValue();
+        String participationMsg = GameManager.getMessage("MSG_GAME_ACTION_KILL_PART", victimName, participationMoney+"");
         for(TowerPlayer player : team.getInfo().getTowerPlayers())
         {
             if(player.equals(attacker) || e.getAssists().contains(player))
                 continue;
             player.giveMoney(participationMoney);
-            player.displayBarText("§fParticipation on " + victimName + "§f (§a+"+participationMoney+"$§f)", 40);
+            player.displayBarText(participationMsg, 40);
         }
 
     }
@@ -120,15 +122,15 @@ public class ActionsManager implements Listener {
 
         TowerPlayer scorer = e.getPlayer();
         scorer.giveMoney(pointMoney);
-        scorer.displayBarText("§fYou scored! (§a+"+pointMoney+"$§f)", 60);
+        scorer.displayBarText(GameManager.getMessage("MSG_GAME_ACTION_POINT", pointMoney+""), 60);
 
-        //To test
+        String participationMsg = GameManager.getMessage("MSG_GAME_ACTION_POINT_PART", scorer.asOfflinePlayer().getName(), pointPartMoney+"");
         for(TowerPlayer player : e.getTeam().getInfo().getTowerPlayers())
         {
             if(!player.equals(scorer))
             {
                 player.giveMoney(pointPartMoney);
-                scorer.displayBarText("§fYour team scored §7("+scorer.asOfflinePlayer().getName()+")§f! (§a+"+pointPartMoney+"$§f)", 60);
+                player.displayBarText(participationMsg, 60);
             }
         }
 
@@ -139,10 +141,11 @@ public class ActionsManager implements Listener {
         double money = actions.playValue();
         int secondsSpent = actions.playIntervalSeconds();
         String msg = secondsSpent < 60 ? secondsSpent + " second(s)" : secondsSpent == 60 ? "1 minute" : secondsSpent/60 + " minutes";
+        msg = GameManager.getMessage("MSG_GAME_ACTION_PLAYED", msg, money+"");
         for(TowerPlayer player : TowerPlayer.getPlayers())
         {
             player.giveMoney(money);
-            player.displayBarText("§fPlayed " + msg + " (§a+"+money+"$§f)", 60);
+            player.displayBarText(msg, 60);
         }
     }
 

@@ -35,6 +35,13 @@
   "MSG_GAME_EX": "§fToday, the two teams remain undivided! The clock ran down without declaring a winner. ({0} §f- {1}§f)",
   "MSG_GAME_TIMER": "§cThe match will finish in §4{0} §cunless a team achieves the points goal.",
   "MSG_GAME_CANNOT_SEND_MESSAGE": "§cWithout a team, you are not permitted to send messages.",
+  "MSG_GAME_ACTION_START": "§fYou received §b{0}$ §fas starting money.",
+  "MSG_GAME_ACTION_KILL": "§fKilled {0}§f (§a{1}$§f)",
+  "MSG_GAME_ACTION_ASSIST": "§fAssist on {0}§f (§a{1}$§f)",
+  "MSG_GAME_ACTION_KILL_PART": "§fParticipation on {0}§f (§a{1}$§f)",
+  "MSG_GAME_ACTION_POINT": "§fYou scored! (§a{0}$§f)",
+  "MSG_GAME_ACTION_POINT_PART": "§fYour team scored §7({0})§f! (§a{1}$§f)",
+  "MSG_GAME_ACTION_PLAYED": "§fPlayed §b{0} §f(§a{1}$§f)",
   "MSG_END_RESTART": "§cThe server will restart in {0} seconds. You will be kicked.",
   "MSG_END_RESTART_KICK": "§cThe server will restart soon.",
   "MSG_END_LOGIN_DISALLOWED": "§cThe game is over! Wait a few moments for the next game to start."
