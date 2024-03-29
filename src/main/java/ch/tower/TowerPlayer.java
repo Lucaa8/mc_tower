@@ -7,10 +7,9 @@ import ch.luca008.SpigotApi.SpigotApi;
 import ch.tower.items.ArmorEquipment;
 import ch.tower.items.TowerItem;
 import ch.tower.items.WeaponStatistics;
-import ch.tower.listeners.GameDamageEvent;
 import ch.tower.managers.GameManager;
-import ch.tower.managers.ScoreboardManager.PlaceholderHelper;
 import ch.tower.managers.ScoreboardManager;
+import ch.tower.managers.ScoreboardManager.PlaceholderHelper;
 import ch.tower.managers.TeamsManager;
 import ch.tower.managers.TeamsManager.PlayerTeam;
 import ch.tower.shop.ShopMenu;
@@ -133,6 +132,13 @@ public class TowerPlayer
     public static List<TowerPlayer> getPlayers()
     {
         return new ArrayList<>(players);
+    }
+
+    public static List<TowerPlayer> getPlayersInTeam(PlayerTeam team)
+    {
+        if(team==null)
+            return new ArrayList<>();
+        return players.stream().filter(p->p.getTeam()==team).toList();
     }
 
     public static class Levels implements Iterable<Map.Entry<String, Integer>>
@@ -594,7 +600,12 @@ public class TowerPlayer
     @Nullable
     public PlayerTeam getTeam()
     {
-        return TeamsManager.getPlayerTeam(asPlayer());
+        PlayerTeam team = TeamsManager.getPlayerTeam(asPlayer());
+        if(team == null)
+        {
+            team = getAbandoningTeam();
+        }
+        return team;
     }
 
     @Override

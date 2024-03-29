@@ -53,7 +53,6 @@ public class ActionsManager implements Listener {
                 base.getDouble("DAMAGE")
         );
     }
-
     public void startListening()
     {
         Bukkit.getPluginManager().registerEvents(this, Main.getInstance());
@@ -103,7 +102,7 @@ public class ActionsManager implements Listener {
             return;
         double participationMoney = actions.killParticipationValue();
         String participationMsg = GameManager.getMessage("MSG_GAME_ACTION_KILL_PART", victimName, participationMoney+"");
-        for(TowerPlayer player : team.getInfo().getTowerPlayers())
+        for(TowerPlayer player : TowerPlayer.getPlayersInTeam(team))
         {
             if(player.equals(attacker) || e.getAssists().contains(player))
                 continue;
@@ -124,8 +123,8 @@ public class ActionsManager implements Listener {
         scorer.giveMoney(pointMoney);
         scorer.displayBarText(GameManager.getMessage("MSG_GAME_ACTION_POINT", pointMoney+""), 60);
 
-        String participationMsg = GameManager.getMessage("MSG_GAME_ACTION_POINT_PART", scorer.asOfflinePlayer().getName(), pointPartMoney+"");
-        for(TowerPlayer player : e.getTeam().getInfo().getTowerPlayers())
+        String participationMsg = GameManager.getMessage("MSG_GAME_ACTION_POINT_PART", pointPartMoney+"");
+        for(TowerPlayer player : TowerPlayer.getPlayersInTeam(scorer.getTeam()))
         {
             if(!player.equals(scorer))
             {
