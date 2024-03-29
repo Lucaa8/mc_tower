@@ -60,6 +60,13 @@ public class Main extends JavaPlugin {
         return game;
     }
 
+    /*
+    This is needed because the plugin stores EVERY arrow shot during the game.
+    I need it for weapon statistics
+    (because I cannot get the bow itemstack in the EntityDamageByEntityEvent, so I need to link the arrow in the damage event and the bow who shot the arrow from the EntityShootBowEvent)
+    The EntityShootBowEvent registers every arrow shot, even the arrows which missed the target.
+    The storage will clear any "invalid" (despawned) arrow every x seconds. So to keep a light storage the despawn-rate of arrows need to be short (like 30 sec)
+     */
     private boolean checkAndSetArrowsDespawnRate()
     {
         YamlConfiguration spigot = getServer().spigot().getConfig();
