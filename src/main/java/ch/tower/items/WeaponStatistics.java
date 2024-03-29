@@ -21,6 +21,7 @@ public class WeaponStatistics {
 
     public static class ShootListener implements Listener {
 
+        public static final int ARROW_DESPAWN_RATE_SECONDS = 30;
         private static final Map<Arrow, ItemStack> arrows = new HashMap<>();
         private int taskId;
 
@@ -29,7 +30,7 @@ public class WeaponStatistics {
             Bukkit.getPluginManager().registerEvents(this, Main.getInstance());
             //Entity#isValid: Returns false if the entity has died, been despawned for some other reason.
             //Will return false when the arrow disappears. Set a maximum of 30sec for arrows lifespan in the spigot.yml (world-settings.default.arrow-despawn-rate)
-            taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), ()->arrows.keySet().removeIf(arrow -> !arrow.isValid()), 20L * 30, 20L * 30);
+            taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), ()->arrows.keySet().removeIf(arrow -> !arrow.isValid()), 20L * ARROW_DESPAWN_RATE_SECONDS, 20L * ARROW_DESPAWN_RATE_SECONDS);
         }
 
         public void stop()
