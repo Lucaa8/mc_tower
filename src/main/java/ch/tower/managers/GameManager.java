@@ -37,6 +37,7 @@ public class GameManager {
     }
 
     private GameState state;
+    private boolean stopped = false;
 
     private final WorldManager worldManager;
     private final ScoreboardManager scoreboardManager;
@@ -74,7 +75,8 @@ public class GameManager {
         if(worldManager.load())
         {
             this.setState(GameState.WAIT);
-            TeamsManager.registerTeams(worldManager.getTowerWorld()); //obligé de le passer comme ça car imposible d'accàder à worldmanager depuis teamsmanager
+            Bukkit.setMaxPlayers(ConfigField.MAX_PLAYERS.get());
+            TeamsManager.registerTeams(worldManager.getTowerWorld()); //obligé de le passer comme ça car imposible d'accéder à worldmanager depuis teamsmanager
             scoreboardManager = new ScoreboardManager();
             npcManager = new NPCManager();
             shopManager = new ShopMenuManager();
@@ -82,7 +84,6 @@ public class GameManager {
         }
         else
         {
-            //if not set to something, the final field crying ouin ouin
             scoreboardManager = null;
             npcManager = null;
             shopManager = null;
@@ -95,6 +96,9 @@ public class GameManager {
     //The order of operations here is important, do not move lines up and down or do not insert code between lines if you are not sure what you are doing.
     public void stop()
     {
+        if(stopped)
+            return;
+        stopped = true;
         //Needs to be done before we kick the players. That's because we need to tell the client to explicitly destroy the current active scoreboard before leaving the server.
         //If not destroyed, it can cause errors on proxies like BungeeCord (Switching Spigot servers while Scoreboard are synchronized on the Bungee)
         scoreboardManager.unregister();
@@ -106,7 +110,10 @@ public class GameManager {
         }
         TeamsManager.unregisterTeams();
         worldManager.unload();
-        Bukkit.shutdown(); //TODO restart with script?
+        Bukkit.shutdown();
+        // The problem with this method is that its not possible to stop the server in any ways
+        // (the command `stop` will trigger the onDisable, which triggers this stop method, which trigger a spigot().restart() and so on.)
+        //Bukkit.spigot().restart();
     }
 
     public void abandon(TowerPlayer player)

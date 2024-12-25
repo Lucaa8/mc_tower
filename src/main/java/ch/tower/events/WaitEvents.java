@@ -308,7 +308,7 @@ public class WaitEvents implements StateEvents
     @Override
     public void onStateBegin()
     {
-        Bukkit.getConsoleSender().sendMessage("§aThe server is prepared to host players.");
+        Bukkit.getConsoleSender().sendMessage("§aThe server is ready.");
     }
 
     @Override

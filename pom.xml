@@ -6,19 +6,16 @@
 
     <groupId>ch.tower</groupId>
     <artifactId>mc_tower</artifactId>
-    <version>1.0.0</version>
+    <version>1.0</version>
 
     <name>Tower</name>
-    <description>A simple tower mini-game on minecraft 1.20.4</description>
+    <description>A simple tower mini-game on minecraft 1.20.x</description>
 
     <properties>
-        <maven.compiler.source>19</maven.compiler.source>
-        <maven.compiler.target>19</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mainClass>ch.tower.Main</mainClass>
-        <!-- Your custom system path access to the file server_mc/plugins -->
-        <!-- i.e: F:\Programme if your plugins folder is here F:\Programme\server_mc\plugins -->
-        <output>D:\Dev\Java\Intellij\mc_tower_servers</output>
     </properties>
 
     <repositories>
@@ -40,15 +37,8 @@
         <dependency>
             <groupId>ch.luca008</groupId>
             <artifactId>SpigotApi</artifactId>
-            <version>latest</version>
+            <version>2.1.2</version>
             <scope>provided</scope>
-        </dependency>
-        <!-- Helps to build plugin -->
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-shade-plugin</artifactId>
-            <version>3.5.1</version>
-            <type>maven-plugin</type>
         </dependency>
     </dependencies>
 
@@ -56,20 +46,11 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
                 <configuration>
-                    <shadedArtifactAttached>true</shadedArtifactAttached>
-                    <shadedClassifierName>shaded</shadedClassifierName>
-                    <outputDirectory>${output}\server_mc\plugins</outputDirectory>
+                    <outputDirectory>C:\Users\lucad\Desktop\Servers\2_Tower\plugins</outputDirectory>
+                    <finalName>Tower-${version}</finalName>
                 </configuration>
             </plugin>
         </plugins>
