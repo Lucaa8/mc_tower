@@ -1,5 +1,5 @@
-name: ${name}
-version: ${version}
+name: ${project.name}
+version: ${project.version}
 author: [Maelys, Luca, Thibault]
 depend:
   - SpigotApi
