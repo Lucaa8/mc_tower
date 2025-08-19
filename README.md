@@ -27,13 +27,13 @@ Any use of this code in violation of these restrictions, especially on publicly 
 # Summary of functionalities
 - Wait Lobby, Ability to choose a team or let the server create random teams (by not picking any team before the start)
 - Red and Blue Teams, No Friendly Fire and prevented Spawn-kill/Spawn-lock
-- Actions in game (e.g. kills, assists, points, time spent...) reward coins to players
+- Actions in game (e.g. kills, assists, points, time spent...) reward money to players
 - Players can buy items, blocks, potions and more at the NPCs laying near their spawn
 - Armor and food can be upgraded with coins during the game (as well as tools e.g. swords and bows)
 - Some custom items (e.g. A Feather which attenuates fall damage when held in hand, why not?)
 - A kill assistance system (e.g. which rewards players who knocked someone in the void)
 - PvP 1.8
-- Scoreboard with points, kills, assists, damage, timers, coins and more
+- Scoreboard with points, kills, assists, damage, timers, money and more
 - Players who disconnect during a match have time to rejoin before their team is considered abandoned
 - End game (leaderboards with damage, points, kills, assistances and deaths) and map reset
 - Everything is customizable in JSON files (Messages, Items shop, Pools and Spawns, etc...)
@@ -71,3 +71,18 @@ To prevent players from being trapped in their spawn, block placement and breaki
 | ![spawnlocked-1](https://github.com/user-attachments/assets/b80f23bf-6761-48be-8d49-4bf131cb447d) | ![spawnlocked-2](https://github.com/user-attachments/assets/315097c8-ea55-4691-89a1-6fe2364d323f) |
 |:--:|:--:| 
 | *Blocks cannot be placed or broken* | *Anvils are removed if they land near the spawn area* |
+
+## Actions rewarding Money
+Players can earn in-game currency by performing various actions. Here is a list of these actions:
+- Game start
+- Time played (e.g., every 5 minutes grants $50)
+- Kill
+- Kill assist (any player who dealt damage to the killed player in the last 10 seconds)
+- Team participation in a kill (all other team members who are not the killer or assist contributors)
+- Point
+- Team participation in a point (all other team members)
+- Dealing damage
+
+*videos of point/point part., kill/kill assist and time played*
+
+
