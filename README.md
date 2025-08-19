@@ -24,7 +24,7 @@ Any use of this code in violation of these restrictions, especially on publicly 
 - Spigot/Paper 1.20.x
 - [SpigotApi](https://github.com/Lucaa8/SpigotApi) (A lot of the work is done indirectly by myself in my SpigotApi plugin and then used in the tower.)
 
-# Summary of functionnalities
+# Summary of functionalities
 - Wait Lobby, Ability to choose a team or let the server create random teams (by not picking any team before the start)
 - Red and Blue Teams, No Friendly Fire and prevented Spawn-kill/Spawn-lock
 - Actions in game (e.g. kills, assists, points, time spent...) reward coins to players
@@ -40,7 +40,9 @@ Any use of this code in violation of these restrictions, especially on publicly 
 
 # Functionalities
 ## Waiting Lobby
-The waiting lobby is where players select their team and wait until the minimum player count is reached to start the match.
+The waiting lobby is where players select their team and wait until the minimum player count is reached to start the match. Once the minimum is reached, a countdown timer begins, and the game starts when it hits 0.
+
+If a player leaves the lobby before the timer reaches 0 and the minimum player count is no longer met, the timer resets, and players must wait again.
 
 In the lobby, certain actions are restricted:
 - Players cannot take damage
@@ -59,4 +61,13 @@ If teams are unbalanced (e.g., 3 Red vs. 1 Blue), the server will automatically 
 |:--:| 
 | *Game starts with two players — the second player was auto-assigned to the Red Team* |
 
+## Prevented Spawn-kill and Spawn-lock
+To ensure fair gameplay, spawn-killing is prevented by giving respawned players a short period of invulnerability, allowing them time to leave their spawn safely.
+| ![spawnkilled-1](https://github.com/user-attachments/assets/5161af39-0bd2-4e0a-84b0-bf9d7b515ff2) | ![spawnkilled-2](https://github.com/user-attachments/assets/0bb8833a-8ff0-4582-a47f-f72907369e16) |
+|:--:|:--:| 
+| *A player attempting to spawn-kill another player* | *The respawned player has 2.5 seconds of immunity* |
 
+To prevent players from being trapped in their spawn, block placement and breaking are disabled near the spawn area for both enemy and friendly teams. Any anvils placed at the top of the spawn area are detected and removed upon landing.
+| ![spawnlocked-1](https://github.com/user-attachments/assets/b80f23bf-6761-48be-8d49-4bf131cb447d) | ![spawnlocked-2](https://github.com/user-attachments/assets/315097c8-ea55-4691-89a1-6fe2364d323f) |
+|:--:|:--:| 
+| *Blocks cannot be placed or broken* | *Anvils are removed if they land near the spawn area* |
