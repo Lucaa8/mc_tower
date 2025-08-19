@@ -63,7 +63,7 @@ If teams are unbalanced (e.g., 3 Red vs. 1 Blue), the server will automatically 
 
 ## Prevented Spawn-kill and Spawn-lock
 To ensure fair gameplay, spawn-killing is prevented by giving respawned players a short period of invulnerability, allowing them time to leave their spawn safely.
-| ![spawnkilled-1](https://github.com/user-attachments/assets/5161af39-0bd2-4e0a-84b0-bf9d7b515ff2) | ![spawnkilled-2](https://github.com/user-attachments/assets/0bb8833a-8ff0-4582-a47f-f72907369e16) |
+| <video src="https://github.com/user-attachments/assets/5161af39-0bd2-4e0a-84b0-bf9d7b515ff2"/> | ![spawnkilled-2](https://github.com/user-attachments/assets/0bb8833a-8ff0-4582-a47f-f72907369e16) |
 |:--:|:--:| 
 | *A player attempting to spawn-kill another player* | *The respawned player has 2.5 seconds of immunity* |
 
