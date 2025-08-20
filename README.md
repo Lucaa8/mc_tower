@@ -277,7 +277,7 @@ If you don’t see this line, you cannot spam-click the item. For example, picka
 ### Feather (Harmless Feather)
 In the default Tower version, this feather had one purpose: pushing players into the void with its Knockback I enchantment.
 
-Now that some swords already come with this enchantment, the feather needed a new purpose. It's why now the feather reduces fall damage by 15% for any player taking fall damage while holding the feather in their main or off-hand. Simply having it in the inventory does not grant the effect—the feather must be held when hitting the ground. 
+Now that some swords already come with this enchantment, the feather needed a new purpose. It's why now **the feather reduces fall damage by 15%** for any player taking fall damage **while holding the feather in their main or off-hand**. Simply having it in the inventory does not grant the effect—the feather must be held when hitting the ground. 
 
 Note: The feather’s damage reduction is multiplicative (and not additive), applied after all other sources of fall damage reduction (e.g., Feather Falling boots). For example, if boots provide 24% fall damage reduction, the total reduction is not simply 39% (24% + 15%). The calculation is: `Final Damage = Initial Fall Damage × (1 − 0.24) × (1 − 0.15)` and not `Final Damage = Initial Fall Damage × (1 − 0.39)`. This ensures that the feather’s reduction always scales fairly with other protections and prevents it from becoming overpowered during extreme falls.
 
@@ -298,3 +298,24 @@ By wearing a pumpkin (which replaces the helmet), players hide their armor level
 
 In the Potion section (Harry Potter), you can find the old Tower potion "Beer" which gives buff and debuffs
 
+## The Kill Assistance System
+Ever pushed someone into the void but didn’t get the kill? Or dealt 9.5 hearts of damage only to have someone else land the last hit and steal the kill? That’s frustrating — but not anymore, thanks to the Kill Assistance System.
+
+### How does it work?
+The system works in a simple way: it tracks every player who deals damage to another player and keeps this damage record active for a short time (e.g., 10 seconds).
+- If a player dies, the last damager (the most recent registered hit) is credited with the kill.
+- Every other player who dealt damage within that short time frame is awarded an assist.
+
+This also applies to void deaths: if a player is knocked into the void, the pusher is still registered as the last damager. The death is counted as “by void,” but the kill credit go to the players who provoked the fall.
+
+**Note**: Currently, assists are not displayed in the death message (to avoid too long or messy messages). However, they are still properly counted on the scoreboard, in the final leaderboard, and they award money to all assisting players.
+
+| <video src="https://github.com/user-attachments/assets/755ae030-1c59-4d2f-95f6-b5de19d3d8bd"/> |
+|:--:| 
+| *Player 1 pushes an enemy into the void — the enemy places a block and dies from fall — kill is credited to Player 1* |
+
+| <video src="https://github.com/user-attachments/assets/8c2dc2b4-e26a-4664-861d-ea646e2c8f26"/> | <video src="https://github.com/user-attachments/assets/b388d3c6-9b86-4530-aea2-761835497073"/> |
+|:--:|:--:| 
+| *Player 1 kills an enemy player — kill is credited to Player 1* | *Player 2 — on the same team, who previously damaged the enemy — gets a kill assistance* |
+
+This is not shown here, but the system also detects deaths caused by Fire Aspect items, such as the Level 5 Sword or the Rod of Fire.
