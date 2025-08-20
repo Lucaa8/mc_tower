@@ -30,9 +30,9 @@ Any use of this code in violation of these restrictions, especially on publicly 
 - Actions in game (e.g. kills, assists, points, time spent...) reward money to players
 - Players can buy items, blocks, potions and more at the NPCs laying near their spawn
 - Armor and food can be upgraded with coins during the game (as well as tools e.g. swords and bows)
+- PvP 1.8
 - Some custom items (e.g. A Feather which attenuates fall damage when held in hand, why not?)
 - A kill assistance system (e.g. which rewards players who knocked someone in the void)
-- PvP 1.8
 - Scoreboard with points, kills, assists, damage, timers, money and more
 - Players who disconnect during a match have time to rejoin before their team is considered abandoned
 - End game (leaderboards with damage, points, kills, assistances and deaths) and map reset
@@ -83,6 +83,55 @@ Players can earn in-game currency by performing various actions. Here is a list 
 - Team participation in a point (all other team members)
 - Dealing damage
 
-*videos of point/point part., kill/kill assist and time played*
+Players can earn in-game currency by performing various actions. The money earned from each action is displayed above the hotbar in the following format: `<ACTION> (+$AMOUNT)` e.g. `Killed Player1 (5.0$)`. Check below for some examples;
+
+| <video src="https://github.com/user-attachments/assets/7412fa4b-c36b-4072-9286-6df6e6617780"/> | <video src="https://github.com/user-attachments/assets/d236da3d-68c2-44da-b54f-b041e0d41d19"/> |
+|:--:|:--:| 
+| *Player 1 scores a point for their team* | *Player 2 — on the same team — also receives money* |
 
 
+| <video src="https://github.com/user-attachments/assets/8c2dc2b4-e26a-4664-861d-ea646e2c8f26"/> | <video src="https://github.com/user-attachments/assets/b388d3c6-9b86-4530-aea2-761835497073"/> |
+|:--:|:--:| 
+| *Player 1 kills an enemy player — earning money for the kill* | *Player 2 — on the same team, who previously damaged the enemy — earns money for a kill assist* |
+
+## NPCs Shop
+The money earned from the actions above can be spent on items by interacting with NPCs located near each team’s spawn.
+
+For clarity, the upgrade system is not explained here and will be detailed in the next section.
+
+| ![npcs-shop](https://github.com/user-attachments/assets/472dc3c2-8d6a-4e21-8a27-e7caa33eee7b) | 
+|:--:| 
+| *The NPCs near the spawn* |
+
+There are 4 NPCs, each one has a specific utility:
+- Tools : Sword, Axe, Pickaxe, Bow, Arrows and Armor
+- Blocks : Nether Bricks Blocks, Cobblestone, Wood, Glass, etc..
+- Resources : Slime Blocks, Fences, etc...
+- Utilities : Custom items like the Fire Aspect Blaze Rod, Potions, Rails/Minecarts, Food, etc...
+
+Players can access NPCs both in their own spawn **and** in the enemy’s spawn. Since the items sold by NPCs are unlimited and not tied to a specific team, accessing enemy NPCs is possible — though risky — and can sometimes be a useful strategy.
+
+Money is personal and not shared between teammates, and it cannot be traded between players. However, temporary items (those that drop on death) can be traded. For example, if a player runs out of money, a teammate can purchase blocks and give them instead.
+
+| <video src="https://github.com/user-attachments/assets/4c06b39d-b1a3-4fca-a10e-6f217704b710"/> | 
+|:--:| 
+| *A player buying items at their spawn — and yes, empty potion bottles are automatically removed!* |
+
+## The Upgrade System
+The upgrade system is simple: players can spend a significant amount of money on certain items, but unlike temporary gear, these items are kept after death.
+
+This allows players to focus on their preferred playstyle:
+- A player who pushes aggressively and aims to score points may invest in upgrading an axe and pickaxe to break into the enemy pool faster.
+- A player who prefers defending the pool might focus on upgrading a bow to keep opponents at bay.
+
+Upgrades also ensure that respawning players always have a minimum set of useful equipment (e.g., sword, axe, etc.) to rejoin the fight immediately.
+
+### Disclaimer ⚠️
+Upgraded items **cannot** be traded between players. Otherwise, one player could max out a sword, drop it to a teammate, then die and respawn with the same upgraded item, effectively duplicating this item for free.
+For the same reason, upgraded items are not dropped on death. This system is designed to prevent duplication exploits.
+
+Here is a list of every item that can be upgraded during the game;
+- Sword: From level 0 (default) to level 5 (max)
+- Pickaxe: From level 0 (default) to level 4 (max)
+- Axe: From level 1 to level 3 (max)
+- Bow: From level 1 to level 2 (max), note that level 2 bow needs to be rebought every time and is NOT a definitve upgrade.
