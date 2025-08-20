@@ -131,8 +131,102 @@ Upgraded items **cannot** be traded between players. Otherwise, one player could
 For the same reason, upgraded items are not dropped on death. This system is designed to prevent duplication exploits.
 ### End Of Disclaimer ⚠️
 
+
 Here is a list of every item that can be upgraded during the game;
-- Sword: From level 0 (default) to level 5 (max)
-- Pickaxe: From level 0 (default) to level 4 (max)
-- Axe: From level 1 to level 3 (max)
-- Bow: From level 1 to level 2 (max), note that level 2 bow needs to be rebought every time and is NOT a definitve upgrade.
+(Note: Those upgrades may change for balancing purposes)
+
+### Sword
+Every player starts with a default sword (level 0) and can upgrade it to a maximum of 5 levels. Swords are unbreakable!
+| Level | Material | Enchantments | Price |
+|-------|----------|--------------|-------|
+| 0     | Wood     | None         | 0$    |
+| 1     | Stone    | None         | 100$  |
+| 2     | Stone    | Knockback I  | 200$  |
+| 3     | Stone    | Knockback I, Sharpness I | 300$  |
+| 4     | Iron     | Knockback I, Sharpness I | 400$  |
+| 5     | Iron     | Knockback I, Sharpness I, Fire Aspect I | 500$  |
+
+### Pickaxe
+Every player starts with a default pickaxe (level 0) and can upgrade it to a maximum of 4 levels.
+| Level | Material | Durability | Enchantments | Price |
+|-------|----------|------------|--------------|-------|
+| 0     | Wood     | 59/59      | None         | 0$    |
+| 1     | Stone    | 80/131     | None         | 100$  |
+| 2     | Stone    | 80/131     | Efficiency I, Unbreaking I  | 200$  |
+| 3     | Stone    | 131/131    | Efficiency II, Unbreaking I | 300$  |
+| 4     | Diamond  | 264/1561   | Efficiency I | 400$  |
+
+### Axe
+Players do not start with a default axe. For this reason, axe upgrades start at Level 1 and reach their maximum at Level 3.
+
+Axes are relatively strong both for PvP and for breaking wood, so their upgrade progression is more limited compared to other items.
+| Level | Material | Durability | Enchantments | Price |
+|-------|----------|------------|--------------|-------|
+| 1     | Wood     | 30/59      | None         | 100$  |
+| 2     | Stone    | 80/131     | None         | 200$  |
+| 3     | Stone    | 80/131     | Efficiency I, Unbreaking I | 300$  |
+
+### Bow
+Bows have been heavily nerfed compared to other tools. Players who spam bows and camp near the enemy pool can be extremely frustrating to face, and there are very few strategies to counter this effectively.
+
+For this reason:
+- Players **do not** start with a default bow.
+- Bow upgrades start at Level 1 and can reach a maximum of Level 2.
+- Level 2 is not a permanent upgrade: players **do not respawn** with the Level 2 bow and must re-purchase it after death. (They respawn with Level 1 tho)
+
+Despite these limitations, bows were included to allow for tactical options, but in a more controlled and balanced way.
+| Level | Durability | Enchantments | Price     |
+|-------|------------|--------------|-----------|
+| 1     | 40/384     | None         | 1'000$    |
+| 2     | 50/384     | Power I      | 200$/time |
+
+Arrows must be purchased separately (**32 arrows cost $8**), and players do not respawn with any arrows, even if they have the Level 1 bow upgrade. To compensate for this nerf, players can craft chests, buy large quantities of arrows, and store them in these chests next to their spawn cage for easy access upon respawning.
+
+### Armors
+Armor upgrades apply to the entire set—helmet, chestplate, leggings, and boots—simultaneously. Players cannot mix different levels, for example keeping Level 1 boots with a Level 2 chestplate. This ensures that the overall protection level remains balanced. Also, note that all four armor pieces are unbreakable!
+
+For instance, a Level 2 chestplate loses its Protection I enchantment, which is replaced by Projectile Protection. To compensate, the Level 2 helmet gains Protection II instead of Protection I. This way, the total protection of a Level 2 armor set is equivalent to Level 1, with the added benefit of projectile protection.
+
+To help players gauge their opponent’s armor level before engaging in combat (maybe you’ll think twice before fighting someone with max-level armor!), the helmet changes color according to the armor’s level. This way, the overall armor color remains consistent—so you won’t confuse teammates with enemies—while still giving you a quick visual clue about how strong your opponent is (based on gear, not skill… or their better gaming chair!).
+
+#### Default Armor (Level 0)
+Price: 0$, every player starts with this armor!
+| Piece      | Color     | Enchantments |
+|------------|-----------|--------------|
+| Helmet     | Red/Blue  | Protection I |
+| Chestplate |           | Protection I |
+| Leggings   |           | Protection I |
+| Boots      |           | Protection I |
+
+Damage reductions;
+| Protection | Projectile Protection | Fall Protection |
+|------------|-----------------------|-----------------|
+| 16%        | 0%                    | 0%              |
+
+#### Armor Level 1
+Price: 700$
+| Piece      | Color     | Enchantments                    |
+|------------|-----------|---------------------------------|
+| Helmet     | White     | Protection II                   |
+| Chestplate |           | Projectile Protection II        |
+| Leggings   |           | Protection I                    |
+| Boots      |           | Protection I, Feather Falling I |
+
+Damage reductions;
+| Protection | Projectile Protection | Fall Protection |
+|------------|-----------------------|-----------------|
+| 16%        | 16%                   | 12%             |
+
+#### Armor Level 2
+Price: 1200$
+| Piece      | Color     | Enchantments                     |
+|------------|-----------|----------------------------------|
+| Helmet     | Green     | Protection II                    |
+| Chestplate |           | Projectile Protection III        |
+| Leggings   |           | Protection II                    |
+| Boots      |           | Protection I, Feather Falling II |
+
+Damage reductions;
+| Protection | Projectile Protection | Fall Protection |
+|------------|-----------------------|-----------------|
+| 20%        | 24%                   | 24%             |
