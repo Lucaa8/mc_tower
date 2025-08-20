@@ -129,6 +129,7 @@ Upgrades also ensure that respawning players always have a minimum set of useful
 ### Disclaimer ⚠️
 Upgraded items **cannot** be traded between players. Otherwise, one player could max out a sword, drop it to a teammate, then die and respawn with the same upgraded item, effectively duplicating this item for free.
 For the same reason, upgraded items are not dropped on death. This system is designed to prevent duplication exploits.
+### End Of Disclaimer ⚠️
 
 Here is a list of every item that can be upgraded during the game;
 - Sword: From level 0 (default) to level 5 (max)
