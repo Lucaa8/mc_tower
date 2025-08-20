@@ -319,3 +319,24 @@ This also applies to void deaths: if a player is knocked into the void, the push
 | *Player 1 kills an enemy player — kill is credited to Player 1* | *Player 2 — on the same team, who previously damaged the enemy — gets a kill assistance* |
 
 This is not shown here, but the system also detects deaths caused by Fire Aspect items, such as the Level 5 Sword or the Rod of Fire.
+
+## Scoreboard
+The scoreboard displays real-time information about the game and the player's personal statistics.  
+Yes, it updates live — for example, every time your Fire Aspect weapon proc a fire status effect, your damage and money stats will refresh live!
+
+### Global Information Shown During the Game
+- Current points of your team and the enemy team  
+- The points goal required to win the match (because the goal can change)  
+- Time left before the game ends  
+
+### Personal Information Shown During the Game
+- Your team  
+- Your total damage dealt (expressed in full hearts)  
+- Your personal points (i.e. how many times you reached the enemy team's pool)  
+- Your kills and kill assists  
+- Your money balance  
+
+### Example of live scoreboard
+<video src="https://github.com/user-attachments/assets/3a9037e3-3d44-4498-8e52-212f45204c07"/>
+
+
