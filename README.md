@@ -118,7 +118,7 @@ Money is personal and not shared between teammates, and it cannot be traded betw
 | *A player buying items at their spawn — and yes, empty potion bottles are automatically removed!* |
 
 ## The Upgrade System
-The upgrade system is simple: players can spend a significant amount of money on certain items, but unlike temporary gear, these items are kept after death.
+The upgrade system is simple: players can spend a significant amount of money on certain items, but unlike other gear, these items are kept after death.
 
 This allows players to focus on their preferred playstyle:
 - A player who pushes aggressively and aims to score points may invest in upgrading an axe and pickaxe to break into the enemy pool faster.
@@ -131,40 +131,50 @@ Upgraded items **cannot** be traded between players. Otherwise, one player could
 For the same reason, upgraded items are not dropped on death. This system is designed to prevent duplication exploits.
 ### End Of Disclaimer ⚠️
 
+### Temporary Tools
+All upgrade levels (Armor, Food and level 2 bow are excluded) also come with a “one-time use” option. For example, if you currently have a Level 1 sword, you can either:
+- **Permanently upgrade** (right-click) to Level 2 (you respawn with the Level 2 sword every time), or
+- **Purchase a temporary** (left-click) Level 2 sword (cheaper than the permanent upgrade), which is dropped on death and can be given to other players.
+
+This allows players to buy a higher-tier item for specific situations—like a full-team push or defending the pool when the enemy team is nearby—without spending a lot of money.
+
+| <video src="https://github.com/user-attachments/assets/55cfdb9f-de5a-4738-91f0-b812ab40fdd4"/> | <video src="https://github.com/user-attachments/assets/4a26c597-cf25-418a-ba0d-79bacf8db53f"/> |
+|:--:|:--:| 
+| *Player left-clicked the sword — Granting them a temporary level 1 sword* | *Player right-clicked the sword — Granting them a permanent level 1 sword* |
 
 Here is a list of every item that can be upgraded during the game;
 (Note: Those upgrades may change for balancing purposes)
 
 ### Sword
 Every player starts with a default sword (level 0) and can upgrade it to a maximum of 5 levels. Swords are unbreakable!
-| Level | Material | Enchantments | Price |
-|-------|----------|--------------|-------|
-| 0     | Wood     | None         | 0$    |
-| 1     | Stone    | None         | 100$  |
-| 2     | Stone    | Knockback I  | 200$  |
-| 3     | Stone    | Knockback I, Sharpness I | 300$  |
-| 4     | Iron     | Knockback I, Sharpness I | 400$  |
-| 5     | Iron     | Knockback I, Sharpness I, Fire Aspect I | 500$  |
+| Level | Material | Enchantments                            | Price (Upgrade) | Price (Temp) |
+|-------|----------|-----------------------------------------|-----------------|--------------|
+| 0     | Wood     | None                                    | 0$              | Unobtainable |
+| 1     | Stone    | None                                    | 100$            | 10$          |
+| 2     | Stone    | Knockback I                             | 200$            | 20$          |
+| 3     | Stone    | Knockback I, Sharpness I                | 300$            | 30$          |
+| 4     | Iron     | Knockback I, Sharpness I                | 400$            | 40$          |
+| 5     | Iron     | Knockback I, Sharpness I, Fire Aspect I | 500$            | 50$          | 
 
 ### Pickaxe
 Every player starts with a default pickaxe (level 0) and can upgrade it to a maximum of 4 levels.
-| Level | Material | Durability | Enchantments | Price |
-|-------|----------|------------|--------------|-------|
-| 0     | Wood     | 59/59      | None         | 0$    |
-| 1     | Stone    | 80/131     | None         | 100$  |
-| 2     | Stone    | 80/131     | Efficiency I, Unbreaking I  | 200$  |
-| 3     | Stone    | 131/131    | Efficiency II, Unbreaking I | 300$  |
-| 4     | Diamond  | 264/1561   | Efficiency I | 400$  |
+| Level | Material | Durability | Enchantments                | Price (Upgrade) | Price (Temp) |
+|-------|----------|------------|-----------------------------|-----------------|--------------|
+| 0     | Wood     | 59/59      | None                        | 0$              | Unobtainable |
+| 1     | Stone    | 80/131     | None                        | 100$            | 10$          |
+| 2     | Stone    | 80/131     | Efficiency I, Unbreaking I  | 200$            | 20$          |
+| 3     | Stone    | 131/131    | Efficiency II, Unbreaking I | 300$            | 30$          |
+| 4     | Diamond  | 264/1561   | Efficiency I                | 400$            | 40$          |
 
 ### Axe
 Players do not start with a default axe. For this reason, axe upgrades start at Level 1 and reach their maximum at Level 3.
 
 Axes are relatively strong both for PvP and for breaking wood, so their upgrade progression is more limited compared to other items.
-| Level | Material | Durability | Enchantments | Price |
-|-------|----------|------------|--------------|-------|
-| 1     | Wood     | 30/59      | None         | 100$  |
-| 2     | Stone    | 80/131     | None         | 200$  |
-| 3     | Stone    | 80/131     | Efficiency I, Unbreaking I | 300$  |
+| Level | Material | Durability | Enchantments               | Price (Upgrade) | Price (Temp) |
+|-------|----------|------------|----------------------------|-----------------|--------------|
+| 1     | Wood     | 30/59      | None                       | 100$            | 10$          |
+| 2     | Stone    | 80/131     | None                       | 200$            | 20$          |
+| 3     | Stone    | 80/131     | Efficiency I, Unbreaking I | 300$            | 30$          |
 
 ### Bow
 Bows have been heavily nerfed compared to other tools. Players who spam bows and camp near the enemy pool can be extremely frustrating to face, and there are very few strategies to counter this effectively.
@@ -175,10 +185,10 @@ For this reason:
 - Level 2 is not a permanent upgrade: players **do not respawn** with the Level 2 bow and must re-purchase it after death. (They respawn with Level 1 tho)
 
 Despite these limitations, bows were included to allow for tactical options, but in a more controlled and balanced way.
-| Level | Durability | Enchantments | Price     |
-|-------|------------|--------------|-----------|
-| 1     | 40/384     | None         | 1'000$    |
-| 2     | 50/384     | Power I      | 200$/time |
+| Level | Durability | Enchantments | Price (Upgrade) | Price (Temp) |
+|-------|------------|--------------|-----------------|--------------|
+| 1     | 40/384     | None         | 1'000$          | 100$         |
+| 2     | 50/384     | Power I      | Unobtainable    | 200$         |
 
 Arrows must be purchased separately (**32 arrows cost $8**), and players do not respawn with any arrows, even if they have the Level 1 bow upgrade. To compensate for this nerf, players can craft chests, buy large quantities of arrows, and store them in these chests next to their spawn cage for easy access upon respawning.
 
@@ -218,7 +228,7 @@ Damage reductions;
 | 16%        | 16%                   | 12%             |
 
 #### Armor Level 2
-Price: 1200$
+Price: 1'200$
 | Piece      | Color     | Enchantments                     |
 |------------|-----------|----------------------------------|
 | Helmet     | Green     | Protection II                    |
@@ -230,6 +240,10 @@ Damage reductions;
 | Protection | Projectile Protection | Fall Protection |
 |------------|-----------------------|-----------------|
 | 20%        | 24%                   | 24%             |
+
+| <video src="https://github.com/user-attachments/assets/38115ad9-3eb4-45a9-821a-fd172da26691"/> |
+|:--:| 
+| *The Armor System — With the changing helmet color* |
 
 ### Food
 Last but not least, the food system also works as an upgrade. Players start with no food, but don’t worry—the first food upgrade is cheap and can be purchased with starting money.
@@ -246,3 +260,41 @@ As the game progresses, players can buy better food types. Just like with armor 
 | <video src="https://github.com/user-attachments/assets/5d92e244-a043-44d2-938f-f835b3cc9ed3"/> |
 |:--:| 
 | *The Food System* |
+
+## PvP 1.8
+Weapons are “**1.8 PvP enabled**”, meaning **the hit cooldown has been removed** and **the damage has been slightly reduced** to balance it.
+
+Every item that is 1.8 PvP enabled will show a green line: “1.8 PvP enabled” in its description inside the Tools NPC shop.
+
+If you don’t see this line, you cannot spam-click the item. For example, pickaxes are not 1.8 PvP enabled, so they retain the normal cooldown between hits.
+
+| ![leg_pvp_enabled](https://github.com/user-attachments/assets/6152e9c1-7ea8-4d2c-8142-e7b68e2f4a59) | ![leg_pvp_disabled](https://github.com/user-attachments/assets/ac8b2986-a4f5-4585-a586-c7b5e5fceb6c) |
+|:--:|:--:| 
+| *The sword shows the green text, cooldown is removed* | *The pickaxe does not show the green text, cooldown is enabled* |
+
+## Custom Items (Utilities NPC)
+
+### Feather (Harmless Feather)
+In the default Tower version, this feather had one purpose: pushing players into the void with its Knockback I enchantment.
+
+Now that some swords already come with this enchantment, the feather needed a new purpose. It's why now the feather reduces fall damage by 15% for any player taking fall damage while holding the feather in their main or off-hand. Simply having it in the inventory does not grant the effect—the feather must be held when hitting the ground. 
+
+Note: The feather’s damage reduction is multiplicative (and not additive), applied after all other sources of fall damage reduction (e.g., Feather Falling boots). For example, if boots provide 24% fall damage reduction, the total reduction is not simply 39% (24% + 15%). The calculation is: `Final Damage = Initial Fall Damage × (1 − 0.24) × (1 − 0.15)` and not `Final Damage = Initial Fall Damage × (1 − 0.39)`. This ensures that the feather’s reduction always scales fairly with other protections and prevents it from becoming overpowered during extreme falls.
+
+| <video src="https://github.com/user-attachments/assets/d6a393fa-21b7-4116-a011-b76fb606b218"/> | <video src="https://github.com/user-attachments/assets/a77e409e-8aff-4175-8cff-4bc2e7201600"/> |
+|:--:|:--:| 
+| *Player does not hold the Harmless Feather — Resulting in death* | *Player does hold the Harmless Feather — Resulting in survival* |
+
+### Carved Pumpkin (Spiky Pumpkin)
+<img width="381" height="250" alt="Spiky Pumpkin" src="https://github.com/user-attachments/assets/84b41686-bb15-419a-a795-8a9cd8006999" />
+
+By wearing a pumpkin (which replaces the helmet), players hide their armor level from others. This issue may need to be addressed if too many players start abusing this mechanic.
+
+### Blaze Rod (Rod of Fire)
+<img width="348" height="250" alt="Rod of Fire" src="https://github.com/user-attachments/assets/bead24f9-4005-4d30-b633-e9d164674442" />
+
+### Beer
+<img width="392" height="250" alt="Beer" src="https://github.com/user-attachments/assets/3674448d-6010-44f3-83d8-9a0b01dd790f" />
+
+In the Potion section (Harry Potter), you can find the old Tower potion "Beer" which gives buff and debuffs
+
