@@ -230,3 +230,19 @@ Damage reductions;
 | Protection | Projectile Protection | Fall Protection |
 |------------|-----------------------|-----------------|
 | 20%        | 24%                   | 24%             |
+
+### Food
+Last but not least, the food system also works as an upgrade. Players start with no food, but don’t worry—the first food upgrade is cheap and can be purchased with starting money.
+
+As the game progresses, players can buy better food types. Just like with armor and other tools, players cannot instantly buy the best food, even if they have enough money, ensuring a gradual progression.
+| Level | Food Type      | Count | Food Restored | Saturation Restored | Price |
+|-------|----------------|-------|---------------|---------------------|-------|
+| 1     | Carrot         | 32    | +1.5          | +3.6                | 5$    |   
+| 2     | Bread          | 32    | +2.5          | +6.0                | 12$   |
+| 3     | Cooked Chicken | 16    | +3.0          | +7.2                | 20$   |
+| 4     | Cooked Salmon  | 16    | +3.0          | +9.6                | 50$   |
+| 5     | Golden Carrot  | 12    | +3.0          | +14.4               | 100$  |
+
+| <video src="https://github.com/user-attachments/assets/5d92e244-a043-44d2-938f-f835b3cc9ed3"/> |
+|:--:| 
+| *The Food System* |
