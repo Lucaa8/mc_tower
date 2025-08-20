@@ -339,4 +339,28 @@ Yes, it updates live — for example, every time your Fire Aspect weapon proc a 
 ### Example of live scoreboard
 <video src="https://github.com/user-attachments/assets/3a9037e3-3d44-4498-8e52-212f45204c07"/>
 
+## Game Abandons
+The game is forgiving when a player leaves the match. After all, who never had their game crash or forgot to pay their internet bills for a good connection?  
+
+In this Tower, if a player disconnects, they have a short period of time to rejoin the match before it is considered an **abandon**.  
+
+⚠️ **Important rules:**  
+- If *all players of a team* leave the match, the game instantly ends with a **defeat for that team** and a **victory for the enemy team**.
+- If a player rejoins *before* the abandon timer runs out, their **inventory is wiped** and their **location reset to their spawn**. (This prevents abuse such as disconnecting near the enemy pool and reconnecting later when no one is defending!)
+- If a player rejoins *after* the abandon timer runs out, they automatically become a **spectator** and cannot interact in any way with their previous team. (Their statistics, such as kills, do not count towards their total kills.)
+
+### Player left but rejoins before the abandon timer runs out
+(This footage shows that the inventory of the rejoining player is not wiped. This is a bug and has been fixed)
+
+| <video src="https://github.com/user-attachments/assets/04a305f5-240c-4091-a2de-f246b7924923"/> | <video src="https://github.com/user-attachments/assets/d5bbc965-3216-4986-8bd1-15508a5da873"/> |
+|:--:|:--:| 
+| *Player 1 — Sees in the chat that their teammate disconnected* | *Player 2 — disconnecting and reconnecting — in the spawn cage of their team* |
+
+### Player left but rejoins after the abandon timer runs out
+| <video src="https://github.com/user-attachments/assets/684b2e46-e9eb-4e7a-a2cf-7162b7d9c749"/> | <video src="https://github.com/user-attachments/assets/d48c656c-76b4-4b5b-84fe-57def32fad4a"/> |
+|:--:|:--:| 
+| *Player 1 — Sees in the chat that their teammate abandonned the game* | *Player 2 — reconnecting after 3 minutes or more — is now a spectator* |
+
+### All players of the red team disconnected, giving victory to blue team
+<img width="658" height="112" alt="image" src="https://github.com/user-attachments/assets/e9b9722b-4c7c-465a-859d-eee69dfa9e89" />
 
