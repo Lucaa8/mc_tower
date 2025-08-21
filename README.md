@@ -383,4 +383,204 @@ Regardless of how the game ends, the closing sequence is always the same:
 | *The game ended by reaching the point goal* |
 
 ## Configurations
-Yes, almost everything is configurable.
+Yes — almost everything can be customized!
+
+### Configuration files
+- **actions.json** : Defines how much money players earn for in-game actions (kills, points, etc.)
+- **armor.json** : Manages default armor and armor upgrade settings (color, enchants, ...)
+- **config.json** : Contains general Tower settings (e.g. max players, points to win, timers)
+- **default_items.json** : Specifies the default starter items granted to every player (Sword and Pickaxe)
+- **npc.json** : Sets up NPCs (location, name, skin)
+- **plugin_messages.json** : Customizes all plugin messages (from lobby to end game)
+- **pools.json** : Defines scoring zones where players earn points by entering
+- **spawns.json** : Configures spawn locations for teams, lobby, and spectators
+- **scoreboards.json** : Controls every scoreboard a player may encounter, including placeholders
+- **shop.json** : Defines shop contents (Tools, Blocks, Utilities, etc.)
+
+Here’s a list of everything you can tweak to tailor the Tower experience:
+
+### actions.json
+This file lets you configure how much money players receive for specific in-game actions:
+- **Start Money** → the amount of money granted at the beginning of the game to every player (excluding spectators)
+- **Play Interval** → recurring reward based on time played (e.g. $50 every 300 seconds)
+- **Kill / Assistance / Participation** → money given for combat contributions
+- **Point and Point Participation**
+- **Damage** → money per amount of damage inflicted (based on heart)
+- ⚠️ **Note** → This action list may be subject to additions or removals in future updates
+
+### armor.json
+This file configures **all armor upgrades available** to players. It includes helmets, chestplates, leggings, and boots, along with their **enchantments, lore, attributes, and metadata**. When players purchase an upgrade, the specified armor set will be automatically equipped.
+
+You can define:
+- **Default Armor** → equipment granted when the game starts
+- **Level 1 Armor** → first upgrade tier
+- **Level 2 Armor** → second upgrade tier
+- **New Levels** → can be added freely (must also exist in *shop.json* to be purchasable)
+
+**Notes**:
+- Armor color is determined dynamically at runtime based on a player's team
+- Exception on helmet which can be configured with a color for level 1 and 2 (and more if added)
+- Each armor piece can be fully customized (name, lore, enchantments, attributes, etc.)
+- For a complete reference, check the [SpigotApi Items documentation](https://github.com/Lucaa8/SpigotApi/blob/master/examples/Items.md).
+
+### config.json
+All the "general" settings of the tower;
+| Name                            | Config Name           | Unit | Description                                                                                  | Default Value |
+|---------------------------------|-----------------------|------|----------------------------------------------------------------------------------------------|---------------|
+| Max Players                     | MAX_PLAYERS           | None | Maximum number of players allowed (must be an even number)                                   | 8             |
+| Min Players                     | MIN_PLAYERS           | None | Minimum number of players required to start the game                                         | 4             |
+| Lobby Timer Countdown           | TIMER_DURATION_WAIT   | s    | Countdown duration before game start once the minimum number of players has been reached     | 10            |
+| Game Timer Countdown            | TIMER_DURATION_GAME   | s    | Duration of the match before it automatically ends                                           | 1800          |
+| End Timer Countdown             | TIMER_DURATION_END    | s    | Time before the server shuts down and the map resets after the game ends                     | 30            |
+| Death Invulnerability Countdown | TIMER_IMMUNE_ON_DEATH | s    | Duration of invulnerability granted to a player upon respawn                                 | 2.5           |
+| Goal Points                     | GOAL_POINTS           | None | Number of points required for a team to win                                                  | 10            |
+| Assistance Validity Timer       | LAST_ATTACKER_TIMER   | s    | Time window in which a player’s damage still counts as an assist after hitting an opponent   | 10            |
+| Friendly Fire                   | FRIENDLY_FIRE         | None | Determines whether players can damage their teammates                                        | False         |
+| Abandon After                   | ABANDON_AFTER         | s    | Time before a disconnected player is permanently removed from their team                     | 180           |
+
+### default_items.json
+This file defines the default tools given to players at the start of the game (excluding armors, which are configured separately in `armor.json`). Those items are also received upon respawn until player upgrades it in the Tools shop.
+Currently, only two tools have default versions:
+- Sword  
+- Pickaxe 
+
+For the upgrade system to work properly, the **type (id)** of a default item must match the one used for its upgrades.  
+For example:  
+- The default sword in *default_items.json* has the type `"sword"` (which becomes `-1_sword` at runtime).  
+- In *shop.json*, the level 1 sword is `"0_sword"`, level 2 is `"1_sword"`, etc.  
+
+This allows the plugin to track a player’s current upgrade level with a simple integer and correctly replace tools when upgrading or respawning.
+
+**Note 2**:  
+In the same way, a default bow could be added by defining a default item with the type `"bow"`.  
+
+### npc.json
+This file configures all NPCs.  
+Since **facing direction and location differ depending on the team**, each NPC type (Utilities, Tools, Blocks, etc.) must be configured **twice**:  
+- Once for the red spawn  
+- Once for the blue spawn
+
+To differentiate them, NPC names cannot be exactly the same (otherwise the client would see them as duplicates and showing only one of them).  
+For example:  
+- Utilities NPC for the blue team → `Utilities§b§f`  
+- Utilities NPC for the red team → `Utilities§c§f`  
+
+#### Textures
+To apply a skin to an NPC, retrieve the **signature** and **value** of the desired skin directly from Mojang servers.  
+
+Steps:  
+1. Get the player’s UUID from their username:  
+   `https://api.mojang.com/users/profiles/minecraft/{username}`  
+   *(copy the `"id"` value)*
+   
+2. Retrieve the full skin data using that UUID:  
+   `https://sessionserver.mojang.com/session/minecraft/profile/{copied id}?unsigned=false`  
+
+3. Copy the `"value"` and `"signature"` fields and paste them into the `npc.json` configuration.
+
+### plugin_messages.json
+This file contains all the messages used by the plugin (from the lobby to the end of the game).  
+It allows you to **customize texts** shown to players, such as hot bar alerts, titles, or chat messages.  
+
+#### Notes
+- Currently, only **one language file** is supported.  
+- In future versions, multiple `plugin_messages.json` files may be added, allowing players to select their preferred language.  
+
+### pools.json
+This file defines the **pool areas** for each team (red and blue).  
+Each pool is represented by a cube, delimited by the coordinates `X1`, `X2`, `Z1`, `Z2`, `Y1`, and `Y2`.  
+When a player (excluding spectators) enters the enemy's pool region, the plugin detects it and adds a point to their team.  
+
+#### Notes
+- This configuration is especially useful when using a **custom map**, as pool locations may vary.  
+
+### spawns.json
+This file defines the **spawn locations** for different phases of the game:  
+- Initial lobby spawn  
+- Lobby red team spawn  
+- Lobby blue team spawn  
+- In-game red team spawn cage  
+- In-game blue team spawn cage  
+- In-game spectator spawn  
+
+It also includes the configuration of the **map folder name**, which is used to reset the map between games.  
+
+### scoreboards.json
+This file configures the **scoreboards** displayed during the different game phases: lobby, in-game, spectator, and end game.  
+As spectators do not have statistics like kills or deaths, those placeholders will not be replaced for them if used.  
+
+#### Empty lines ⚠️
+To insert empty lines in a scoreboard, use a color code as the line text.  
+If you need multiple empty lines, each one must use a **different color code**.  
+Example:  
+- Text on line 1  
+- §1 *this line will appear as empty in game*
+- Text on line 2  
+- §2 *this line will appear as empty in game*
+
+---
+
+Here is the list of scoreboards available:
+
+#### Lobby
+**Scoreboard Name:** `WAIT`  
+**Placeholders:**  
+- `{PLAYER_COUNT}` : Current number of online players in the lobby  
+- `{MAX_PLAYER_COUNT}` : Maximum allowed players in the lobby, defined by `MAX_PLAYERS` in *config.json*  
+- `{TEAM}` : Player team status → None, Blue, or Red (already includes the color code; "None" is green)  
+- `{TIMER}` : Countdown before the game starts, defined by `TIMER_DURATION_WAIT` in *config.json*  
+
+---
+
+#### Game (Player)
+**Scoreboard Name:** `GAME`  
+**Placeholders:**  
+- `{POINTS_RED}` and `{POINTS_BLUE}` : Current points of each team (**does not include color codes**)  
+- `{MAX_POINTS}` : Point goal required to win, defined by `GOAL_POINTS` in *config.json*  
+- `{TIMER}` : Current game timer, defined by `TIMER_DURATION_GAME` in *config.json*  
+- `{TEAM}` : Player’s team → Blue or Red (already includes the color code)  
+- `{DAMAGE}` : Player’s total damage dealt (displayed in hearts, includes the heart emoji)  
+- `{POINTS}` : Player’s personal points  
+- `{KILLS}` : Player’s kills  
+- `{ASSISTS}` : Player’s assists  
+- `{DEATHS}` : Player’s deaths  
+- `{MONEY}` : Player’s money (displayed with `$`)  
+
+---
+
+#### Game (Spectator)
+**Scoreboard Name:** `SPECTATOR`  
+**Placeholders:**  
+- `{POINTS_RED}`, `{POINTS_BLUE}`, `{MAX_POINTS}`, `{TIMER}`  
+
+---
+
+#### Game Ended (Player)
+**Scoreboard Name:** `END`  
+**Placeholders:**  
+- `{TEAM}` : The winning team (**not the player’s team**, includes the color code)  
+- `{POINTS_RED}` and `{POINTS_BLUE}` : Final points of each team (**does not include color codes**)  
+- `{TIMER}` : Countdown before the server shuts down, defined by `TIMER_DURATION_END` in *config.json*  
+- `{DAMAGE}` : Player’s total final damage (displayed in hearts, includes the heart emoji) 
+- `{POINTS}` : Player’s final personal points  
+- `{KILLS}` : Player’s total kills  
+- `{ASSISTS}` : Player’s total assists  
+- `{DEATHS}` : Player’s total deaths  
+
+---
+
+#### Game Ended (Spectator)
+**Scoreboard Name:** `SPECTATOR_END`  
+**Placeholders:**  
+- `{TEAM}`, `{POINTS_RED}`, `{POINTS_BLUE}`, `{TIMER}`  
+
+### shop.json
+This file controls **all NPC shops** visible to players in the game.  
+Almost everything is fully customizable:  
+- Item icons  
+- Names  
+- Upgrade items  
+- Prices  
+
+> ⚠️ Note: This file can be complex to edit manually.   
+> If you have any specific questions or plan to modify it, please contact me on Discord at `lucaa_8`.
