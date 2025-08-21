@@ -364,3 +364,4 @@ In this Tower, if a player disconnects, they have a short period of time to rejo
 ### All players of the red team disconnected, giving victory to blue team
 <img width="658" height="112" alt="image" src="https://github.com/user-attachments/assets/e9b9722b-4c7c-465a-859d-eee69dfa9e89" />
 
+## Test
