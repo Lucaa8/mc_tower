@@ -444,6 +444,7 @@ Currently, only two tools have default versions:
 - Sword  
 - Pickaxe 
 
+**Note 1**:  
 For the upgrade system to work properly, the **type (id)** of a default item must match the one used for its upgrades.  
 For example:  
 - The default sword in *default_items.json* has the type `"sword"` (which becomes `-1_sword` at runtime).  
