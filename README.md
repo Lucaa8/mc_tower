@@ -366,4 +366,18 @@ In this Tower, if a player disconnects, they have a short period of time to rejo
 ### All players of the red team disconnected, giving victory to blue team
 <img width="658" height="112" alt="image" src="https://github.com/user-attachments/assets/e9b9722b-4c7c-465a-859d-eee69dfa9e89" />
 
-## Test
+## End of the game
+A match can end in three different ways:
+- One team reaches the point goal
+- The timer runs out (0 seconds left)
+- All players of a team leave the game
+
+Regardless of how the game ends, the closing sequence is always the same:
+1) Remaining players are switched to Creative mode and can now disconnect safely
+2) A message is broadcast announcing the winning team
+3) Leaderboards are displayed for kills, damage, deaths, and points
+4) A final message warns that the server will shut down shortly (e.g. in 30 seconds)
+
+| <video src="https://github.com/user-attachments/assets/bf7bad96-ff41-4fd9-8490-5e3787b055c9"/> |
+|:--:| 
+| *The game ended by reaching the point goal* |
