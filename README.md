@@ -339,6 +339,8 @@ Yes, it updates live — for example, every time your Fire Aspect weapon proc a 
 ### Example of live scoreboard
 <video src="https://github.com/user-attachments/assets/3a9037e3-3d44-4498-8e52-212f45204c07"/>
 
+tttttt
+
 ## Game Abandons
 The game is forgiving when a player leaves the match. After all, who never had their game crash or forgot to pay their internet bills for a good connection?  
 
