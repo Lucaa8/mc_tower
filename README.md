@@ -381,3 +381,6 @@ Regardless of how the game ends, the closing sequence is always the same:
 | <video src="https://github.com/user-attachments/assets/bf7bad96-ff41-4fd9-8490-5e3787b055c9"/> |
 |:--:| 
 | *The game ended by reaching the point goal* |
+
+## Configurations
+Yes, almost everything is configurable.
