@@ -57,7 +57,7 @@ Players choose their team by interacting with colored wool blocks, or leave thei
 
 If teams are unbalanced (e.g., 3 Red vs. 1 Blue), the server will automatically redistribute players before the match begins. Players who haven’t chosen a team will be assigned automatically to ensure balanced teams.
 
-| ![wait-lobby](https://github.com/user-attachments/assets/d0bf04a3-3ada-4866-8b33-4d5979f99e26) | 
+| <video src="https://github.com/user-attachments/assets/d0bf04a3-3ada-4866-8b33-4d5979f99e26"/> | 
 |:--:| 
 | *Game starts with two players — the second player was auto-assigned to the Red Team* |
 
@@ -68,7 +68,7 @@ To ensure fair gameplay, spawn-killing is prevented by giving respawned players 
 | *A player attempting to spawn-kill another player* | *The respawned player has 2.5 seconds of immunity* |
 
 To prevent players from being trapped in their spawn, block placement and breaking are disabled near the spawn area for both enemy and friendly teams. Any anvils placed at the top of the spawn area are detected and removed upon landing.
-| ![spawnlocked-1](https://github.com/user-attachments/assets/b80f23bf-6761-48be-8d49-4bf131cb447d) | ![spawnlocked-2](https://github.com/user-attachments/assets/315097c8-ea55-4691-89a1-6fe2364d323f) |
+| <video src="https://github.com/user-attachments/assets/b80f23bf-6761-48be-8d49-4bf131cb447d"/> | <video src="https://github.com/user-attachments/assets/315097c8-ea55-4691-89a1-6fe2364d323f"/> |
 |:--:|:--:| 
 | *Blocks cannot be placed or broken* | *Anvils are removed if they land near the spawn area* |
 
