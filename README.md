@@ -648,7 +648,7 @@ Examples of modifiers:
 - Points count double for the next 2 minutes  
 - Each kill rewards a point  
 - Next point becomes a winning point (rare event)  
-- Creepers spawn in the enemy base and attack players  
+- Creepers spawn in the enemy base and attack players 
 
 ### TNTFly
 Adjusting TNT velocity can allow players to **propel themselves**, opening new strategies to attack pools or destroy enemy defenses. 
@@ -675,7 +675,8 @@ Thanks to the highly customizable nature of the plugin, **temporary events** can
 
 Examples of what we could do:  
 - Custom shop upgrades (e.g., a sword with Knockback VI)  
-- Custom modifiers that alter gameplay, such as clearing the enemy’s pool from any block or disabling all tools (melee only PvP)  
+- Custom modifiers that alter gameplay, such as clearing the enemy’s pool from any block or disabling all tools (melee only PvP)
+- Shops have limited resources (i.e. max 2048 wood blocks can be bought during the game)
 - Limited-time game modes with unique rules and challenges  
 
 > ⚠️ Note: These event games **do not count** toward overall statistics or ranking systems.  
