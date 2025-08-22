@@ -585,3 +585,104 @@ Almost everything is fully customizable:
 
 > ⚠️ Note: This file can be complex to edit manually.   
 > If you have any specific questions or plan to modify it, please contact me on Discord at `lucaa_8`.
+
+# What's up for the Future ?
+The following features and ideas are **still in development** or planned for future release:
+
+## Tower Lobby (Bungee)
+Do not confuse this lobby with the **waiting lobby** before a game.  
+The Tower Lobby would be a separate Spigot server where players can:
+- See their overall Tower statistics  
+- Browse and join new games  
+- Check other players’ profiles and leaderboards  
+
+### Signs
+To keep a nostalgic touch, **signs** could be used to enter games.  
+These signs could display information about active servers, map types, or game modes.  
+They could also serve as portals to different maps, events, or shorter, streamlined Tower game modes.  
+
+### Leaderboards
+Leaderboards can display:  
+- Overall statistics (player level, kills/deaths, etc.)  
+- Monthly statistics, with the **top 3 players rewarded** with badges or other prizes. The statistic tested could change every month;
+
+Example:  
+- January → Top 3 killers rewarded  
+- February → Top 3 damage dealers rewarded 
+- March → Top 3 most games played rewarded 
+- April → Top 3 most money spent rewarded 
+
+This system makes leaderboard progression **fun and unique**, encouraging players to aim for different objectives each month.  
+
+## Player Profile
+Clicking on a player in the lobby opens their profile, displaying:  
+- Overall stats: kills, deaths, kills with sword, kills with bow, etc.  
+- Achievements/badges: e.g.  
+  - Killer I → Kill 1,000 players  
+  - Killer II → Kill 5,000 players  
+- Leaderboard badges, best rankings, personal records (e.g., most kills in one game)  
+
+### Player Progression System
+A level system could be implemented as a **reward for playing**.  
+- Players gain experience points at the end of each game based on performance (kills, points, etc.)  
+- Levels are displayed in the player profile, on leaderboards, and in the tab list  
+- Provides a simple summary of a player’s overall progress
+- Can create fair matchmaking (if matchmaking games are added, not planned yet tho)
+
+### Player Challenges System
+Challenges provide additional objectives and rewards (badges, exp for level).  
+Examples:  
+- Killer I, II, III → Kill 1,000 / 5,000 / 10,000 players  
+- Traveler → Travel 10,000 blocks in a single game  
+- Fully Kitted → Upgrade two tools to max level in one game  
+- Harry Potter I, II, III → Kill 10 / 50 / 100 players with potions  
+
+This encourages players to focus on diverse objectives beyond simply scoring points.  
+
+## Game
+Some ideas that could improve and add uniqueness to each Tower Game.
+
+### Custom Modifiers
+Custom Modifiers add **unique dynamics** to each game. They can trigger randomly or be activated strategically by players.  
+Examples of modifiers:  
+- Points count double for the next 2 minutes  
+- Each kill rewards a point  
+- Next point becomes a winning point (rare event)  
+- Creepers spawn in the enemy base and attack players  
+
+### TNTFly
+Adjusting TNT velocity can allow players to **propel themselves**, opening new strategies to attack pools or destroy enemy defenses. 
+
+### Enchanting System
+T.B.D.  
+
+In the old version of Tower, an enchanting table was available and lapis lazuli was spawning at the center of the map.  
+Currently, tools and armor come **pre-enchanted**, so the legacy enchanting table system has been removed, and the center of the map mostly serves as a gateway to the enemy base, which is a bit sad and empty.  
+
+Ideally, a **streamlined and more controlled enchanting system** could be added:  
+- An **elixir** spawns at the center of the map (Lapis Lazuli but replaced by a more fun Harry Potter texture with a resource pack)
+- Players use this elixir to purchase controlled enchantments on tools (maybe at a new NPC or the Utilities one)
+- This avoids overpowered combinations (e.g., Sharpness IV swords) by the classic enchantment table while keeping the center of the map strategically important
+
+### Shorters games or Team size changes
+The plugin is fully customizable:  
+- Reduce shop prices, timers, or point goals for shorter matches  
+- Support alternative formats: 2v2, 4v4, 8v8  
+- Combine with unique custom modifiers, maps, challenges, and shops 
+
+### Events
+Thanks to the highly customizable nature of the plugin, **temporary events** can be created very easily.  
+
+Examples of what we could do:  
+- Custom shop upgrades (e.g., a sword with Knockback VI)  
+- Custom modifiers that alter gameplay, such as clearing the enemy’s pool from any block or disabling all tools (melee only PvP)  
+- Limited-time game modes with unique rules and challenges  
+
+> ⚠️ Note: These event games **do not count** toward overall statistics or ranking systems.  
+> They are designed to **diversify gameplay** and add new functionalities for fun and variety.
+
+### Saving the game data
+Optional, but useful for analytics:  
+- Record each game’s duration, winning team, participants, kills, points, deaths, and timestamps  
+- Track shop statistics (most bought tools, to make balance adjustments)  
+- Data could be displayed on a website for overall stats and analytics  
