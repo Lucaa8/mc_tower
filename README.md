@@ -377,6 +377,7 @@ Regardless of how the game ends, the closing sequence is always the same:
 2) A message is broadcast announcing the winning team
 3) Leaderboards are displayed for kills, damage, deaths, and points
 4) A final message warns that the server will shut down shortly (e.g. in 30 seconds)
+5) Server is shut and map reset
 
 | <video src="https://github.com/user-attachments/assets/bf7bad96-ff41-4fd9-8490-5e3787b055c9"/> |
 |:--:| 
