@@ -671,13 +671,15 @@ The plugin is fully customizable:
 - Combine with unique custom modifiers, maps, challenges, and shops 
 
 ### Events
-Thanks to the highly customizable nature of the plugin, **temporary events** can be created very easily.  
+Thanks to the highly customizable nature of the plugin, **temporary events** can be created very easily.
+A *temporary event* refers to a dedicated server running a Tower instance with unique and higly edited configurations.  
+These special game modes would be accessible through **different signs in the Tower Lobby**, allowing players to quickly join and experience new variations of the game.
 
 Examples of what we could do:  
 - Custom shop upgrades (e.g., a sword with Knockback VI)  
 - Custom modifiers that alter gameplay, such as clearing the enemy’s pool from any block or disabling all tools (melee only PvP)
 - Shops have limited resources (i.e. max 2048 wood blocks can be bought during the game)
-- Limited-time game modes with unique rules and challenges  
+- Limited-time game modes (or recurent ones) with unique challenges (adding a rarity on some badges/profile achievements)
 
 > ⚠️ Note: These event games **do not count** toward overall statistics or ranking systems.  
 > They are designed to **diversify gameplay** and add new functionalities for fun and variety.
