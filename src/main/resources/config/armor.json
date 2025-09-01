@@ -7,7 +7,12 @@
           "Lore": [
             "§7Default Helmet",
             "",
-            "§9-4% All Damage"
+            "§6§nDamage Reductions",
+            "§9-16% Attack Damage",
+            "§9-16% Arrow Damage",
+            "§9-16% Fall Damage",
+            "§9-16% Fire Damage",
+            ""
           ],
           "Id": "-1_helmet",
           "Material": "LEATHER_HELMET",
@@ -28,8 +33,7 @@
         "Chestplate": {
           "Lore": [
             "§7Default Chestplate",
-            "",
-            "§9-4% All Damage"
+            ""
           ],
           "Id": "-1_chestplate",
           "Material": "LEATHER_CHESTPLATE",
@@ -50,8 +54,7 @@
         "Leggings": {
           "Lore": [
             "§7Default Leggings",
-            "",
-            "§9-4% All Damage"
+            ""
           ],
           "Id": "-1_leggings",
           "Material": "LEATHER_LEGGINGS",
@@ -72,8 +75,7 @@
         "Boots": {
           "Lore": [
             "§7Default Boots",
-            "",
-            "§9-4% All Damage"
+            ""
           ],
           "Id": "-1_boots",
           "Material": "LEATHER_BOOTS",
@@ -100,7 +102,12 @@
           "Lore": [
             "§7Level 1",
             "",
-            "§9-8% All Damage"
+            "§6§nDamage Reductions",
+            "§9-16% Attack Damage",
+            "§9-32% Arrow Damage",
+            "§9-16% Fall Damage",
+            "§9-16% Fire Damage",
+            ""
           ],
           "Id": "0_helmet",
           "Material": "LEATHER_HELMET",
@@ -131,8 +138,7 @@
         "Chestplate": {
           "Lore": [
             "§7Level 1",
-            "",
-            "§9-16% Arrow Damage"
+            ""
           ],
           "Id": "0_chestplate",
           "Material": "LEATHER_CHESTPLATE",
@@ -145,7 +151,7 @@
           "Count": 1,
           "Enchants": [
             {
-              "Level": 2,
+              "Level": 1,
               "Key": "projectile_protection"
             }
           ]
@@ -153,8 +159,7 @@
         "Leggings": {
           "Lore": [
             "§7Level 1",
-            "",
-            "§9-4% All Damage"
+            ""
           ],
           "Id": "0_leggings",
           "Material": "LEATHER_LEGGINGS",
@@ -168,16 +173,14 @@
           "Enchants": [
             {
               "Level": 1,
-              "Key": "protection"
+              "Key": "projectile_protection"
             }
           ]
         },
         "Boots": {
           "Lore": [
             "§7Level 1",
-            "",
-            "§9-4% All Damage",
-            "§9-12% Fall Damage"
+            ""
           ],
           "Id": "0_boots",
           "Material": "LEATHER_BOOTS",
@@ -190,12 +193,8 @@
           "Count": 1,
           "Enchants": [
             {
-              "Level": 1,
+              "Level": 2,
               "Key": "protection"
-            },
-            {
-              "Level": 1,
-              "Key": "feather_falling"
             }
           ]
         }
@@ -208,7 +207,12 @@
           "Lore": [
             "§7Level 2",
             "",
-            "§9-8% All Damage"
+            "§6§nDamage Reductions",
+            "§9-24% Attack Damage",
+            "§9-48% Arrow Damage",
+            "§9-36% Fall Damage",
+            "§9-24% Fire Damage",
+            ""
           ],
           "Id": "1_helmet",
           "Material": "LEATHER_HELMET",
@@ -231,7 +235,7 @@
           },
           "Enchants": [
             {
-              "Level": 2,
+              "Level": 3,
               "Key": "protection"
             }
           ]
@@ -239,10 +243,118 @@
         "Chestplate": {
           "Lore": [
             "§7Level 2",
-            "",
-            "§9-24% Arrow Damage"
+            ""
           ],
           "Id": "1_chestplate",
+          "Material": "LEATHER_CHESTPLATE",
+          "Invulnerable": true,
+          "Flags": [
+            "HIDE_ATTRIBUTES",
+            "HIDE_ENCHANTS",
+            "HIDE_DYE"
+          ],
+          "Count": 1,
+          "Enchants": [
+            {
+              "Level": 2,
+              "Key": "projectile_protection"
+            }
+          ]
+        },
+        "Leggings": {
+          "Lore": [
+            "§7Level 2",
+            ""
+          ],
+          "Id": "1_leggings",
+          "Material": "LEATHER_LEGGINGS",
+          "Invulnerable": true,
+          "Flags": [
+            "HIDE_ATTRIBUTES",
+            "HIDE_ENCHANTS",
+            "HIDE_DYE"
+          ],
+          "Count": 1,
+          "Enchants": [
+            {
+              "Level": 1,
+              "Key": "projectile_protection"
+            }
+          ]
+        },
+        "Boots": {
+          "Lore": [
+            "§7Level 2",
+            ""
+          ],
+          "Id": "1_boots",
+          "Material": "LEATHER_BOOTS",
+          "Invulnerable": true,
+          "Flags": [
+            "HIDE_ATTRIBUTES",
+            "HIDE_ENCHANTS",
+            "HIDE_DYE"
+          ],
+          "Count": 1,
+          "Enchants": [
+            {
+              "Level": 3,
+              "Key": "protection"
+            },
+            {
+              "Level": 1,
+              "Key": "feather_falling"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "Level": "2",
+      "Content": {
+        "Helmet": {
+          "Lore": [
+            "§7Level 3",
+            "",
+            "§6§nDamage Reductions",
+            "§9-32% Attack Damage",
+            "§9-56% Arrow Damage",
+            "§9-44% Fall Damage",
+            "§9-48% Fire Damage",
+            ""
+          ],
+          "Id": "2_helmet",
+          "Material": "LEATHER_HELMET",
+          "Invulnerable": true,
+          "Flags": [
+            "HIDE_ATTRIBUTES",
+            "HIDE_ENCHANTS",
+            "HIDE_DYE"
+          ],
+          "Count": 1,
+          "ItemMeta": {
+            "Meta": {
+              "Color": {
+                "r": 0,
+                "b": 0,
+                "g": 0
+              }
+            },
+            "MetaType": "LeatherArmor"
+          },
+          "Enchants": [
+            {
+              "Level": 4,
+              "Key": "protection"
+            }
+          ]
+        },
+        "Chestplate": {
+          "Lore": [
+            "§7Level 3",
+            ""
+          ],
+          "Id": "2_chestplate",
           "Material": "LEATHER_CHESTPLATE",
           "Invulnerable": true,
           "Flags": [
@@ -260,11 +372,10 @@
         },
         "Leggings": {
           "Lore": [
-            "§7Level 2",
-            "",
-            "§9-8% All Damage"
+            "§7Level 3",
+            ""
           ],
-          "Id": "1_leggings",
+          "Id": "2_leggings",
           "Material": "LEATHER_LEGGINGS",
           "Invulnerable": true,
           "Flags": [
@@ -276,18 +387,16 @@
           "Enchants": [
             {
               "Level": 2,
-              "Key": "protection"
+              "Key": "fire_protection"
             }
           ]
         },
         "Boots": {
           "Lore": [
-            "§7Level 2",
-            "",
-            "§9-4% All Damage",
-            "§9-24% Fall Damage"
+            "§7Level 3",
+            ""
           ],
-          "Id": "1_boots",
+          "Id": "2_boots",
           "Material": "LEATHER_BOOTS",
           "Invulnerable": true,
           "Flags": [
@@ -298,11 +407,11 @@
           "Count": 1,
           "Enchants": [
             {
-              "Level": 1,
+              "Level": 4,
               "Key": "protection"
             },
             {
-              "Level": 2,
+              "Level": 1,
               "Key": "feather_falling"
             }
           ]

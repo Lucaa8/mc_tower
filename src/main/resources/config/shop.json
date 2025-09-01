@@ -11,20 +11,20 @@
             "Lore": [
               "§7Level 1",
               "",
-              "§9+4 Damage",
+              "§9+5 Damage",
               ""
             ],
             "Attributes": [
               {
                 "Attribute": "GENERIC_ATTACK_SPEED",
-                "Value": 9.4,
+                "Value": 16.0,
                 "Slot": "HAND",
                 "Operation": "ADD_NUMBER",
                 "Name": "a1"
               },
               {
                 "Attribute": "GENERIC_ATTACK_DAMAGE",
-                "Value": 3.0,
+                "Value": 4.0,
                 "Slot": "HAND",
                 "Operation": "ADD_NUMBER",
                 "Name": "a2"
@@ -45,20 +45,20 @@
             "Lore": [
               "§7Level 2",
               "",
-              "§9+4 Damage",
+              "§9+5 Damage",
               ""
             ],
             "Attributes": [
               {
                 "Attribute": "GENERIC_ATTACK_SPEED",
-                "Value": 9.4,
+                "Value": 16.0,
                 "Slot": "HAND",
                 "Operation": "ADD_NUMBER",
                 "Name": "a1"
               },
               {
                 "Attribute": "GENERIC_ATTACK_DAMAGE",
-                "Value": 3.0,
+                "Value": 4.0,
                 "Slot": "HAND",
                 "Operation": "ADD_NUMBER",
                 "Name": "a2"
@@ -85,20 +85,20 @@
             "Lore": [
               "§7Level 3",
               "",
-              "§9+5 Damage",
+              "§9+6 Damage",
               ""
             ],
             "Attributes": [
               {
                 "Attribute": "GENERIC_ATTACK_SPEED",
-                "Value": 9.4,
+                "Value": 16.0,
                 "Slot": "HAND",
                 "Operation": "ADD_NUMBER",
                 "Name": "a1"
               },
               {
                 "Attribute": "GENERIC_ATTACK_DAMAGE",
-                "Value": 3.0,
+                "Value": 4.0,
                 "Slot": "HAND",
                 "Operation": "ADD_NUMBER",
                 "Name": "a2"
@@ -129,20 +129,20 @@
             "Lore": [
               "§7Level 4",
               "",
-              "§9+6 Damage",
+              "§9+7 Damage",
               ""
             ],
             "Attributes": [
               {
                 "Attribute": "GENERIC_ATTACK_SPEED",
-                "Value": 9.4,
+                "Value": 16.0,
                 "Slot": "HAND",
                 "Operation": "ADD_NUMBER",
                 "Name": "a1"
               },
               {
                 "Attribute": "GENERIC_ATTACK_DAMAGE",
-                "Value": 4.0,
+                "Value": 5.0,
                 "Slot": "HAND",
                 "Operation": "ADD_NUMBER",
                 "Name": "a2"
@@ -173,20 +173,20 @@
             "Lore": [
               "§7Level 5",
               "",
-              "§9+6 Damage",
+              "§9+7 Damage",
               ""
             ],
             "Attributes": [
               {
                 "Attribute": "GENERIC_ATTACK_SPEED",
-                "Value": 9.4,
+                "Value": 16.0,
                 "Slot": "HAND",
                 "Operation": "ADD_NUMBER",
                 "Name": "a1"
               },
               {
                 "Attribute": "GENERIC_ATTACK_DAMAGE",
-                "Value": 4.0,
+                "Value": 5.0,
                 "Slot": "HAND",
                 "Operation": "ADD_NUMBER",
                 "Name": "a2"
@@ -221,7 +221,7 @@
             "Lore": [
               "§7Level max",
               "",
-              "§9+6 Damage"
+              "§9+7 Damage"
             ],
             "Id": "max_sword",
             "Slot": 2,
@@ -316,7 +316,7 @@
               "§7Level 4",
               "",
               "§9+10 Mining speed",
-              "§9+3 Damage",
+              "§9+4 Damage",
               ""
             ],
             "Id": "3_pickaxe",
@@ -329,11 +329,18 @@
             ],
             "Attributes": [
               {
-                "Attribute": "GENERIC_ATTACK_DAMAGE",
-                "Value": 2.0,
+                "Attribute": "GENERIC_ATTACK_SPEED",
+                "Value": -2.8,
                 "Slot": "HAND",
                 "Operation": "ADD_NUMBER",
                 "Name": "a1"
+              },
+              {
+                "Attribute": "GENERIC_ATTACK_DAMAGE",
+                "Value": 3.0,
+                "Slot": "HAND",
+                "Operation": "ADD_NUMBER",
+                "Name": "a2"
               }
             ],
             "Count": 1,
@@ -349,7 +356,7 @@
               "§7Level max",
               "",
               "§9+10 Mining speed",
-              "§9+3 Damage",
+              "§9+4 Damage",
               ""
             ],
             "Id": "max_pickaxe",
@@ -373,20 +380,20 @@
               "§7Level 1",
               "",
               "§9+2 Mining speed",
-              "§9+2 Damage",
+              "§9+3 Damage",
               ""
             ],
             "Attributes": [
               {
                 "Attribute": "GENERIC_ATTACK_SPEED",
-                "Value": 9.4,
+                "Value": 16.0,
                 "Slot": "HAND",
                 "Operation": "ADD_NUMBER",
                 "Name": "a1"
               },
               {
                 "Attribute": "GENERIC_ATTACK_DAMAGE",
-                "Value": 1.0,
+                "Value": 2.0,
                 "Slot": "HAND",
                 "Operation": "ADD_NUMBER",
                 "Name": "a2"
@@ -407,20 +414,20 @@
               "§7Level 2",
               "",
               "§9+4 Mining speed",
-              "§9+3 Damage",
+              "§9+4 Damage",
               ""
             ],
             "Attributes": [
               {
                 "Attribute": "GENERIC_ATTACK_SPEED",
-                "Value": 9.4,
+                "Value": 16.0,
                 "Slot": "HAND",
                 "Operation": "ADD_NUMBER",
                 "Name": "a1"
               },
               {
                 "Attribute": "GENERIC_ATTACK_DAMAGE",
-                "Value": 2.0,
+                "Value": 3.0,
                 "Slot": "HAND",
                 "Operation": "ADD_NUMBER",
                 "Name": "a2"
@@ -441,20 +448,20 @@
               "§7Level 3",
               "",
               "§9+6 Mining speed",
-              "§9+3 Damage",
+              "§9+5.5 Damage",
               ""
             ],
             "Attributes": [
               {
                 "Attribute": "GENERIC_ATTACK_SPEED",
-                "Value": 9.4,
+                "Value": 16.0,
                 "Slot": "HAND",
                 "Operation": "ADD_NUMBER",
                 "Name": "a1"
               },
               {
                 "Attribute": "GENERIC_ATTACK_DAMAGE",
-                "Value": 2.0,
+                "Value": 3.0,
                 "Slot": "HAND",
                 "Operation": "ADD_NUMBER",
                 "Name": "a2"
@@ -475,6 +482,10 @@
               {
                 "Level": 1,
                 "Key": "unbreaking"
+              },
+              {
+                "Level": 2,
+                "Key": "sharpness"
               }
             ],
             "Count": 1,
@@ -485,7 +496,7 @@
               "§7Level max",
               "",
               "§9+6 Mining speed",
-              "§9+3 Damage",
+              "§9+5.5 Damage",
               ""
             ],
             "Id": "max_axe",
@@ -514,14 +525,15 @@
               "",
               "§8=== §7Chestplate §8===",
               "§c§mProtection I",
-              "§aProjectile Protection II",
+              "§aProjectile Protection I",
               "",
               "§8=== §7Leggings §8===",
-              "§7Protection I",
+              "§c§mProtection I",
+              "§aProjectile Protection I",
               "",
               "§8=== §7Boots §8===",
-              "§7Protection I",
-              "§aFeather Falling I",
+              "§c§mProtection I",
+              "§aProtection II",
               ""
             ],
             "Id": "0_armor",
@@ -529,9 +541,20 @@
             "Material": "LEATHER_CHESTPLATE",
             "Flags": [
               "HIDE_ENCHANTS",
-              "HIDE_ATTRIBUTES"
+              "HIDE_ATTRIBUTES",
+              "HIDE_DYE"
             ],
             "Count": 1,
+            "ItemMeta": {
+              "Meta": {
+                "Color": {
+                  "r": 255,
+                  "b": 255,
+                  "g": 255
+                }
+              },
+              "MetaType": "LeatherArmor"
+            },
             "Name": "§bArmor Upgrade",
             "Enchants": [
               {
@@ -545,20 +568,20 @@
               "§7Level 2",
               "",
               "§8=== §7Helmet §8===",
-              "§7Protection II",
+              "§c§mProtection II",
+              "§aProtection III",
               "",
               "§8=== §7Chestplate §8===",
-              "§c§mProjectile Protection II",
-              "§aProjectile Protection III",
+              "§c§mProjectile Protection I",
+              "§aProjectile Protection II",
               "",
               "§8=== §7Leggings §8===",
-              "§c§mProtection I",
-              "§aProtection II",
+              "§7Projectile Protection I",
               "",
               "§8=== §7Boots §8===",
-              "§7Protection I",
-              "§c§mFeather Falling I",
-              "§aFeather Falling II",
+              "§c§mProtection II",
+              "§aProtection III",
+              "§aFeather Falling I",
               ""
             ],
             "Id": "1_armor",
@@ -566,9 +589,69 @@
             "Material": "LEATHER_CHESTPLATE",
             "Flags": [
               "HIDE_ENCHANTS",
-              "HIDE_ATTRIBUTES"
+              "HIDE_ATTRIBUTES",
+              "HIDE_DYE"
             ],
             "Count": 1,
+            "ItemMeta": {
+              "Meta": {
+                "Color": {
+                  "r": 0,
+                  "b": 0,
+                  "g": 128
+                }
+              },
+              "MetaType": "LeatherArmor"
+            },
+            "Name": "§bArmor Upgrade",
+            "Enchants": [
+              {
+                "Level": 1,
+                "Key": "luck_of_the_sea"
+              }
+            ]
+          },
+          {
+            "Lore": [
+              "§7Level 3",
+              "",
+              "§8=== §7Helmet §8===",
+              "§c§mProtection III",
+              "§aProtection IV",
+              "",
+              "§8=== §7Chestplate §8===",
+              "§c§mProjectile Protection II",
+              "§aProjectile Protection III",
+              "",
+              "§8=== §7Leggings §8===",
+              "§c§mProjectile Protection I",
+              "§aFire Protection II",
+              "",
+              "§8=== §7Boots §8===",
+              "§c§mProtection III",
+              "§aProtection IV",
+              "§7Feather Falling I",
+              ""
+            ],
+            "Id": "2_armor",
+            "Slot": 11,
+            "Material": "LEATHER_CHESTPLATE",
+            "Flags": [
+              "HIDE_ENCHANTS",
+              "HIDE_ATTRIBUTES",
+              "HIDE_DYE"
+            ],
+            "Count": 1,
+            "ItemMeta": {
+              "Meta": {
+                "Color": {
+                  "r": 0,
+                  "b": 0,
+                  "g": 0
+                }
+              },
+              "MetaType": "LeatherArmor"
+            },
             "Name": "§bArmor Upgrade",
             "Enchants": [
               {
@@ -582,17 +665,17 @@
               "§7Level max",
               "",
               "§8=== §7Helmet §8===",
-              "§7Protection II",
+              "§7Protection IV",
               "",
               "§8=== §7Chestplate §8===",
               "§7Projectile Protection III",
               "",
               "§8=== §7Leggings §8===",
-              "§7Protection II",
+              "§7Fire Protection II",
               "",
               "§8=== §7Boots §8===",
-              "§7Protection I",
-              "§7Feather Falling II",
+              "§7Protection IV",
+              "§7Feather Falling I",
               ""
             ],
             "Id": "max_armor",
@@ -600,9 +683,20 @@
             "Material": "LEATHER_CHESTPLATE",
             "Flags": [
               "HIDE_ENCHANTS",
-              "HIDE_ATTRIBUTES"
+              "HIDE_ATTRIBUTES",
+              "HIDE_DYE"
             ],
             "Count": 1,
+            "ItemMeta": {
+              "Meta": {
+                "Color": {
+                  "r": 0,
+                  "b": 0,
+                  "g": 0
+                }
+              },
+              "MetaType": "LeatherArmor"
+            },
             "Name": "§bArmor Upgrade",
             "Enchants": [
               {
@@ -620,7 +714,7 @@
               ""
             ],
             "Id": "0_bow",
-            "Durability": 40,
+            "Durability": 64,
             "Slot": 6,
             "Material": "BOW",
             "Flags": [
@@ -637,7 +731,7 @@
               ""
             ],
             "Id": "1_bow",
-            "Durability": 50,
+            "Durability": 64,
             "Slot": 6,
             "Material": "BOW",
             "Flags": [
@@ -669,40 +763,52 @@
         "Back": -1,
         "Content": [
           {
-            "Material": "NETHER_BRICKS",
-            "Slot": 2,
-            "Id": "bricks",
-            "Count": 64
-          },
-          {
-            "Material": "OAK_PLANKS",
-            "Slot": 9,
-            "Id": "wood",
-            "Count": 32
-          },
-          {
             "Material": "WHITE_STAINED_GLASS",
-            "Slot": 4,
+            "Slot": 1,
             "Id": "glass",
             "Count": 64
           },
           {
-            "Material": "COAL_BLOCK",
-            "Slot": 11,
-            "Id": "coalblock",
-            "Count": 32
-          },
-          {
             "Material": "QUARTZ_BLOCK",
-            "Slot": 6,
+            "Slot": 3,
             "Id": "quartzblock",
             "Count": 64
           },
           {
             "Material": "COBBLESTONE",
-            "Slot": 13,
+            "Slot": 5,
             "Id": "cobble",
+            "Count": 64
+          },
+          {
+            "Material": "NETHER_BRICKS",
+            "Slot": 7,
+            "Id": "bricks",
+            "Count": 64
+          },
+          {
+            "Material": "OAK_PLANKS",
+            "Slot": 14,
+            "Id": "wood",
             "Count": 32
+          },
+          {
+            "Material": "COBBLED_DEEPSLATE",
+            "Slot": 12,
+            "Id": "cobble2",
+            "Count": 32
+          },
+          {
+            "Material": "COAL_BLOCK",
+            "Slot": 10,
+            "Id": "coalblock",
+            "Count": 12
+          },
+          {
+            "Material": "RAW_GOLD_BLOCK",
+            "Slot": 8,
+            "Id": "goldblock",
+            "Count": 2
           }
         ]
       }
@@ -722,7 +828,7 @@
           },
           {
             "Material": "INFESTED_COBBLESTONE",
-            "Slot": 9,
+            "Slot": 10,
             "Id": "infestedcobble",
             "Count": 8
           },
@@ -734,20 +840,14 @@
           },
           {
             "Material": "COBWEB",
-            "Slot": 11,
+            "Slot": 12,
             "Id": "cobweb",
-            "Count": 4
+            "Count": 6
           },
           {
             "Material": "LADDER",
             "Slot": 6,
             "Id": "ladder",
-            "Count": 16
-          },
-          {
-            "Material": "STRING",
-            "Slot": 13,
-            "Id": "string",
             "Count": 16
           }
         ]
@@ -784,21 +884,21 @@
             "Slot": 9,
             "Id": "enchanting",
             "Count": 1,
-            "Name": "§6Merlin (QoL plutot?)"
+            "Name": "§6The Arcanium"
           },
           {
             "Material": "POTION",
             "Lore": [
               "§d- Regeneration (1:00)",
               "§c- Instant Health II",
-              "§4- Strength (1:30)",
-              "§6- Fire Resistance (3:00)",
-              "§a- Jump Boost (1:00)",
-              "§3- Speed (3:00)",
-              "§7- Beer",
-              "§8- Splash Slowness (1:00)",
-              "§9- Splash Weakness (1:30)",
-              "§5- Splash Instant Damage"
+              "§4- Strength (0:30)",
+              "§6- Fire Resistance (1:30)",
+              "§a- Jump Boost (0:45)",
+              "§3- Speed (1:30)",
+              "§7- Beer (0:22)",
+              "§8- Splash Slowness II (0:15)",
+              "§9- Splash Weakness (0:15)",
+              "§5- Splash Instant Damage II"
             ],
             "Slot": 4,
             "Id": "potion",
@@ -838,7 +938,7 @@
             "Slot": 11,
             "Id": "tnt",
             "Count": 1,
-            "Name": "§6TNT gives you wings"
+            "Name": "§6TNT gives you wiiings"
           },
           {
             "Material": "WATER_BUCKET",
@@ -870,7 +970,7 @@
             "Slot": 13,
             "Id": "food",
             "Count": 1,
-            "Name": "§6Yummy"
+            "Name": "§6Food"
           }
         ]
       }
@@ -1004,7 +1104,7 @@
                 "CustomEffects": [
                   {
                     "Type": "INCREASE_DAMAGE",
-                    "Duration": 1800,
+                    "Duration": 600,
                     "Amplifier": 0,
                     "Particles": true
                   }
@@ -1034,7 +1134,7 @@
                 "CustomEffects": [
                   {
                     "Type": "FIRE_RESISTANCE",
-                    "Duration": 3600,
+                    "Duration": 1800,
                     "Amplifier": 0,
                     "Particles": true
                   }
@@ -1064,7 +1164,7 @@
                 "CustomEffects": [
                   {
                     "Type": "JUMP",
-                    "Duration": 1200,
+                    "Duration": 900,
                     "Amplifier": 0,
                     "Particles": true
                   }
@@ -1094,7 +1194,7 @@
                 "CustomEffects": [
                   {
                     "Type": "SPEED",
-                    "Duration": 3600,
+                    "Duration": 1800,
                     "Amplifier": 0,
                     "Particles": true
                   }
@@ -1127,20 +1227,20 @@
                 "CustomEffects": [
                   {
                     "Type": "REGENERATION",
-                    "Duration": 900,
-                    "Amplifier": 0,
+                    "Duration": 440,
+                    "Amplifier": 1,
                     "Particles": true
                   },
                   {
                     "Type": "CONFUSION",
-                    "Duration": 500,
+                    "Duration": 400,
                     "Amplifier": 0,
                     "Particles": true
                   },
                   {
                     "Type": "INCREASE_DAMAGE",
-                    "Duration": 500,
-                    "Amplifier": 1,
+                    "Duration": 440,
+                    "Amplifier": 0,
                     "Particles": true
                   }
                 ],
@@ -1175,8 +1275,8 @@
                 "CustomEffects": [
                   {
                     "Type": "SLOW",
-                    "Duration": 1200,
-                    "Amplifier": 0,
+                    "Duration": 300,
+                    "Amplifier": 1,
                     "Particles": true
                   }
                 ],
@@ -1205,7 +1305,7 @@
                 "CustomEffects": [
                   {
                     "Type": "WEAKNESS",
-                    "Duration": 1800,
+                    "Duration": 300,
                     "Amplifier": 0,
                     "Particles": true
                   }
@@ -1236,7 +1336,7 @@
                   {
                     "Type": "HARM",
                     "Duration": 20,
-                    "Amplifier": 0,
+                    "Amplifier": 1,
                     "Particles": true
                   }
                 ],
@@ -1286,7 +1386,7 @@
             "Attributes": [
               {
                 "Attribute": "GENERIC_ATTACK_SPEED",
-                "Value": 9.4,
+                "Value": 16.0,
                 "Slot": "HAND",
                 "Operation": "ADD_NUMBER",
                 "Name": "a1"
@@ -1373,7 +1473,7 @@
             "Attributes": [
               {
                 "Attribute": "GENERIC_ATTACK_SPEED",
-                "Value": 9.4,
+                "Value": 16.0,
                 "Slot": "HAND",
                 "Operation": "ADD_NUMBER",
                 "Name": "a1"
@@ -1482,98 +1582,102 @@
     "tools": [
       {
         "Item": "0_sword",
-        "Price-One": 10.0,
-        "Price-Definitive": 100.0
+        "Price-One": 3.0,
+        "Price-Definitive": 30.0
       },
       {
         "Item": "1_sword",
-        "Price-One": 20.0,
-        "Price-Definitive": 200.0
+        "Price-One": 15.0,
+        "Price-Definitive": 80.0
       },
       {
         "Item": "2_sword",
-        "Price-One": 30.0,
-        "Price-Definitive": 300.0
+        "Price-One": 12.0,
+        "Price-Definitive": 60.0
       },
       {
         "Item": "3_sword",
-        "Price-One": 40.0,
-        "Price-Definitive": 400.0
+        "Price-One": 15.0,
+        "Price-Definitive": 80.0
       },
       {
         "Item": "4_sword",
-        "Price-One": 50.0,
-        "Price-Definitive": 500.0
+        "Price-One": 15.0,
+        "Price-Definitive": 100.0
       },
       {
         "Item": "0_pickaxe",
-        "Price-One": 10.0,
-        "Price-Definitive": 100.0
+        "Price-One": 8.0,
+        "Price-Definitive": 60.0
       },
       {
         "Item": "1_pickaxe",
-        "Price-One": 20.0,
-        "Price-Definitive": 200.0
+        "Price-One": 10.0,
+        "Price-Definitive": 60.0
       },
       {
         "Item": "2_pickaxe",
-        "Price-One": 30.0,
-        "Price-Definitive": 300.0
+        "Price-One": 15.0,
+        "Price-Definitive": 80.0
       },
       {
         "Item": "3_pickaxe",
-        "Price-One": 40.0,
-        "Price-Definitive": 400.0
+        "Price-One": 16.0,
+        "Price-Definitive": 90.0
       },
       {
         "Item": "0_axe",
-        "Price-One": 10.0,
-        "Price-Definitive": 100.0
+        "Price-One": 5.0,
+        "Price-Definitive": 45.0
       },
       {
         "Item": "1_axe",
-        "Price-One": 20.0,
-        "Price-Definitive": 200.0
+        "Price-One": 15.0,
+        "Price-Definitive": 70.0
       },
       {
         "Item": "2_axe",
-        "Price-One": 30.0,
-        "Price-Definitive": 300.0
+        "Price-One": 15.0,
+        "Price-Definitive": 100.0
       },
       {
         "Item": "0_armor",
-        "Price-Definitive": 700.0
+        "Price-Definitive": 65.0
       },
       {
         "Item": "1_armor",
-        "Price-Definitive": 1200.0
+        "Price-Definitive": 100.0
+      },
+      {
+        "Item": "2_armor",
+        "Price-Definitive": 180.0
       },
       {
         "Item": "0_bow",
-        "Price-One": 100.0,
-        "Price-Definitive": 1000.0
+        "Price-One": 25.0,
+        "Price-Definitive": 150.0
       },
       {
         "Item": "1_bow",
-        "Price-One": 200.0
+        "Price-One": 35.0
       },
       {
         "Item": "arrows",
-        "Price-One": 8.0
+        "Price-One": 4.0
       }
     ],
     "blocks": [
       {
         "Item": "bricks",
-        "Price-One": 5.0
+        "Price-One": 2.0
       },
       {
         "Item": "wood",
-        "Price-One": 7.0
+        "Price-One": 4.0
       },
       {
         "Item": "glass",
-        "Price-One": 4.0
+        "Price-One": 0.1
       },
       {
         "Item": "coalblock",
@@ -1581,11 +1685,19 @@
       },
       {
         "Item": "quartzblock",
-        "Price-One": 0.3
+        "Price-One": 0.2
       },
       {
         "Item": "cobble",
         "Price-One": 0.3
+      },
+      {
+        "Item": "cobble2",
+        "Price-One": 5.0
+      },
+      {
+        "Item": "goldblock",
+        "Price-One": 12.0
       }
     ],
     "resources": [
@@ -1595,11 +1707,11 @@
       },
       {
         "Item": "infestedcobble",
-        "Price-One": 10.0
+        "Price-One": 12.0
       },
       {
         "Item": "brickfence",
-        "Price-One": 3.0
+        "Price-One": 4.0
       },
       {
         "Item": "cobweb",
@@ -1608,10 +1720,6 @@
       {
         "Item": "ladder",
         "Price-One": 4.0
-      },
-      {
-        "Item": "string",
-        "Price-One": 10.0
       }
     ],
     "utilities": [],
@@ -1634,11 +1742,11 @@
       },
       {
         "Item": "minecart",
-        "Price-One": 30.0
+        "Price-One": 10.0
       },
       {
         "Item": "furnaceminecart",
-        "Price-One": 30.0
+        "Price-One": 10.0
       },
       {
         "Item": "tntminecart",
@@ -1648,35 +1756,35 @@
     "utilities_potion": [
       {
         "Item": "1_regeneration",
-        "Price-One": 6.0
+        "Price-One": 7.0
       },
       {
         "Item": "2_healing",
-        "Price-One": 4.0
-      },
-      {
-        "Item": "3_strength",
-        "Price-One": 12.0
-      },
-      {
-        "Item": "4_fire_resistance",
-        "Price-One": 4.0
-      },
-      {
-        "Item": "5_leaping",
-        "Price-One": 9.0
-      },
-      {
-        "Item": "6_swiftness",
         "Price-One": 5.0
       },
       {
-        "Item": "7_beer",
+        "Item": "3_strength",
         "Price-One": 15.0
       },
       {
+        "Item": "4_fire_resistance",
+        "Price-One": 5.0
+      },
+      {
+        "Item": "5_leaping",
+        "Price-One": 7.0
+      },
+      {
+        "Item": "6_swiftness",
+        "Price-One": 7.0
+      },
+      {
+        "Item": "7_beer",
+        "Price-One": 10.0
+      },
+      {
         "Item": "8_slowness",
-        "Price-One": 17.0
+        "Price-One": 4.5
       },
       {
         "Item": "9_weakness",
@@ -1690,7 +1798,7 @@
     "utilities_combat": [
       {
         "Item": "rod_of_fire",
-        "Price-One": 14.0
+        "Price-One": 15.0
       },
       {
         "Item": "spiky_pumpkin",
@@ -1702,19 +1810,19 @@
       },
       {
         "Item": "golden_apple1",
-        "Price-One": 14.0
+        "Price-One": 25.0
       },
       {
         "Item": "waterbucket",
-        "Price-One": 20.0
+        "Price-One": 5.0
       },
       {
         "Item": "enderpearl",
-        "Price-One": 40.0
+        "Price-One": 30.0
       },
       {
         "Item": "harmless_feather",
-        "Price-One": 17.0
+        "Price-One": 20.0
       }
     ],
     "utilities_food": [
@@ -1724,19 +1832,19 @@
       },
       {
         "Item": "1_bread",
-        "Price-Definitive": 12.0
+        "Price-Definitive": 15.0
       },
       {
         "Item": "2_cookedchicken",
-        "Price-Definitive": 20.0
+        "Price-Definitive": 25.0
       },
       {
         "Item": "3_cookedsalmon",
-        "Price-Definitive": 50.0
+        "Price-Definitive": 40.0
       },
       {
         "Item": "4_goldencarrot",
-        "Price-Definitive": 100.0
+        "Price-Definitive": 70.0
       }
     ]
   }

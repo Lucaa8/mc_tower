@@ -6,19 +6,19 @@
         "Lore": [
           "§7Default Sword",
           "",
-          "§9+3 Damage"
+          "§9+4 Damage"
         ],
         "Attributes": [
           {
             "Attribute": "GENERIC_ATTACK_DAMAGE",
-            "Value": 2.0,
+            "Value": 3.0,
             "Slot": "HAND",
             "Operation": "ADD_NUMBER",
             "Name": "a1"
           },
           {
             "Attribute": "GENERIC_ATTACK_SPEED",
-            "Value": 9.4,
+            "Value": 16.0,
             "Slot": "HAND",
             "Operation": "ADD_NUMBER",
             "Name": "a2"
@@ -30,7 +30,8 @@
         "Id": "current_sword",
         "Flags": [
           "HIDE_ATTRIBUTES",
-          "HIDE_ENCHANTS"
+          "HIDE_ENCHANTS",
+          "HIDE_UNBREAKABLE"
         ],
         "Count": 1
       }
@@ -44,15 +45,6 @@
           "§9+2 Mining speed",
           "§9+2 Damage",
           ""
-        ],
-        "Attributes": [
-          {
-            "Attribute": "GENERIC_ATTACK_DAMAGE",
-            "Value": 1.0,
-            "Slot": "HAND",
-            "Operation": "ADD_NUMBER",
-            "Name": "a1"
-          }
         ],
         "Slot": 1,
         "Material": "WOODEN_PICKAXE",

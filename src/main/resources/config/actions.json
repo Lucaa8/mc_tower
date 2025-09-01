@@ -2,21 +2,18 @@
   "START_MONEY": 50.0,
   "BASE": {
     "PLAY": {
-      "PLAY": 50.0,
-      "INTERVAL_SECONDS": 300
+      "PLAY": 40.0,
+      "INTERVAL_SECONDS": 180
     },
     "KILL": {
-      "KILL": 5.0,
-      "ASSIST": 3.0,
-      "PARTICIPATION": 0.5
+      "KILL": 10.0,
+      "ASSIST": 5.0,
+      "PARTICIPATION": 2.5
     },
     "POINT": {
-      "POINT": 250.0,
+      "POINT": 100.0,
       "PARTICIPATION": 50.0
     },
     "DAMAGE": 0.1
-  },
-  "CHALLENGES": {
-
   }
 }
