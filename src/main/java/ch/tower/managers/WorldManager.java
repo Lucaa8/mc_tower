@@ -88,7 +88,7 @@ public class WorldManager {
         World w = Bukkit.createWorld(WorldCreator.name(worldName));
         if(w!=null){
             w.setAutoSave(false);
-            w.setTime(12000);
+            w.setTime(6000);
             w.setClearWeatherDuration(100); //5 sec
             w.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
             w.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
