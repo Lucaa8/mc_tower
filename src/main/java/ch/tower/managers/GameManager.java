@@ -50,7 +50,7 @@ public class GameManager {
 
     public enum ConfigField
     {
-        MAX_PLAYERS, MIN_PLAYERS, TIMER_DURATION_WAIT, TIMER_DURATION_GAME, TIMER_DURATION_END, TIMER_IMMUNE_ON_DEATH, GOAL_POINTS, LAST_ATTACKER_TIMER, FRIENDLY_FIRE, ABANDON_AFTER;
+        MAX_PLAYERS, MIN_PLAYERS, TIMER_DURATION_WAIT, TIMER_DURATION_GAME, TIMER_DURATION_END, TIMER_IMMUNE_ON_DEATH, GOAL_POINTS, LAST_ATTACKER_TIMER, FRIENDLY_FIRE, FRIENDLY_FIRE_MONEY, ABANDON_AFTER;
         public int get(){return configInfos.getInt(name());}
         public boolean getBool(){return configInfos.getBool(name());}
         public double getDecimal(){return configInfos.getDouble(name());}
