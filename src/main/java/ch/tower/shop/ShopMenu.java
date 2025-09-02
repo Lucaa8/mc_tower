@@ -13,6 +13,8 @@ import ch.tower.managers.TeamsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -23,9 +25,11 @@ import org.json.simple.JSONObject;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class ShopMenu implements Shop {
 
@@ -235,8 +239,13 @@ public abstract class ShopMenu implements Shop {
         }
         if(item.hasItemMeta() && item.getItemMeta().hasAttributeModifiers())
         {
-            addLine(lore, lore.size(), "§a§o1.8 PVP enabled");
-            addLine(lore, lore.size(), "");
+            boolean is18Pvp = Stream.ofNullable(item.getItemMeta().getAttributeModifiers(Attribute.GENERIC_ATTACK_SPEED))
+                    .flatMap(Collection::stream).anyMatch(modifier -> modifier.getAmount() >= 16.0);
+            if(is18Pvp)
+            {
+                addLine(lore, lore.size(), "§a§o1.8 PVP enabled");
+                addLine(lore, lore.size(), "");
+            }
         }
         ItemMeta im = item.getItemMeta();
         im.setLore(lore);
