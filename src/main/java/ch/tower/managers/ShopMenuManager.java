@@ -37,6 +37,8 @@ public class ShopMenuManager {
 
     public void openShop(NPCApi.NPC npc, Player player, ClickType click)
     {
+        if(!click.isRightClick())
+            return;
         String shop = npc.getName().toLowerCase();
         if(shop.endsWith("§f"))
             shop = shop.substring(0, shop.length()-4);
