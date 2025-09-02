@@ -13,6 +13,8 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
 import java.io.File;
+import java.util.Objects;
+import java.util.function.Function;
 
 public class ActionsManager implements Listener {
 
@@ -88,17 +90,43 @@ public class ActionsManager implements Listener {
     @EventHandler
     public void onDamage(GameDamageEvent e)
     {
+        if(GameManager.ConfigField.FRIENDLY_FIRE.getBool() && !GameManager.ConfigField.FRIENDLY_FIRE_MONEY.getBool() &&
+                e.getAttacker().getTeam() == e.getVictim().getTeam())
+        {
+            return;
+        }
         double damageValue = actions.damageValue()*multiplier;
         e.getAttacker().giveMoney(damageValue*e.getAmount());
     }
+
+    //While money earnings can be disabled between players of the same team, if an enemy player had an assistance on a teamkill
+    //they will still receive the money for assistance. The system doesnt cancel everything if victim and attacker are in the same team.
 
     @EventHandler
     public void onKill(GameKillEvent e)
     {
 
         String victimName = e.getVictimDisplayName();
+
+        //"player" arg here could be any player but the victim.
+        //e.g. The killer/attacker of the victim, a player who assisted in the kill of the victim or even every other player of the team (participation)
+        Function<TowerPlayer, Boolean> giveMoney = (player) -> {
+            //Friendly Fire is disabled so attacker/assist,etc. is necessarily in the opposite team, so they receive money
+            if(!GameManager.ConfigField.FRIENDLY_FIRE.getBool()) return true;
+            //Friendly Fire is enabled but the rule allows ff actions to reward money
+            if(GameManager.ConfigField.FRIENDLY_FIRE_MONEY.getBool()) return true;
+            //FF is enabled but the rule disallow ff action to reward money, so we need to check if the player and victim are on the same team
+            TeamsManager.PlayerTeam victimTeam = e.getVictim().getTeam();
+            TeamsManager.PlayerTeam playerTeam = player.getTeam();
+            if(victimTeam == null || playerTeam == null)
+                //shouldn't happen, even if the player left the game, as their team is still stored as "abandoningTeam"
+                return false;
+            return !victimTeam.equals(playerTeam);
+        };
+
         TowerPlayer attacker = e.getAttacker();
-        if(attacker != null)
+
+        if(attacker != null && giveMoney.apply(attacker))
         {
             double killValue = actions.killKillValue()*multiplier;
             attacker.giveMoney(killValue);
@@ -109,12 +137,14 @@ public class ActionsManager implements Listener {
         String assistMsg = GameManager.getMessage("MSG_GAME_ACTION_ASSIST", victimName, assistMoney+"");
         for(TowerPlayer assist : e.getAssists())
         {
+            if(!giveMoney.apply(assist))
+                continue;
             assist.giveMoney(assistMoney);
             assist.displayBarText(assistMsg, 40);
         }
 
         TeamsManager.PlayerTeam team = attacker != null ? attacker.getTeam() : null;
-        if(team == null)
+        if(team == null || (team == e.getVictim().getTeam() && !GameManager.ConfigField.FRIENDLY_FIRE_MONEY.getBool()))
             return;
         double participationMoney = actions.killParticipationValue()*multiplier;
         String participationMsg = GameManager.getMessage("MSG_GAME_ACTION_KILL_PART", victimName, participationMoney+"");
