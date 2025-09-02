@@ -1,10 +1,13 @@
 package ch.tower;
 
 import ch.luca008.SpigotApi.Api.FileApi;
+import ch.luca008.SpigotApi.Api.JSONApi;
+import ch.luca008.SpigotApi.SpigotApi;
 import ch.luca008.SpigotApi.Utils.Logger;
 import ch.tower.items.WeaponStatistics;
 import ch.tower.managers.GameManager;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -33,7 +36,7 @@ public class Main extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        if(!checkAndSetArrowsDespawnRate())
+        if(!checkAndSetArrowsDespawnRate() || !removeRestrictedItems())
         {
             getServer().getPluginManager().disablePlugin(this);
             return;
@@ -141,6 +144,27 @@ public class Main extends JavaPlugin {
             }
         }
         return ok;
+    }
+
+    private boolean removeRestrictedItems()
+    {
+        File restrictedItems = new File(Main.getInstance().getDataFolder(), "restricted_items.json");
+        if(!restrictedItems.exists())
+        {
+            Logger.info("Cannot find the restricted_items.json. Quitting...", Main.class.getName());
+            return false;
+        }
+        JSONApi.JSONReader r = SpigotApi.getJSONApi().readerFromFile(restrictedItems);
+        if(!r.c("RestrictedItems"))
+        {
+            Logger.info("Invalid restricted_items.json. Please delete the file and retry. Quitting...", Main.class.getName());
+            return false;
+        }
+        for(Object itemKey : r.getArray("RestrictedItems"))
+        {
+            Bukkit.removeRecipe(NamespacedKey.fromString(itemKey.toString()));
+        }
+        return true;
     }
 
 }
