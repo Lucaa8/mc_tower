@@ -157,22 +157,20 @@ public class WaitEvents implements StateEvents
     @EventHandler
     public void disableDamageOnPlayers(EntityDamageEvent e)
     {
-        e.setCancelled(true);
-        if (e.getEntity().getType() == EntityType.PLAYER)
+        if (e.getEntity() instanceof Player p)
         {
-            Player player = (Player) e.getEntity();
-            player.setHealth(20);
+            e.setCancelled(true);
+            p.setHealth(20);
         }
     }
 
     @EventHandler
     public void disableFoodLoss(FoodLevelChangeEvent e)
     {
-        if (e.getEntity().getType() == EntityType.PLAYER)
+        if (e.getEntity() instanceof Player p)
         {
             e.setCancelled(true);
-            Player player = (Player) e.getEntity();
-            player.setFoodLevel(20);
+            p.setFoodLevel(20);
         }
     }
 
@@ -320,7 +318,7 @@ public class WaitEvents implements StateEvents
                 .filter(p->!(redPlayers.contains(p)||bluePlayers.contains(p)))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        if(redPlayers.size() != bluePlayers.size() || noTeamPlayers.size() > 0) //on the case of 3 red and 4 blues, we'll enter this condition but the while loop of balanceTeams wont be true so we'll quit the function
+        if(redPlayers.size() != bluePlayers.size() || !noTeamPlayers.isEmpty()) //on the case of 3 red and 4 blues, we'll enter this condition but the while loop of balanceTeams wont be true so we'll quit the function
         {
             balanceTeams(redPlayers, bluePlayers, noTeamPlayers);
         }
