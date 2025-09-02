@@ -38,6 +38,7 @@ public class TowerCommand implements CommandExecutor {
                     return false;
                 }
                 w.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+                w.setGameRule(GameRule.MOB_GRIEFING, false);
                 w.setGameRule(GameRule.DO_FIRE_TICK, false);
                 w.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
                 w.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
