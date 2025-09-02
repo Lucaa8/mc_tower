@@ -198,8 +198,8 @@ Arrows must be purchased separately (**32 arrows cost $4**), and players do not 
 
 **Note**: Bow durability has been set to **64**, meaning a bow can fire at most one full stack of arrows before breaking.  
 Since one stack of arrows costs **8$**, players will typically spend a total of:  
-- **32$** for a Level 1 Bow (25$ bow + 8$ arrows)  
-- **43$** for a Level 2 Bow (35$ bow + 8$ arrows)
+- **32\$** for a Level 1 Bow (25\$ bow + 8$ arrows)  
+- **43\$** for a Level 2 Bow (35\$ bow + 8$ arrows)
 
 ### Armors
 Armor upgrades apply to the entire set—helmet, chestplate, leggings, and boots—simultaneously. Players cannot mix different levels, for example keeping Level 1 boots with a Level 2 chestplate. This ensures that the overall protection level remains balanced. Also, note that all four armor pieces are unbreakable!
@@ -461,6 +461,7 @@ All the "general" settings of the tower;
 | Goal Points                     | GOAL_POINTS           | None | Number of points required for a team to win                                                  | 10            |
 | Assistance Validity Timer       | LAST_ATTACKER_TIMER   | s    | Time window in which a player’s damage still counts as an assist after hitting an opponent   | 10            |
 | Friendly Fire                   | FRIENDLY_FIRE         | None | Determines whether players can damage their teammates                                        | False         |
+| Friendly Fire Money Earnings    | FRIENDLY_FIRE_MONEY   | None | Determines whether players of the same team earn money when teamkilling, assisting, etc..    | False         |
 | Abandon After                   | ABANDON_AFTER         | s    | Time before a disconnected player is permanently removed from their team                     | 180           |
 
 ### default_items.json
