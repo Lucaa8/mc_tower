@@ -145,36 +145,40 @@ This allows players to buy a higher-tier item for specific situations—like a f
 Here is a list of every item that can be upgraded during the game;
 (Note: Those upgrades may change for balancing purposes)
 
-### Sword
+### Sword (PvP 1.8)
 Every player starts with a default sword (level 0) and can upgrade it to a maximum of 5 levels. Swords are unbreakable!
-| Level | Material | Enchantments                            | Price (Upgrade) | Price (Temp) |
-|-------|----------|-----------------------------------------|-----------------|--------------|
-| 0     | Wood     | None                                    | 0$              | Unobtainable |
-| 1     | Stone    | None                                    | 100$            | 10$          |
-| 2     | Stone    | Knockback I                             | 200$            | 20$          |
-| 3     | Stone    | Knockback I, Sharpness I                | 300$            | 30$          |
-| 4     | Iron     | Knockback I, Sharpness I                | 400$            | 40$          |
-| 5     | Iron     | Knockback I, Sharpness I, Fire Aspect I | 500$            | 50$          | 
+| Level | Material | Enchantments                            | Damage (1/2 ❤️) | Price (Upgrade) | Price (Temp) |
+|-------|----------|-----------------------------------------|---------------------|----------------|--------------|
+| 0     | Wood     | None                                    | 4                   | 0$             | Unobtainable |
+| 1     | Stone    | None                                    | 5                   | 30$            | 3$           |
+| 2     | Stone    | Knockback I                             | 5                   | 80$            | 15$          |
+| 3     | Stone    | Knockback I, Sharpness I                | 6                   | 60$            | 12$          |
+| 4     | Iron     | Knockback I, Sharpness I                | 7                   | 80$            | 15$          |
+| 5     | Iron     | Knockback I, Sharpness I, Fire Aspect I | 7                   | 100$           | 15$          | 
 
 ### Pickaxe
 Every player starts with a default pickaxe (level 0) and can upgrade it to a maximum of 4 levels.
-| Level | Material | Durability | Enchantments                | Price (Upgrade) | Price (Temp) |
-|-------|----------|------------|-----------------------------|-----------------|--------------|
-| 0     | Wood     | 59/59      | None                        | 0$              | Unobtainable |
-| 1     | Stone    | 80/131     | None                        | 100$            | 10$          |
-| 2     | Stone    | 80/131     | Efficiency I, Unbreaking I  | 200$            | 20$          |
-| 3     | Stone    | 131/131    | Efficiency II, Unbreaking I | 300$            | 30$          |
-| 4     | Diamond  | 264/1561   | Efficiency I                | 400$            | 40$          |
+| Level | Material | Durability    | Enchantments                | Mining Speed | Damage (1/2 ❤️) | Price (Upgrade) | Price (Temp) |
+|-------|----------|---------------|-----------------------------|--------------|-----------------|-----------------|--------------|
+| 0     | Wood     | 59/59         | None                        | 2            | 2               | 0$              | Unobtainable |
+| 1     | Stone    | 80/131        | None                        | 4            | 3               | 60$             | 8$           |
+| 2     | Stone    | 80/131 (162)  | Efficiency I, Unbreaking I  | 6            | 3               | 60$             | 10$          |
+| 3     | Stone    | 131/131 (264) | Efficiency II, Unbreaking I | 9            | 3               | 80$             | 15$          |
+| 4     | Diamond  | 264/1561      | Efficiency I                | 10           | 4               | 90$             | 16$          |
 
-### Axe
+For **Durability**, the number in parentheses indicates the *effective* durability, which takes into account the Unbreaking enchantment.
+
+### Axe (PvP 1.8)
 Players do not start with a default axe. For this reason, axe upgrades start at Level 1 and reach their maximum at Level 3.
 
 Axes are relatively strong both for PvP and for breaking wood, so their upgrade progression is more limited compared to other items.
-| Level | Material | Durability | Enchantments               | Price (Upgrade) | Price (Temp) |
-|-------|----------|------------|----------------------------|-----------------|--------------|
-| 1     | Wood     | 30/59      | None                       | 100$            | 10$          |
-| 2     | Stone    | 80/131     | None                       | 200$            | 20$          |
-| 3     | Stone    | 80/131     | Efficiency I, Unbreaking I | 300$            | 30$          |
+| Level | Material | Durability   | Enchantments                             | Mining Speed | Damage (1/2 ❤️) | Price (Upgrade) | Price (Temp) |
+|-------|----------|--------------|------------------------------------------|--------------|-----------------|-----------------|--------------|
+| 1     | Wood     | 30/59        | None                                     | 2            | 3               | 45$             | 5$           |
+| 2     | Stone    | 80/131       | None                                     | 4            | 4               | 70$             | 15$          |
+| 3     | Stone    | 80/131 (162) | Efficiency I, Unbreaking I, Sharpness II | 6            | 5.5             | 300$            | 30$          |
+
+For **Durability**, the number in parentheses indicates the *effective* durability, which takes into account the Unbreaking enchantment.
 
 ### Bow
 Bows have been heavily nerfed compared to other tools. Players who spam bows and camp near the enemy pool can be extremely frustrating to face, and there are very few strategies to counter this effectively.
@@ -187,10 +191,15 @@ For this reason:
 Despite these limitations, bows were included to allow for tactical options, but in a more controlled and balanced way.
 | Level | Durability | Enchantments | Price (Upgrade) | Price (Temp) |
 |-------|------------|--------------|-----------------|--------------|
-| 1     | 40/384     | None         | 1'000$          | 100$         |
-| 2     | 50/384     | Power I      | Unobtainable    | 200$         |
+| 1     | 64/384     | None         | 150$            | 25$          |
+| 2     | 64/384     | Power I      | Unobtainable    | 35$          |
 
-Arrows must be purchased separately (**32 arrows cost $8**), and players do not respawn with any arrows, even if they have the Level 1 bow upgrade. To compensate for this nerf, players can craft chests, buy large quantities of arrows, and store them in these chests next to their spawn cage for easy access upon respawning.
+Arrows must be purchased separately (**32 arrows cost $4**), and players do not respawn with any arrows, even if they have the Level 1 bow upgrade. To compensate for this nerf, players can craft chests, buy large quantities of arrows, and store them in these chests next to their spawn cage for easy access upon respawning.
+
+**Note**: Bow durability has been set to **64**, meaning a bow can fire at most one full stack of arrows before breaking.  
+Since one stack of arrows costs **8$**, players will typically spend a total of:  
+- **32$** for a Level 1 Bow (25$ bow + 8$ arrows)  
+- **43$** for a Level 2 Bow (35$ bow + 8$ arrows)
 
 ### Armors
 Armor upgrades apply to the entire set—helmet, chestplate, leggings, and boots—simultaneously. Players cannot mix different levels, for example keeping Level 1 boots with a Level 2 chestplate. This ensures that the overall protection level remains balanced. Also, note that all four armor pieces are unbreakable!
@@ -209,41 +218,56 @@ Price: 0$, every player starts with this armor!
 | Boots      |           | Protection I |
 
 Damage reductions;
-| Protection | Projectile Protection | Fall Protection |
-|------------|-----------------------|-----------------|
-| 16%        | 0%                    | 0%              |
+| Protection | Projectile Protection  | Fall Protection | Fire Protection |
+|------------|------------------------|-----------------|-----------------|
+| 16%        | 16%                    | 16%             | 16%             |
 
 #### Armor Level 1
-Price: 700$
-| Piece      | Color     | Enchantments                    |
-|------------|-----------|---------------------------------|
-| Helmet     | White     | Protection II                   |
-| Chestplate |           | Projectile Protection II        |
-| Leggings   |           | Protection I                    |
-| Boots      |           | Protection I, Feather Falling I |
+Price: 65$
+| Piece      | Color     | Enchantments            |
+|------------|-----------|-------------------------|
+| Helmet     | White     | Protection II           |
+| Chestplate |           | Projectile Protection I |
+| Leggings   |           | Projectile Protection I |
+| Boots      |           | Protection II           |
 
 Damage reductions;
-| Protection | Projectile Protection | Fall Protection |
-|------------|-----------------------|-----------------|
-| 16%        | 16%                   | 12%             |
+| Protection | Projectile Protection | Fall Protection | Fire Protection |
+|------------|-----------------------|-----------------|-----------------|
+| 16%        | 32%                   | 16%             | 16%             |
 
 #### Armor Level 2
-Price: 1'200$
-| Piece      | Color     | Enchantments                     |
-|------------|-----------|----------------------------------|
-| Helmet     | Green     | Protection II                    |
-| Chestplate |           | Projectile Protection III        |
-| Leggings   |           | Protection II                    |
-| Boots      |           | Protection I, Feather Falling II |
+Price: 100$
+| Piece      | Color     | Enchantments                      |
+|------------|-----------|-----------------------------------|
+| Helmet     | Green     | Protection III                    |
+| Chestplate |           | Projectile Protection II          |
+| Leggings   |           | Projectile Protection I           |
+| Boots      |           | Protection III, Feather Falling I |
 
 Damage reductions;
-| Protection | Projectile Protection | Fall Protection |
-|------------|-----------------------|-----------------|
-| 20%        | 24%                   | 24%             |
+| Protection | Projectile Protection | Fall Protection | Fire Protection |
+|------------|-----------------------|-----------------|-----------------|
+| 24%        | 48%                   | 36%             | 24%             |
+
+#### Armor Level 3
+Price: 180$
+| Piece      | Color     | Enchantments                      |
+|------------|-----------|-----------------------------------|
+| Helmet     | Black     | Protection IV                     |
+| Chestplate |           | Projectile Protection III         |
+| Leggings   |           | Fire Protection II                |
+| Boots      |           | Protection IV, Feather Falling II |
+
+Damage reductions;
+| Protection | Projectile Protection | Fall Protection | Fire Protection |
+|------------|-----------------------|-----------------|-----------------|
+| 32%        | 56%                   | 44%             | 48%             |
 
 | <video src="https://github.com/user-attachments/assets/38115ad9-3eb4-45a9-821a-fd172da26691"/> |
 |:--:| 
 | *The Armor System — With the changing helmet color* |
+*(This video was recorded before the balance changes. Protection values and prices shown do not reflect the current state. However, the overall upgrade system remains unchanged.)*
 
 ### Food
 Last but not least, the food system also works as an upgrade. Players start with no food, but don’t worry—the first food upgrade is cheap and can be purchased with starting money.
@@ -252,10 +276,10 @@ As the game progresses, players can buy better food types. Just like with armor 
 | Level | Food Type      | Count | Food Restored | Saturation Restored | Price |
 |-------|----------------|-------|---------------|---------------------|-------|
 | 1     | Carrot         | 32    | +1.5          | +3.6                | 5$    |   
-| 2     | Bread          | 32    | +2.5          | +6.0                | 12$   |
-| 3     | Cooked Chicken | 16    | +3.0          | +7.2                | 20$   |
-| 4     | Cooked Salmon  | 16    | +3.0          | +9.6                | 50$   |
-| 5     | Golden Carrot  | 12    | +3.0          | +14.4               | 100$  |
+| 2     | Bread          | 32    | +2.5          | +6.0                | 15$   |
+| 3     | Cooked Chicken | 16    | +3.0          | +7.2                | 25$   |
+| 4     | Cooked Salmon  | 16    | +3.0          | +9.6                | 40$   |
+| 5     | Golden Carrot  | 12    | +3.0          | +14.4               | 70$   |
 
 | <video src="https://github.com/user-attachments/assets/5d92e244-a043-44d2-938f-f835b3cc9ed3"/> |
 |:--:| 
