@@ -155,8 +155,8 @@ public class ScoreboardManager
             return String.valueOf(GameManager.ConfigField.TIMER_DURATION_WAIT.get());
         }
 
-        public static String getGameTimer(int elapsedSecondsFromStart){
-            int remaining = Math.max(0, GameManager.ConfigField.TIMER_DURATION_GAME.get() - elapsedSecondsFromStart);
+        public static String getGameTimer(int remainingSeconds){
+            int remaining = Math.max(0, remainingSeconds);
             int hours = remaining / 3600;
             int minutes = (remaining % 3600) / 60;
             int seconds = remaining % 60;
@@ -262,7 +262,7 @@ public class ScoreboardManager
             board.setPlaceholder(BoardField.POINTS_RED.name(), PlaceholderHelper.getRedPoints());
             board.setPlaceholder(BoardField.MAX_POINTS.name(), PlaceholderHelper.getGoalPoints());
             //We set the maximum by default. But GameEvents will update it the next second.
-            board.setPlaceholder(BoardField.TIMER.name(), PlaceholderHelper.getGameTimer(0));
+            board.setPlaceholder(BoardField.TIMER.name(), PlaceholderHelper.getGameTimer(GameManager.ConfigField.TIMER_DURATION_GAME.get()));
         } else if(name.equals(GameManager.GameState.END.name()) || name.equals("SPECTATOR_END")) {
             TowerPlayer tp = TowerPlayer.getPlayer(board.getPlayer());
             if(tp != null){

@@ -1681,7 +1681,8 @@
       },
       {
         "Item": "coalblock",
-        "Price-One": 15.0
+        "Price-One": 15.0,
+        "Unlock-After": 150
       },
       {
         "Item": "quartzblock",
@@ -1697,7 +1698,8 @@
       },
       {
         "Item": "goldblock",
-        "Price-One": 12.0
+        "Price-One": 12.0,
+        "Unlock-After": 480
       }
     ],
     "resources": [
@@ -1750,7 +1752,8 @@
       },
       {
         "Item": "tntminecart",
-        "Price-One": 35.0
+        "Price-One": 35.0,
+        "Unlock-After": 300
       }
     ],
     "utilities_potion": [
@@ -1764,7 +1767,8 @@
       },
       {
         "Item": "3_strength",
-        "Price-One": 15.0
+        "Price-One": 15.0,
+        "Unlock-After": 300
       },
       {
         "Item": "4_fire_resistance",

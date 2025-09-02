@@ -60,6 +60,12 @@ public class GameEvents implements StateEvents
     private long startedAt;
     private int maxTimerSeconds;
 
+    public int getGameSecondsElapsed()
+    {
+        long current = System.currentTimeMillis();
+        return (int) ((current - startedAt)/1000);
+    }
+
     //------------------- START OF THE HARMLESS FEATHER SECTION -------------------//
 
     @EventHandler
@@ -695,13 +701,12 @@ public class GameEvents implements StateEvents
         maxTimerSeconds = GameManager.ConfigField.TIMER_DURATION_GAME.get();
         Main.getInstance().getManager().getActionsManager().startListening();
         timerTask = Bukkit.getScheduler().runTaskTimer(Main.getInstance(), ()->{
-            long current = System.currentTimeMillis();
-            int elapsedSec = (int) ((current - startedAt)/1000);
+            int elapsedSec = getGameSecondsElapsed();
+            int remaining = Math.max(0, maxTimerSeconds - elapsedSec);
             for(Player online : Bukkit.getOnlinePlayers())
             {
-                ScoreboardManager.BoardField.TIMER.update(online, ScoreboardManager.PlaceholderHelper.getGameTimer(elapsedSec));
+                ScoreboardManager.BoardField.TIMER.update(online, ScoreboardManager.PlaceholderHelper.getGameTimer(remaining));
             }
-            int remaining = Math.max(0, maxTimerSeconds - elapsedSec);
             switch (remaining)
             {
                 case 180, 120 -> Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_TIMER", (remaining/60)+" minutes"));
