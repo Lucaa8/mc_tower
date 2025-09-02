@@ -33,6 +33,7 @@ public class ActionsManager implements Listener {
     ){}
 
     private final Actions actions;
+    private double multiplier = 1.0;
 
     public ActionsManager()
     {
@@ -52,15 +53,28 @@ public class ActionsManager implements Listener {
                 point.getDouble("PARTICIPATION"),
                 base.getDouble("DAMAGE")
         );
+        multiplier = r.getDouble("MULTIPLIER");
     }
+
+    public double getMultiplier()
+    {
+        return this.multiplier;
+    }
+
+    public void setMultiplier(double multiplier)
+    {
+        this.multiplier = multiplier;
+    }
+
     public void startListening()
     {
         Bukkit.getPluginManager().registerEvents(this, Main.getInstance());
         timeSpentTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), this::onTimeSpent, (20L*actions.playIntervalSeconds())+40L, 20L*actions.playIntervalSeconds());
-        String startMsg = GameManager.getMessage("MSG_GAME_ACTION_START", actions.startMoney()+"");
+        double startMoney = actions.startMoney()*multiplier;
+        String startMsg = GameManager.getMessage("MSG_GAME_ACTION_START", startMoney+"");
         for(TowerPlayer player : TowerPlayer.getPlayers())
         {
-            player.giveMoney(actions.startMoney());
+            player.giveMoney(startMoney);
             player.displayBarText(startMsg, 80);
         }
     }
@@ -74,7 +88,8 @@ public class ActionsManager implements Listener {
     @EventHandler
     public void onDamage(GameDamageEvent e)
     {
-        e.getAttacker().giveMoney(actions.damageValue()*e.getAmount());
+        double damageValue = actions.damageValue()*multiplier;
+        e.getAttacker().giveMoney(damageValue*e.getAmount());
     }
 
     @EventHandler
@@ -85,11 +100,12 @@ public class ActionsManager implements Listener {
         TowerPlayer attacker = e.getAttacker();
         if(attacker != null)
         {
-            attacker.giveMoney(actions.killKillValue());
-            attacker.displayBarText(GameManager.getMessage("MSG_GAME_ACTION_KILL", victimName, actions.killKillValue()+""), 40);
+            double killValue = actions.killKillValue()*multiplier;
+            attacker.giveMoney(killValue);
+            attacker.displayBarText(GameManager.getMessage("MSG_GAME_ACTION_KILL", victimName, killValue+""), 40);
         }
 
-        double assistMoney = actions.killAssistValue();
+        double assistMoney = actions.killAssistValue()*multiplier;
         String assistMsg = GameManager.getMessage("MSG_GAME_ACTION_ASSIST", victimName, assistMoney+"");
         for(TowerPlayer assist : e.getAssists())
         {
@@ -100,7 +116,7 @@ public class ActionsManager implements Listener {
         TeamsManager.PlayerTeam team = attacker != null ? attacker.getTeam() : null;
         if(team == null)
             return;
-        double participationMoney = actions.killParticipationValue();
+        double participationMoney = actions.killParticipationValue()*multiplier;
         String participationMsg = GameManager.getMessage("MSG_GAME_ACTION_KILL_PART", victimName, participationMoney+"");
         for(TowerPlayer player : TowerPlayer.getPlayersInTeam(team))
         {
@@ -116,8 +132,8 @@ public class ActionsManager implements Listener {
     public void onPoint(GamePointEvent e)
     {
 
-        double pointMoney = actions.pointPointValue();
-        double pointPartMoney = actions.pointParticipationValue();
+        double pointMoney = actions.pointPointValue()*multiplier;
+        double pointPartMoney = actions.pointParticipationValue()*multiplier;
 
         TowerPlayer scorer = e.getPlayer();
         scorer.giveMoney(pointMoney);
@@ -137,7 +153,7 @@ public class ActionsManager implements Listener {
 
     public void onTimeSpent()
     {
-        double money = actions.playValue();
+        double money = actions.playValue()*multiplier;
         int secondsSpent = actions.playIntervalSeconds();
         String msg = secondsSpent < 60 ? secondsSpent + " second(s)" : secondsSpent == 60 ? "1 minute" : secondsSpent/60 + " minutes";
         msg = GameManager.getMessage("MSG_GAME_ACTION_PLAYED", msg, money+"");

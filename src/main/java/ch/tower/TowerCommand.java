@@ -1,5 +1,6 @@
 package ch.tower;
 
+import ch.tower.managers.ActionsManager;
 import ch.tower.managers.TeamsManager;
 import org.bukkit.*;
 import org.bukkit.command.Command;
@@ -93,7 +94,43 @@ public class TowerCommand implements CommandExecutor {
                         player.setMoney(money);
                         return true;
                     }catch(NumberFormatException nfe){
-                        p.sendMessage("§4Cannot parse " + args[2] + " has a decimal.");
+                        p.sendMessage("§4Cannot parse " + args[2] + " as a decimal.");
+                        return false;
+                    }
+                }
+            }
+            else if(args.length >= 1 && args[0].equals("multiplier")){
+                ActionsManager actManager = Main.getInstance().getManager().getActionsManager();
+                if(args.length == 1){
+                    double multiplier = actManager.getMultiplier();
+                    char color = multiplier < 1.0 ? 'c' : multiplier > 1.0 ? 'a' : 'f';
+                    p.sendMessage("§6------ Multiplier ------");
+                    p.sendMessage("§eThe current multiplier is: §"+color+"x"+multiplier);
+                    p.sendMessage("§7/tower multiplier <new value> to change it!");
+                    p.sendMessage("§6------------------------");
+                    return true;
+                }
+                if(args.length != 2){
+                    p.sendMessage("§6Usage: §r/tower multiplier <value>");
+                    p.sendMessage("§6I.e: §r/tower multiplier 1.2");
+                    return true;
+                } else {
+                    try{
+                        double newMultiplier = Double.parseDouble(args[1]);
+                        if(newMultiplier < 0 || newMultiplier > 1000.0){
+                            p.sendMessage("§4Multiplier must be between 0.0 and 1000.0");
+                            return false;
+                        }
+                        double oldMultiplier = actManager.getMultiplier();
+                        if(newMultiplier == oldMultiplier){
+                            p.sendMessage("§4Current multiplier and new multiplier are the same.");
+                            return false;
+                        }
+                        actManager.setMultiplier(newMultiplier);
+                        p.sendMessage("§7Multiplier has changed from §c" + oldMultiplier + " §7to §a" + newMultiplier);
+                        return true;
+                    }catch(NumberFormatException nfe){
+                        p.sendMessage("§4Cannot parse " + args[1] + " as a decimal.");
                         return false;
                     }
                 }
