@@ -7,14 +7,16 @@ import ch.luca008.SpigotApi.SpigotApi;
 import ch.luca008.SpigotApi.Utils.Logger;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
+import ch.tower.events.GameEvents;
 import ch.tower.items.EnchantUtils;
 import ch.tower.items.TowerItem;
+import ch.tower.managers.ScoreboardManager;
 import ch.tower.managers.TeamsManager;
 import org.bukkit.Bukkit;
+import org.bukkit.GameEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -33,7 +35,23 @@ import java.util.stream.Stream;
 
 public abstract class ShopMenu implements Shop {
 
-    public record ItemPrice(String itemUid, double priceOne, double priceDefinitive) { }
+    public record ItemPrice(String itemUid, double priceOne, double priceDefinitive, int unlockAfter) {
+
+        public int unlocksIn()
+        {
+            return Math.max(0, this.unlockAfter() - GameEvents.getInstance().getGameSecondsElapsed());
+        }
+
+    }
+
+    private ItemPrice fromJSON(JSONApi.JSONReader reader)
+    {
+        String iUid = reader.getString("Item");
+        double priceOne = reader.c("Price-One") ? reader.getDouble("Price-One") : -1.0;
+        double priceDef = reader.c("Price-Definitive") ? reader.getDouble("Price-Definitive") : -1.0;
+        int unlockAfter = reader.c("Unlock-After") ? reader.getInt("Unlock-After") : 0;
+        return new ItemPrice(iUid, priceOne, priceDef, unlockAfter);
+    }
 
     public enum PriceType {
         PRICE_ONE, PRICE_DEFINITIVE;
@@ -78,7 +96,7 @@ public abstract class ShopMenu implements Shop {
                 .map(JSONObject.class::cast).map(TowerItem::fromJson).collect(Collectors.toList());
         this.prices = ((List<Object>)json.getArray("Prices")).stream()
                 .filter(JSONObject.class::isInstance).map(JSONObject.class::cast).map(SpigotApi.getJSONApi()::getReader)
-                .map(r->new ItemPrice(r.getString("Item"), r.c("Price-One") ? r.getDouble("Price-One") : -1.0, r.c("Price-Definitive") ? r.getDouble("Price-Definitive") : -1.0))
+                .map(this::fromJSON)
                 .collect(Collectors.toList());
     }
 
@@ -157,7 +175,7 @@ public abstract class ShopMenu implements Shop {
         if(player != null && item != null)
         {
             ItemPrice price = getPrice(item.getUid());
-            if(price != null)
+            if(price != null && price.unlocksIn() == 0)
             {
                 if(click == ClickType.LEFT && price.priceOne() >= 0.0 && player.getMoney() >= price.priceOne())
                 {
@@ -196,9 +214,10 @@ public abstract class ShopMenu implements Shop {
         {
             addPrices(is, price);
         }
-        if(item.getEnchantList().size()>0 && !item.getEnchantList().get(0).getEnchantment().equals(Enchantment.LUCK))
+        List<Enchant> enchants = item.getEnchantList() == null ? new ArrayList<>() : item.getEnchantList();
+        if(!enchants.isEmpty() && !enchants.getFirst().getEnchantment().equals(Enchantment.LUCK))
         {
-            addEnchants(is, item.getEnchantList());
+            addEnchants(is, enchants);
         }
         return is;
     }
@@ -215,23 +234,30 @@ public abstract class ShopMenu implements Shop {
         List<String> lore = item.getItemMeta().hasLore() ? item.getItemMeta().getLore() : new ArrayList<>();
         boolean isPotion = item.getType() == Material.POTION || item.getType() == Material.SPLASH_POTION;
         int index = 2;
-        if(item.hasItemMeta() && item.getItemMeta().hasLore() && item.getItemMeta().getLore().get(0).equals(""))
+        if(item.hasItemMeta() && item.getItemMeta().hasLore() && item.getItemMeta().getLore().getFirst().isEmpty())
         {
             index--;
         }
-        if(price.priceOne() >= 0.0)
+        if(isPotion)
         {
-            if(isPotion)
-            {
-                addLine(lore, index++, "");
-            }
-            addLine(lore, index++, "§6"+price.priceOne()+" coins §efor a one time use (left-click)");
-        }
-        if(price.priceDefinitive() >= 0.0)
-        {
-            addLine(lore, index++, "§6"+price.priceDefinitive()+" coins §efor a definitive upgrade (right-click)");
             addLine(lore, index++, "");
-            addLine(lore, index++, "§e§oDefinitive upgrade: You respawn with this item");
+        }
+        int unlocksIn = price.unlocksIn();
+        if(unlocksIn > 0)
+        {
+            String formatTime = ScoreboardManager.PlaceholderHelper.getGameTimer(unlocksIn);
+            addLine(lore, index++, "§cArticle currently locked. Unlocks in: " + formatTime);
+        } else {
+            if(price.priceOne() >= 0.0)
+            {
+                addLine(lore, index++, "§6"+price.priceOne()+" coins §efor a one time use (left-click)");
+            }
+            if(price.priceDefinitive() >= 0.0)
+            {
+                addLine(lore, index++, "§6"+price.priceDefinitive()+" coins §efor a definitive upgrade (right-click)");
+                addLine(lore, index++, "");
+                addLine(lore, index++, "§e§oDefinitive upgrade: You respawn with this item");
+            }
         }
         if(index > 2 && !isPotion)
         {
