@@ -616,6 +616,9 @@ public class GameEvents implements StateEvents
             if(team != null)
             {
                 team.addPlayer(p);
+                p.getInventory().clear();
+                asTowerPlayer.giveTools();
+                asTowerPlayer.giveFood();
             }
             else
             {
