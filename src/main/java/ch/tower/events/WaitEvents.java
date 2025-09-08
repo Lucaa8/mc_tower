@@ -332,6 +332,7 @@ public class WaitEvents implements StateEvents
             player.setExhaustion(0.0f);
             player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
             player.getInventory().clear();
+            player.getEnderChest().clear();
             player.setGameMode(GameMode.SURVIVAL);
         }
     }
