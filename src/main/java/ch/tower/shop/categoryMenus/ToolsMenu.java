@@ -17,9 +17,9 @@ public class ToolsMenu extends ShopMenu {
     public static final File DEFAULT_TOOLS_FILE = new File(Main.getInstance().getDataFolder(), "default_items.json");
     public static final File ARMOR_FILE = new File(Main.getInstance().getDataFolder(), "armor.json");
 
-    public ToolsMenu(String id, JSONApi.JSONReader json)
+    public ToolsMenu(JSONApi.JSONReader json)
     {
-        super(id, json);
+        super(json);
     }
 
     @Override

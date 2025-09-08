@@ -9,9 +9,9 @@ import org.bukkit.inventory.Inventory;
 
 public class PotionMenu extends ShopMenu {
 
-    public PotionMenu(String id, JSONApi.JSONReader json)
+    public PotionMenu(JSONApi.JSONReader json)
     {
-        super(id, json);
+        super(json);
     }
 
     @Override

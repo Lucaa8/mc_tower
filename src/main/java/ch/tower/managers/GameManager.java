@@ -79,6 +79,7 @@ public class GameManager {
             TeamsManager.registerTeams(worldManager.getTowerWorld()); //obligé de le passer comme ça car imposible d'accéder à worldmanager depuis teamsmanager
             scoreboardManager = new ScoreboardManager();
             npcManager = new NPCManager();
+            //shops are loaded in ShopMenuManager#loadShops() when game begins
             shopManager = new ShopMenuManager();
             actionsManager = new ActionsManager();
         }

@@ -752,6 +752,93 @@
             "Count": 32,
             "Slot": 13
           }
+        ],
+        "Prices": [
+          {
+            "Item": "0_sword",
+            "Price-One": 3.0,
+            "Price-Definitive": 30.0
+          },
+          {
+            "Item": "1_sword",
+            "Price-One": 15.0,
+            "Price-Definitive": 80.0
+          },
+          {
+            "Item": "2_sword",
+            "Price-One": 12.0,
+            "Price-Definitive": 60.0
+          },
+          {
+            "Item": "3_sword",
+            "Price-One": 15.0,
+            "Price-Definitive": 80.0
+          },
+          {
+            "Item": "4_sword",
+            "Price-One": 15.0,
+            "Price-Definitive": 100.0
+          },
+          {
+            "Item": "0_pickaxe",
+            "Price-One": 8.0,
+            "Price-Definitive": 60.0
+          },
+          {
+            "Item": "1_pickaxe",
+            "Price-One": 10.0,
+            "Price-Definitive": 60.0
+          },
+          {
+            "Item": "2_pickaxe",
+            "Price-One": 15.0,
+            "Price-Definitive": 80.0
+          },
+          {
+            "Item": "3_pickaxe",
+            "Price-One": 16.0,
+            "Price-Definitive": 90.0
+          },
+          {
+            "Item": "0_axe",
+            "Price-One": 5.0,
+            "Price-Definitive": 45.0
+          },
+          {
+            "Item": "1_axe",
+            "Price-One": 15.0,
+            "Price-Definitive": 70.0
+          },
+          {
+            "Item": "2_axe",
+            "Price-One": 15.0,
+            "Price-Definitive": 100.0
+          },
+          {
+            "Item": "0_armor",
+            "Price-Definitive": 65.0
+          },
+          {
+            "Item": "1_armor",
+            "Price-Definitive": 100.0
+          },
+          {
+            "Item": "2_armor",
+            "Price-Definitive": 180.0
+          },
+          {
+            "Item": "0_bow",
+            "Price-One": 25.0,
+            "Price-Definitive": 150.0
+          },
+          {
+            "Item": "1_bow",
+            "Price-One": 35.0
+          },
+          {
+            "Item": "arrows",
+            "Price-One": 4.0
+          }
         ]
       }
     },
@@ -810,6 +897,42 @@
             "Id": "goldblock",
             "Count": 2
           }
+        ],
+        "Prices": [
+          {
+            "Item": "bricks",
+            "Price-One": 2.0
+          },
+          {
+            "Item": "wood",
+            "Price-One": 4.0
+          },
+          {
+            "Item": "glass",
+            "Price-One": 0.1
+          },
+          {
+            "Item": "coalblock",
+            "Price-One": 15.0,
+            "Unlock-After": 150
+          },
+          {
+            "Item": "quartzblock",
+            "Price-One": 0.2
+          },
+          {
+            "Item": "cobble",
+            "Price-One": 0.3
+          },
+          {
+            "Item": "cobble2",
+            "Price-One": 5.0
+          },
+          {
+            "Item": "goldblock",
+            "Price-One": 12.0,
+            "Unlock-After": 480
+          }
         ]
       }
     },
@@ -849,6 +972,28 @@
             "Slot": 6,
             "Id": "ladder",
             "Count": 16
+          }
+        ],
+        "Prices": [
+          {
+            "Item": "slimeblock",
+            "Price-One": 3.0
+          },
+          {
+            "Item": "infestedcobble",
+            "Price-One": 12.0
+          },
+          {
+            "Item": "brickfence",
+            "Price-One": 4.0
+          },
+          {
+            "Item": "cobweb",
+            "Price-One": 10.0
+          },
+          {
+            "Item": "ladder",
+            "Price-One": 4.0
           }
         ]
       }
@@ -972,7 +1117,8 @@
             "Count": 1,
             "Name": "§6Food"
           }
-        ]
+        ],
+        "Prices": []
       }
     },
     {
@@ -1023,6 +1169,37 @@
             "Slot": 13,
             "Id": "tntminecart",
             "Count": 1
+          }
+        ],
+        "Prices": [
+          {
+            "Item": "rails",
+            "Price-One": 5.0
+          },
+          {
+            "Item": "activatorrail",
+            "Price-One": 5.0
+          },
+          {
+            "Item": "detectorrail",
+            "Price-One": 5.0
+          },
+          {
+            "Item": "poweredrail",
+            "Price-One": 10.0
+          },
+          {
+            "Item": "minecart",
+            "Price-One": 10.0
+          },
+          {
+            "Item": "furnaceminecart",
+            "Price-One": 10.0
+          },
+          {
+            "Item": "tntminecart",
+            "Price-One": 35.0,
+            "Unlock-After": 300
           }
         ]
       }
@@ -1355,6 +1532,49 @@
             },
             "Name": "§fSplash Potion of Harming"
           }
+        ],
+        "Prices": [
+          {
+            "Item": "1_regeneration",
+            "Price-One": 7.0
+          },
+          {
+            "Item": "2_healing",
+            "Price-One": 5.0
+          },
+          {
+            "Item": "3_strength",
+            "Price-One": 15.0,
+            "Unlock-After": 300
+          },
+          {
+            "Item": "4_fire_resistance",
+            "Price-One": 5.0
+          },
+          {
+            "Item": "5_leaping",
+            "Price-One": 7.0
+          },
+          {
+            "Item": "6_swiftness",
+            "Price-One": 7.0
+          },
+          {
+            "Item": "7_beer",
+            "Price-One": 10.0
+          },
+          {
+            "Item": "8_slowness",
+            "Price-One": 4.5
+          },
+          {
+            "Item": "9_weakness",
+            "Price-One": 7.0
+          },
+          {
+            "Item": "10_harming",
+            "Price-One": 4.0
+          }
         ]
       }
     },
@@ -1484,6 +1704,36 @@
               "HIDE_ENCHANTS"
             ]
           }
+        ],
+        "Prices": [
+          {
+            "Item": "rod_of_fire",
+            "Price-One": 15.0
+          },
+          {
+            "Item": "spiky_pumpkin",
+            "Price-One": 6.0
+          },
+          {
+            "Item": "golden_apple",
+            "Price-One": 7.0
+          },
+          {
+            "Item": "golden_apple1",
+            "Price-One": 25.0
+          },
+          {
+            "Item": "waterbucket",
+            "Price-One": 5.0
+          },
+          {
+            "Item": "enderpearl",
+            "Price-One": 30.0
+          },
+          {
+            "Item": "harmless_feather",
+            "Price-One": 20.0
+          }
         ]
       }
     },
@@ -1574,282 +1824,76 @@
             "Count": 12,
             "Name": "§a§oGolden Carrot"
           }
+        ],
+        "Prices": [
+          {
+            "Item": "0_carrot",
+            "Price-Definitive": 5.0
+          },
+          {
+            "Item": "1_bread",
+            "Price-Definitive": 15.0
+          },
+          {
+            "Item": "2_cookedchicken",
+            "Price-Definitive": 25.0
+          },
+          {
+            "Item": "3_cookedsalmon",
+            "Price-Definitive": 40.0
+          },
+          {
+            "Item": "4_goldencarrot",
+            "Price-Definitive": 70.0
+          }
         ]
       }
+    },
+    {
+      "Id": "quick",
+      "Shop": {
+        "Name": "Quick Shop",
+        "Size": 7,
+        "Back": -1,
+        "Content": [
+          {
+            "Id": "blocks.glass",
+            "Material": "STONE",
+            "Slot": 1
+          },
+          {
+            "Id": "blocks.quartzblock",
+            "Material": "STONE",
+            "Slot": 2
+          },
+          {
+            "Id": "blocks.bricks",
+            "Material": "STONE",
+            "Slot": 3
+          },
+          {
+            "Id": "utilities_potion.3_strength",
+            "Material": "STONE",
+            "Slot": 4
+          },
+          {
+            "Id": "utilities_combat.golden_apple",
+            "Material": "STONE",
+            "Slot": 5
+          },
+          {
+            "Id": "utilities_combat.waterbucket",
+            "Material": "STONE",
+            "Slot": 6
+          },
+          {
+            "Id": "tools.arrows",
+            "Material": "STONE",
+            "Slot": 7
+          }
+        ],
+        "Prices": []
+      }
     }
-  ],
-  "Shop-Prices": {
-    "tools": [
-      {
-        "Item": "0_sword",
-        "Price-One": 3.0,
-        "Price-Definitive": 30.0
-      },
-      {
-        "Item": "1_sword",
-        "Price-One": 15.0,
-        "Price-Definitive": 80.0
-      },
-      {
-        "Item": "2_sword",
-        "Price-One": 12.0,
-        "Price-Definitive": 60.0
-      },
-      {
-        "Item": "3_sword",
-        "Price-One": 15.0,
-        "Price-Definitive": 80.0
-      },
-      {
-        "Item": "4_sword",
-        "Price-One": 15.0,
-        "Price-Definitive": 100.0
-      },
-      {
-        "Item": "0_pickaxe",
-        "Price-One": 8.0,
-        "Price-Definitive": 60.0
-      },
-      {
-        "Item": "1_pickaxe",
-        "Price-One": 10.0,
-        "Price-Definitive": 60.0
-      },
-      {
-        "Item": "2_pickaxe",
-        "Price-One": 15.0,
-        "Price-Definitive": 80.0
-      },
-      {
-        "Item": "3_pickaxe",
-        "Price-One": 16.0,
-        "Price-Definitive": 90.0
-      },
-      {
-        "Item": "0_axe",
-        "Price-One": 5.0,
-        "Price-Definitive": 45.0
-      },
-      {
-        "Item": "1_axe",
-        "Price-One": 15.0,
-        "Price-Definitive": 70.0
-      },
-      {
-        "Item": "2_axe",
-        "Price-One": 15.0,
-        "Price-Definitive": 100.0
-      },
-      {
-        "Item": "0_armor",
-        "Price-Definitive": 65.0
-      },
-      {
-        "Item": "1_armor",
-        "Price-Definitive": 100.0
-      },
-      {
-        "Item": "2_armor",
-        "Price-Definitive": 180.0
-      },
-      {
-        "Item": "0_bow",
-        "Price-One": 25.0,
-        "Price-Definitive": 150.0
-      },
-      {
-        "Item": "1_bow",
-        "Price-One": 35.0
-      },
-      {
-        "Item": "arrows",
-        "Price-One": 4.0
-      }
-    ],
-    "blocks": [
-      {
-        "Item": "bricks",
-        "Price-One": 2.0
-      },
-      {
-        "Item": "wood",
-        "Price-One": 4.0
-      },
-      {
-        "Item": "glass",
-        "Price-One": 0.1
-      },
-      {
-        "Item": "coalblock",
-        "Price-One": 15.0,
-        "Unlock-After": 150
-      },
-      {
-        "Item": "quartzblock",
-        "Price-One": 0.2
-      },
-      {
-        "Item": "cobble",
-        "Price-One": 0.3
-      },
-      {
-        "Item": "cobble2",
-        "Price-One": 5.0
-      },
-      {
-        "Item": "goldblock",
-        "Price-One": 12.0,
-        "Unlock-After": 480
-      }
-    ],
-    "resources": [
-      {
-        "Item": "slimeblock",
-        "Price-One": 3.0
-      },
-      {
-        "Item": "infestedcobble",
-        "Price-One": 12.0
-      },
-      {
-        "Item": "brickfence",
-        "Price-One": 4.0
-      },
-      {
-        "Item": "cobweb",
-        "Price-One": 10.0
-      },
-      {
-        "Item": "ladder",
-        "Price-One": 4.0
-      }
-    ],
-    "utilities": [],
-    "utilities_transport": [
-      {
-        "Item": "rails",
-        "Price-One": 5.0
-      },
-      {
-        "Item": "activatorrail",
-        "Price-One": 5.0
-      },
-      {
-        "Item": "detectorrail",
-        "Price-One": 5.0
-      },
-      {
-        "Item": "poweredrail",
-        "Price-One": 10.0
-      },
-      {
-        "Item": "minecart",
-        "Price-One": 10.0
-      },
-      {
-        "Item": "furnaceminecart",
-        "Price-One": 10.0
-      },
-      {
-        "Item": "tntminecart",
-        "Price-One": 35.0,
-        "Unlock-After": 300
-      }
-    ],
-    "utilities_potion": [
-      {
-        "Item": "1_regeneration",
-        "Price-One": 7.0
-      },
-      {
-        "Item": "2_healing",
-        "Price-One": 5.0
-      },
-      {
-        "Item": "3_strength",
-        "Price-One": 15.0,
-        "Unlock-After": 300
-      },
-      {
-        "Item": "4_fire_resistance",
-        "Price-One": 5.0
-      },
-      {
-        "Item": "5_leaping",
-        "Price-One": 7.0
-      },
-      {
-        "Item": "6_swiftness",
-        "Price-One": 7.0
-      },
-      {
-        "Item": "7_beer",
-        "Price-One": 10.0
-      },
-      {
-        "Item": "8_slowness",
-        "Price-One": 4.5
-      },
-      {
-        "Item": "9_weakness",
-        "Price-One": 7.0
-      },
-      {
-        "Item": "10_harming",
-        "Price-One": 4.0
-      }
-    ],
-    "utilities_combat": [
-      {
-        "Item": "rod_of_fire",
-        "Price-One": 15.0
-      },
-      {
-        "Item": "spiky_pumpkin",
-        "Price-One": 6.0
-      },
-      {
-        "Item": "golden_apple",
-        "Price-One": 7.0
-      },
-      {
-        "Item": "golden_apple1",
-        "Price-One": 25.0
-      },
-      {
-        "Item": "waterbucket",
-        "Price-One": 5.0
-      },
-      {
-        "Item": "enderpearl",
-        "Price-One": 30.0
-      },
-      {
-        "Item": "harmless_feather",
-        "Price-One": 20.0
-      }
-    ],
-    "utilities_food": [
-      {
-        "Item": "0_carrot",
-        "Price-Definitive": 5.0
-      },
-      {
-        "Item": "1_bread",
-        "Price-Definitive": 15.0
-      },
-      {
-        "Item": "2_cookedchicken",
-        "Price-Definitive": 25.0
-      },
-      {
-        "Item": "3_cookedsalmon",
-        "Price-Definitive": 40.0
-      },
-      {
-        "Item": "4_goldencarrot",
-        "Price-Definitive": 70.0
-      }
-    ]
-  }
+  ]
 }

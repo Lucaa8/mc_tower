@@ -23,12 +23,8 @@ public interface Shop {
             if(shop!=null&&!shop.isEmpty()){
                 shop = (shop.contains("_") ? shop.split("_")[1] : shop)
                         .transform(s -> s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase()) + "Menu";
-                JSONObject shopContent = new JSONObject();
-                shopContent.put("Shop", json.get("Shop"));
-                shopContent.put("Prices", json.get("Prices"));
                 return (Shop)Class.forName(BlocksMenu.class.getPackage().getName()+"."+shop)
-                        .getConstructor(String.class, JSONApi.JSONReader.class)
-                        .newInstance((String)json.get("Id"), SpigotApi.getJSONApi().getReader(shopContent));
+                        .getConstructor(JSONApi.JSONReader.class).newInstance(SpigotApi.getJSONApi().getReader(json));
             }
         } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             System.err.println("Can't load Shop with JSON: \n" + JSONApi.prettyJson(json));

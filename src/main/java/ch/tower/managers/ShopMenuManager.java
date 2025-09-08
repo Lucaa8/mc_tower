@@ -14,25 +14,36 @@ import org.json.simple.JSONObject;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class ShopMenuManager {
 
-    //https://pastebin.com/5rQsE69L
     public static final File SHOP_FILE = new File(Main.getInstance().getDataFolder(), "shop.json");
 
     private final List<ShopMenu> shops;
 
     public ShopMenuManager()
     {
+        this.shops = new ArrayList<>();
+    }
+
+    public void loadShops()
+    {
+        if(!shops.isEmpty())
+        {
+            return;
+        }
         JSONApi.JSONReader r = SpigotApi.getJSONApi().readerFromFile(SHOP_FILE);
-        this.shops = ((List<Object>) r.getArray("Shop-Items")).stream()
-                .filter(JSONObject.class::isInstance).map(JSONObject.class::cast)
-                .peek(j->j.put("Prices", r.getJson("Shop-Prices").getArray((String) j.get("Id"))))
-                .map(Shop::loadShop).filter(Objects::nonNull)
-                .filter(ShopMenu.class::isInstance).map(ShopMenu.class::cast)
-                .toList();
+        for(Object shop : r.getArray("Shop-Items"))
+        {
+            if(!(shop instanceof JSONObject jShop))
+            {
+                continue;
+            }
+            shops.add((ShopMenu) Shop.loadShop(jShop));
+        }
     }
 
     public void openShop(NPCApi.NPC npc, Player player, ClickType click)
@@ -40,6 +51,8 @@ public class ShopMenuManager {
         if(!click.isRightClick())
             return;
         String shop = npc.getName().toLowerCase();
+        if(shop.contains("quick shop"))
+            shop = "quick";
         if(shop.endsWith("§f"))
             shop = shop.substring(0, shop.length()-4);
         openShop(shop, TowerPlayer.getPlayer(player));

@@ -677,6 +677,9 @@ public class GameEvents implements StateEvents
     @Override
     public void onStateBegin()
     {
+        Main.getInstance().getManager().getNpcManager().load();
+        //Need to load shops before call TowerPlayer#giveTools because this methods is using Tools shop (and armors does too)
+        Main.getInstance().getManager().getShopManager().loadShops();
         TowerPlayer.registerPlayers();
         Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_START"));
         Collection<? extends Player> players = Main.getInstance().getServer().getOnlinePlayers();
@@ -690,7 +693,6 @@ public class GameEvents implements StateEvents
             p.giveFood();
         }
         bowShooterListener.start();
-        Main.getInstance().getManager().getNpcManager().load();
         Bukkit.getServer().getPluginManager().registerEvents(new InventoryEvent(), Main.getInstance());
         redPool = TeamsManager.PlayerTeam.RED.getInfo().pool();
         bluePool = TeamsManager.PlayerTeam.BLUE.getInfo().pool();

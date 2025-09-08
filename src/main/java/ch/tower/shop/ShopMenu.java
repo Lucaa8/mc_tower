@@ -71,12 +71,12 @@ public abstract class ShopMenu implements Shop {
     protected String name;
     protected int size;
     protected List<TowerItem> content;
-    private List<ItemPrice> prices;
+    protected List<ItemPrice> prices;
     protected int backSlot;
 
-    public ShopMenu(String id, JSONApi.JSONReader json)
+    public ShopMenu(JSONApi.JSONReader json)
     {
-        this.id = id;
+        this.id = json.getString("Id");
         JSONApi.JSONReader shop = json.getJson("Shop");
         this.name = shop.getString("Name");
         this.size = shop.getInt("Size");
@@ -94,7 +94,7 @@ public abstract class ShopMenu implements Shop {
         this.content = ((List<Object>)shop.getArray("Content")).stream()
                 .filter(JSONObject.class::isInstance)
                 .map(JSONObject.class::cast).map(TowerItem::fromJson).collect(Collectors.toList());
-        this.prices = ((List<Object>)json.getArray("Prices")).stream()
+        this.prices = ((List<Object>)shop.getArray("Prices")).stream()
                 .filter(JSONObject.class::isInstance).map(JSONObject.class::cast).map(SpigotApi.getJSONApi()::getReader)
                 .map(this::fromJSON)
                 .collect(Collectors.toList());
@@ -177,7 +177,7 @@ public abstract class ShopMenu implements Shop {
             ItemPrice price = getPrice(item.getUid());
             if(price != null && price.unlocksIn() == 0)
             {
-                if(click == ClickType.LEFT && price.priceOne() >= 0.0 && player.getMoney() >= price.priceOne())
+                if((click == ClickType.LEFT || click == ClickType.SHIFT_LEFT) && price.priceOne() >= 0.0 && player.getMoney() >= price.priceOne())
                 {
                     return price.priceOne();
                 }

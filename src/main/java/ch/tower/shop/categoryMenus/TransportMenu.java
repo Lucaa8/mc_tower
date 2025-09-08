@@ -9,9 +9,9 @@ import org.bukkit.inventory.Inventory;
 
 public class TransportMenu extends ShopMenu {
 
-    public TransportMenu(String id, JSONApi.JSONReader json)
+    public TransportMenu(JSONApi.JSONReader json)
     {
-        super(id, json);
+        super(json);
     }
 
     @Override

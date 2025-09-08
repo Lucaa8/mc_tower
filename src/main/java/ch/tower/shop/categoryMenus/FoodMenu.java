@@ -19,9 +19,9 @@ import java.util.List;
 
 public class FoodMenu extends ShopMenu {
 
-    public FoodMenu(String id, JSONApi.JSONReader json)
+    public FoodMenu(JSONApi.JSONReader json)
     {
-        super(id, json);
+        super(json);
     }
 
     @Override

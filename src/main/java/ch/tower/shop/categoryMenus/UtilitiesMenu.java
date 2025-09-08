@@ -10,9 +10,9 @@ import org.bukkit.inventory.Inventory;
 
 public class UtilitiesMenu extends ShopMenu {
 
-    public UtilitiesMenu(String id, JSONApi.JSONReader json)
+    public UtilitiesMenu(JSONApi.JSONReader json)
     {
-        super(id, json);
+        super(json);
     }
 
     @Override
@@ -21,8 +21,7 @@ public class UtilitiesMenu extends ShopMenu {
         Inventory inv = super.createInventory(player);
         for(TowerItem i : super.content)
         {
-            TowerItem toAdd = i;
-            inv.setItem(toAdd.getSlot(), toAdd.toItemStack(toAdd.getCount()));
+            inv.setItem(i.getSlot(), i.toItemStack(i.getCount()));
         }
         return inv;
     }

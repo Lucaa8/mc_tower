@@ -13,9 +13,9 @@ import java.util.List;
 
 public class CombatMenu extends ShopMenu {
 
-    public CombatMenu(String id, JSONApi.JSONReader json)
+    public CombatMenu(JSONApi.JSONReader json)
     {
-        super(id, json);
+        super(json);
     }
 
     @Override
