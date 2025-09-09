@@ -563,7 +563,7 @@ public class GameEvents implements StateEvents
     @EventHandler
     public void onBreakBlockProtected(BlockBreakEvent e)
     {
-        e.setCancelled(isProtected(e.getBlock().getLocation()));
+        e.setCancelled(isProtected(e.getBlock().getLocation()) || e.getBlock().getType() == Material.ENDER_CHEST);
     }
 
     @EventHandler
