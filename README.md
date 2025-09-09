@@ -29,6 +29,7 @@ Any use of this code in violation of these restrictions, especially on publicly 
 - Red and Blue Teams, No Friendly Fire and prevented Spawn-kill/Spawn-lock
 - Actions in game (e.g. kills, assists, points, time spent...) reward money to players
 - Players can buy items, blocks, potions and more at the NPCs laying near their spawn
+- Shops and EnderChest
 - Armor and food can be upgraded with coins during the game (as well as tools e.g. swords and bows)
 - PvP 1.8
 - Some custom items (e.g. A Feather which attenuates fall damage when held in hand, why not?)
@@ -200,6 +201,27 @@ Arrows must be purchased separately (**32 arrows cost $4**), and players do not 
 Since one stack of arrows costs **8$**, players will typically spend a total of:  
 - **32\$** for a Level 1 Bow (25\$ bow + 8$ arrows)  
 - **43\$** for a Level 2 Bow (35\$ bow + 8$ arrows)
+
+#### Quick Shop
+Each spawn cage includes a dedicated NPC offering the most common necessities such as blocks, potions, and arrows.  
+Prices are identical to those found in the standard NPC shops.  
+
+Players can also **shift-left-click** items in the Quick Shop to send them directly to their Ender Chest.  
+
+| <video src="https://github.com/user-attachments/assets/9622a5f4-4aed-42f0-80df-9b5d445f9d26"/> |
+|:--:| 
+| *Player purchasing items from the Quick Shop after respawning* |
+
+### EnderChests
+To give players personal storage during the game, Ender Chests are placed at the spawn cages and near NPCs (close to each team’s spawn).  
+These Ender Chests cannot be destroyed and are reset between games.  
+
+Players can also buy and store items directly from any shop by **shift-left-clicking** on a "one-time use" item.  
+If a player’s Ender Chest is full when attempting a purchase, the action is canceled and no money is charged.  
+
+| <video src="https://github.com/user-attachments/assets/57ee2d2f-c983-4c45-ad7b-1a84d9f63cab"/> |
+|:--:| 
+| *Player filling their Ender Chest with items by shift left clicking* |
 
 ### Armors
 Armor upgrades apply to the entire set—helmet, chestplate, leggings, and boots—simultaneously. Players cannot mix different levels, for example keeping Level 1 boots with a Level 2 chestplate. This ensures that the overall protection level remains balanced. Also, note that all four armor pieces are unbreakable!
