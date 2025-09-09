@@ -177,13 +177,20 @@ public class WaitEvents implements StateEvents
     @EventHandler
     public void disableBreakingBlock(BlockBreakEvent e)
     {
-        e.setCancelled(true);
+        //Only disable placing/breaking in Spawn because admin can go in Tower Copy map to modify the original map and they need to be able to place/break blocks
+        if(e.getBlock().getWorld().getName().equals("Spawn"))
+        {
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void disablePlacingBlock(BlockPlaceEvent e)
     {
-        e.setCancelled(true);
+        if(e.getBlock().getWorld().getName().equals("Spawn"))
+        {
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler

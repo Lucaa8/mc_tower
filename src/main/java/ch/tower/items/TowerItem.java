@@ -59,6 +59,10 @@ public class TowerItem extends Item {
         return slot;
     }
 
+    public int getFakeSlot() {
+        return fakeSlot;
+    }
+
     public void hideAttributes(){
         super.addFlag(ItemFlag.HIDE_ATTRIBUTES);
     }
