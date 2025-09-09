@@ -3,6 +3,7 @@ package ch.tower.shop.categoryMenus;
 import ch.luca008.SpigotApi.Api.JSONApi;
 import ch.tower.TowerPlayer;
 import ch.tower.items.TowerItem;
+import ch.tower.managers.GameManager;
 import ch.tower.managers.TeamsManager;
 import ch.tower.shop.ShopMenu;
 import org.bukkit.Material;
@@ -38,17 +39,13 @@ public class BlocksMenu extends ShopMenu
         double price = super.clicked(player, item, click);
         if(price >= 0.0)
         {
-            player.takeMoney(price);
             TowerItem toGive = cloneColouredGlass(item, player.getTeam());
-            Player spigotPlayer = player.asPlayer();
-            if(click == ClickType.LEFT) {
-                toGive.giveOrDropWithoutNBT(spigotPlayer, toGive.getCount());
-            } else if(click == ClickType.SHIFT_LEFT) {
-                //check if full, if full, does not takeMoney and prevent player.
-                System.out.println(spigotPlayer.getEnderChest().firstEmpty());
-                ItemStack is = toGive.toItemStack(toGive.getCount(), spigotPlayer);
-                spigotPlayer.getEnderChest().addItem(is);
-            }
+            if(click == ClickType.LEFT)
+            {
+                player.takeMoney(price);
+                toGive.giveOrDropWithoutNBT(player.asPlayer(), toGive.getCount());
+            } else
+                giveToEnderChestWithoutNBTs(player, toGive.toItemStack(toGive.getCount(), player.asOfflinePlayer()), price);
         }
         return -1.0;
     }

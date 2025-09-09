@@ -19,6 +19,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -284,6 +285,60 @@ public class TowerPlayer
             Bukkit.broadcastMessage(GameManager.getMessage("MSG_GAME_ABANDON_3", team.getColorCode()+asOfflinePlayer().getName()));
         }
         return team;
+    }
+
+    /**
+     * Attempts to add the given ItemStack into the player's ender chest (if the player is online).
+     * <p>
+     * Behavior:
+     * <ul>
+     *   <li>If the item is {@code null} or of type AIR, nothing is added.</li>
+     *   <li>If the player is not online, nothing is added.</li>
+     *   <li>If a slot already contains a similar item (same type and matching metadata)
+     *       and has enough space to hold the entire stack, the item is merged into that slot.</li>
+     *   <li>Otherwise, if there is an empty slot available, the item is placed there.</li>
+     *   <li>If no suitable slot exists, the item is not added.</li>
+     * </ul>
+     *
+     * <p><b>Note:</b> This method only succeeds if the full ItemStack can fit in the ender chest.
+     * Partial insertion is not performed.</p>
+     *
+     * @param item the ItemStack to add (with {@code amount} ≤ the maximum stack size allowed
+     *             for its material)
+     * @return {@code true} if the full stack was added, {@code false} otherwise
+     */
+    //An enhancement of this method could be to add every bit of space in each stack of the same ite
+    //Because currently adding is not optimized, 2 stacks of oak_planks x 48 in the enderchest could hold 32x new oak_planks
+    public boolean addToEnderChest(@Nullable ItemStack item)
+    {
+        if(item == null || item.getType() == Material.AIR)
+        {
+            return false;
+        }
+        Player p =  asPlayer();
+        if(p == null || !p.isOnline())
+        {
+            return false;
+        }
+        for(ItemStack ecItem : p.getEnderChest().getContents())
+        {
+            //UUID tag is not taken in account... not sure it's a nice idea but yeah, I need to move on.
+            if(ecItem == null || !ecItem.isSimilar(item))
+            {
+                continue;
+            }
+            //Checks if the new itemstack's count can fit in this slot
+            if(ecItem.getMaxStackSize() - ecItem.getAmount() - item.getAmount() < 0)
+            {
+                continue;
+            }
+            ecItem.setAmount(ecItem.getAmount() + item.getAmount());
+            return true;
+        }
+        if(p.getEnderChest().firstEmpty() == -1)
+            return false;
+        p.getEnderChest().addItem(item);
+        return true;
     }
 
     public void setImmune(double immuneTime)

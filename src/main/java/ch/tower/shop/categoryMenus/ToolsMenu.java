@@ -7,6 +7,7 @@ import ch.tower.items.TowerItem;
 import ch.tower.shop.ShopMenu;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.util.List;
@@ -59,16 +60,17 @@ public class ToolsMenu extends ShopMenu {
         double price = super.clicked(player, item, click);
         if(price >= 0.0 && !item.getUid().startsWith("max_"))
         {
-            player.takeMoney(price);
             if(click == ClickType.RIGHT)
             {
                 player.getLevels().addLevel(item.getUid());
                 player.giveTools();
+                player.takeMoney(price);
                 Main.getInstance().getManager().getShopManager().openShop(getId(), player);
             }
             else
             {
-                if(item.getLore() != null && item.getLore().size() > 3) //checks if already at max level
+                ItemStack toGive;
+                if(item.getLore() != null && item.getLore().size() > 3)
                 {
                     TowerItem cloned = item.clone();
                     List<String> lore = cloned.getLore();
@@ -77,12 +79,16 @@ public class ToolsMenu extends ShopMenu {
                         lore.add(3, "");
                         cloned.setLore(lore);
                     }
-                    giveItem(player.asPlayer(), prepareItem(cloned, false));
+                    toGive = prepareItem(cloned, false);
                 }
                 else
-                {
-                    item.giveOrDrop(player.asPlayer(), item.getCount());
-                }
+                    toGive = item.toItemStack(item.getCount());
+
+                if(click == ClickType.LEFT) {
+                    giveItem(player.asPlayer(), toGive);
+                    player.takeMoney(price);
+                } else
+                    giveToEnderChest(player, toGive, price);
             }
         }
         return -1.0;

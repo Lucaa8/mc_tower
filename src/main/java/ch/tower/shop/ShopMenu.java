@@ -1,6 +1,7 @@
 package ch.tower.shop;
 
 import ch.luca008.SpigotApi.Api.JSONApi;
+import ch.luca008.SpigotApi.Api.NBTTagApi;
 import ch.luca008.SpigotApi.Item.Enchant;
 import ch.luca008.SpigotApi.Item.ItemBuilder;
 import ch.luca008.SpigotApi.SpigotApi;
@@ -10,10 +11,10 @@ import ch.tower.TowerPlayer;
 import ch.tower.events.GameEvents;
 import ch.tower.items.EnchantUtils;
 import ch.tower.items.TowerItem;
+import ch.tower.managers.GameManager;
 import ch.tower.managers.ScoreboardManager;
 import ch.tower.managers.TeamsManager;
 import org.bukkit.Bukkit;
-import org.bukkit.GameEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -204,6 +205,27 @@ public abstract class ShopMenu implements Shop {
                 player.getWorld().dropItem(loc, extra.getValue());
             }
         }
+    }
+
+    public void giveToEnderChest(TowerPlayer player, ItemStack item, double price)
+    {
+        Player spigotPlayer = player.asPlayer();
+        if(spigotPlayer == null || !spigotPlayer.isOnline())
+            return;
+        if(player.addToEnderChest(item)) {
+            player.takeMoney(price);
+        } else {
+            spigotPlayer.sendMessage(GameManager.getMessage("MSG_GAME_ENDERCHEST_FULL"));
+        }
+    }
+
+    public void giveToEnderChestWithoutNBTs(TowerPlayer player, ItemStack item, double price)
+    {
+        NBTTagApi.NBTItem nbt = SpigotApi.getNBTTagApi().getNBT(item);
+        for(String tag : nbt.getTags().keySet()) {
+            nbt.removeTag(tag);
+        }
+        giveToEnderChest(player, nbt.getBukkitItem(), price);
     }
 
     public ItemStack prepareItem(TowerItem item, boolean addPrices)

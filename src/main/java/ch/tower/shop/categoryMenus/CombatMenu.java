@@ -38,7 +38,11 @@ public class CombatMenu extends ShopMenu {
             player.takeMoney(price);
             ItemStack is = prepareItem(item, false);
             removeMultiplesLF(is);
-            giveItem(player.asPlayer(), is);
+            if(click == ClickType.LEFT) {
+                giveItem(player.asPlayer(), is);
+                player.takeMoney(price);
+            } else
+                giveToEnderChest(player, is, price);
         }
         return -1.0;
     }

@@ -1,6 +1,8 @@
 package ch.tower.shop.categoryMenus;
 
 import ch.luca008.SpigotApi.Api.JSONApi;
+import ch.luca008.SpigotApi.Api.NBTTagApi;
+import ch.luca008.SpigotApi.SpigotApi;
 import ch.luca008.SpigotApi.Utils.Logger;
 import ch.tower.Main;
 import ch.tower.TowerPlayer;
@@ -8,6 +10,7 @@ import ch.tower.items.TowerItem;
 import ch.tower.shop.ShopMenu;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public class QuickMenu extends ShopMenu {
 
@@ -71,12 +74,23 @@ public class QuickMenu extends ShopMenu {
             player.takeMoney(price);
             if(item.getUid() != null && item.getUid().equals("glass"))
             {
-                TowerItem toGive = BlocksMenu.cloneColouredGlass(item, player.getTeam());
-                toGive.giveOrDropWithoutNBT(player.asPlayer(), toGive.getCount());
-            } else {
-                //giveOrDropWithoutNBT would remove NBTs from potions, items with enchants etc...
-                item.giveOrDrop(player.asPlayer(), item.getCount());
+                item = BlocksMenu.cloneColouredGlass(item, player.getTeam());
             }
+            ItemStack toGive = item.toItemStack(item.getCount(), player.asOfflinePlayer());
+            if(toGive.getType().isBlock())
+            {
+                NBTTagApi.NBTItem toGiveNBT = SpigotApi.getNBTTagApi().getNBT(toGive);
+                for(String tag : toGiveNBT.getTags().keySet()) {
+                    toGiveNBT.removeTag(tag);
+                }
+                toGive = toGiveNBT.getBukkitItem();
+            }
+            if(click == ClickType.LEFT)
+            {
+                player.takeMoney(price);
+                giveItem(player.asPlayer(), toGive);
+            } else //SHIFT_LEFT
+                giveToEnderChest(player, toGive, price);
         }
         return -1.0;
     }

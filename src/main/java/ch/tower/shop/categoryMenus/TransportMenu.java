@@ -31,8 +31,12 @@ public class TransportMenu extends ShopMenu {
         double price = super.clicked(player, item, click);
         if(price >= 0.0)
         {
-            player.takeMoney(price);
-            item.giveOrDrop(player.asPlayer(), item.getCount());
+            if(click == ClickType.LEFT)
+            {
+                player.takeMoney(price);
+                item.giveOrDrop(player.asPlayer(), item.getCount());
+            } else //SHIFT_LEFT
+                giveToEnderChest(player, item.toItemStack(item.getCount(), player.asOfflinePlayer()), price);
         }
         return -1.0;
     }
